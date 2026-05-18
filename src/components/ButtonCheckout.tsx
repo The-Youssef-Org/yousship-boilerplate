@@ -44,7 +44,7 @@ const ButtonCheckout = ({
     <ButtonPrimary
       onClick={handleClick}
       disabled={loading}
-      className={`group relative w-full cursor-pointer px-5 py-3 shadow-lg shadow-blue-800/25 disabled:cursor-not-allowed ${className}`}
+      className={`group relative w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed ${className}`}
     >
       {loading ? "Redirecting to Stripe…" : label}
     </ButtonPrimary>

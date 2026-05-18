@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import config from "@/config";
+import ButtonPrimary from "./ButtonPrimary";
 
 const Pricing = () => {
   const starterPlan = config.stripe.plans[0];
@@ -30,23 +31,26 @@ const Pricing = () => {
     <section id="pricing" className="bg-base-100">
       <div className="mx-auto max-w-7xl px-8 py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/40">
+            Pricing
+          </p>
+          <h2 className="text-3xl font-black tracking-tight text-balance text-base-content sm:text-4xl">
             One payment. Full ownership.
           </h2>
-          <p className="mt-3 text-base-content/70">
+          <p className="mt-3 text-base-content/50">
             Choose the plan that matches your stage, then ship without rebuilding
             the same stack over and over.
           </p>
         </div>
 
-        <div className="mt-12 rounded-[2rem] border border-base-300 bg-base-100 p-4 shadow-xl shadow-black/5 sm:p-6">
+        <div className="mt-12">
           <div className="grid gap-5 md:items-stretch [grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr))]">
 
             {/* ========== PLAN 1 — STARTER | uses config.stripe.plans[0].priceId ========== */}
-            <article className="relative flex h-full flex-col rounded-3xl border border-base-300 bg-base-100 p-7 shadow-sm">
+            <article className="relative flex h-full flex-col rounded-3xl border border-base-content/10 bg-base-content/[0.03] p-7">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="inline-flex rounded-full bg-base-200 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-base-content">
+                  <span className="inline-flex rounded-full bg-base-content/[0.07] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-base-content/60">
                     For your first launch
                   </span>
                   <h3 className="mt-3 text-2xl font-extrabold text-base-content">Starter</h3>
@@ -63,7 +67,7 @@ const Pricing = () => {
                 <span className="pb-2 text-sm text-base-content/60">USD</span>
               </div>
 
-              <ul className="mt-7 space-y-3 border-t border-base-300/60 pt-6 text-sm text-base-content/80">
+              <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
                 <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Next.js boilerplate</li>
                 <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Supabase auth & database</li>
                 <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Stripe payments</li>
@@ -71,19 +75,19 @@ const Pricing = () => {
                 <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>SEO & blog</li>
               </ul>
 
-              <button
+              <ButtonPrimary
                 onClick={() => starterPlan?.priceId && handleCheckout(starterPlan.priceId)}
                 disabled={!starterPlan?.priceId || loadingPriceId === starterPlan.priceId}
-                className="mt-8 w-full cursor-pointer rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-content shadow-lg shadow-blue-800/25 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === starterPlan?.priceId ? "Redirecting to Stripe..." : "Get Starter"}
-              </button>
+              </ButtonPrimary>
               <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
             </article>
             {/* ========== END PLAN 1 — STARTER ========== */}
 
             {/* ========== PLAN 2 — ADVANCED | uses config.stripe.plans[1].priceId ========== */}
-            <article className="relative flex h-full flex-col rounded-3xl border border-primary/30 bg-primary/10 p-7 shadow-sm">
+            <article className="relative flex h-full flex-col rounded-3xl border-2 border-emerald-500/40 bg-base-content/[0.03] p-7">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral px-3 py-1 text-xs font-semibold text-white">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />POPULAR
@@ -92,7 +96,7 @@ const Pricing = () => {
 
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="inline-flex rounded-full bg-primary/20 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary">
+                  <span className="inline-flex rounded-full bg-base-content/[0.07] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-base-content/60">
                     For growing products
                   </span>
                   <h3 className="mt-3 text-2xl font-extrabold text-base-content">Advanced</h3>
@@ -109,30 +113,30 @@ const Pricing = () => {
                 <span className="pb-2 text-sm text-base-content/60">USD</span>
               </div>
 
-              <ul className="mt-7 space-y-3 border-t border-base-300/60 pt-6 text-sm text-base-content/80">
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">✓</span>Everything in Starter</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">✓</span>Discord community access</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">✓</span>Lifetime updates</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">✓</span>Premium support</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">✓</span>Priority feature requests</li>
+              <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Everything in Starter</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Discord community access</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Lifetime updates</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Premium support</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Priority feature requests</li>
               </ul>
 
-              <button
+              <ButtonPrimary
                 onClick={() => advancedPlan?.priceId && handleCheckout(advancedPlan.priceId)}
                 disabled={!advancedPlan?.priceId || loadingPriceId === advancedPlan.priceId}
-                className="mt-8 w-full cursor-pointer rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-content shadow-lg shadow-blue-800/25 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === advancedPlan?.priceId ? "Redirecting to Stripe..." : "Get Advanced"}
-              </button>
+              </ButtonPrimary>
               <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
             </article>
             {/* ========== END PLAN 2 — ADVANCED ========== */}
 
             {/* ========== PLAN 3 — PRO | uses config.stripe.plans[2].priceId ========== */}
-            <article className="relative flex h-full flex-col rounded-3xl border border-secondary/30 bg-secondary/10 p-7 shadow-sm">
+            <article className="relative flex h-full flex-col rounded-3xl border border-base-content/10 bg-base-content/[0.03] p-7">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="inline-flex rounded-full bg-secondary/20 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-secondary">
+                  <span className="inline-flex rounded-full bg-base-content/[0.07] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-base-content/60">
                     For serious scale
                   </span>
                   <h3 className="mt-3 text-2xl font-extrabold text-base-content">Pro</h3>
@@ -149,21 +153,21 @@ const Pricing = () => {
                 <span className="pb-2 text-sm text-base-content/60">USD</span>
               </div>
 
-              <ul className="mt-7 space-y-3 border-t border-base-300/60 pt-6 text-sm text-base-content/80">
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-xs text-white">✓</span>Everything in Advanced</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-xs text-white">✓</span>Unlimited projects & licenses</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-xs text-white">✓</span>White-label rights</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-xs text-white">✓</span>1-on-1 onboarding call</li>
-                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-xs text-white">✓</span>Dedicated Slack channel</li>
+              <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Everything in Advanced</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Unlimited projects & licenses</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>White-label rights</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>1-on-1 onboarding call</li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-base-content/70 text-xs text-white">✓</span>Dedicated Slack channel</li>
               </ul>
 
-              <button
+              <ButtonPrimary
                 onClick={() => proPlan?.priceId && handleCheckout(proPlan.priceId)}
                 disabled={!proPlan?.priceId || loadingPriceId === proPlan.priceId}
-                className="mt-8 w-full cursor-pointer rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-content shadow-lg shadow-blue-800/25 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === proPlan?.priceId ? "Redirecting to Stripe..." : "Get Pro"}
-              </button>
+              </ButtonPrimary>
               <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
             </article>
             {/* ========== END PLAN 3 — PRO ========== */}

@@ -13,7 +13,7 @@ const TestimonialsAvatars = ({
   priority?: boolean;
 }) => {
   return (
-    <div className="mx-auto inline-flex w-fit max-w-full flex-col gap-3 rounded-2xl border border-base-300 bg-base-100 px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:gap-4">
+    <div className="mx-auto inline-flex w-fit max-w-full flex-col gap-3 rounded-2xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
       <div className="relative flex">
         {avatars.map((src, i) => (
           // eslint-disable-next-line @next/next/no-img-element

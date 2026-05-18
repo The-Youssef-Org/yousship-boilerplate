@@ -13,8 +13,8 @@ const defaultFeatures: Feature[] = [
   {
     name: "Authentication",
     description:
-      "Email, magic links, and Google — fully connected to Supabase with secure server-side session cookies.",
-    bullets: ["Email + OAuth", "Server-side sessions", "Protected routes"],
+      "Magic links and Google OAuth out of the box, fully connected to Supabase with secure server-side session cookies. Protected routes are pre-built so you can lock pages to authenticated users from day one — no custom middleware to write.",
+    bullets: ["Magic link & Google OAuth", "Secure server-side sessions", "Protected routes ready"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -29,8 +29,8 @@ const defaultFeatures: Feature[] = [
   },
   {
     name: "Payments",
-    description: "Stripe checkout, subscription management and webhooks pre-configured and ready to customise.",
-    bullets: ["One-time & subscriptions", "Customer portal", "Webhooks handler"],
+    description: "Stripe Checkout and subscription management fully wired — one-time purchases, recurring plans, the customer billing portal and webhook handling are all set up and waiting for your products and prices.",
+    bullets: ["One-time & subscription plans", "Customer billing portal", "Webhook handler included"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -45,15 +45,15 @@ const defaultFeatures: Feature[] = [
   },
   {
     name: "Emails",
-    description: "Transactional email templates built with React Email, wired to Resend or any SMTP provider.",
-    bullets: ["Welcome", "Receipts", "Password reset"],
-    icon: <span className="text-[17px] font-bold leading-none">@</span>,
+    description: "Transactional email templates built with React Email, wired to Resend or any SMTP provider. Welcome messages, magic-link delivery and receipt emails are all templated — drop in your sender details and they are ready to send.",
+    bullets: ["Welcome email", "Magic link delivery", "Receipt templates"],
+    icon: <span className="text-[17px] font-thin leading-none -translate-y-[3px] inline-block">@</span>,
   },
   {
     name: "Styles with DaisyUI",
     description:
-      "DaisyUI is pre-wired on Tailwind v4, so you can switch between 20+ themes, tune tokens, and keep UI consistency without rebuilding components.",
-    bullets: ["Theme switch ready", "Semantic color tokens", "Composable component classes"],
+      "DaisyUI is pre-wired on Tailwind v4, so you can switch between 20+ themes, tune tokens, and keep UI consistency without rebuilding components. All design tokens are semantic, so a one-line theme change updates every colour across the entire app.",
+    bullets: ["20+ switchable themes", "Customisable color tokens", "Component-first classes"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -73,8 +73,8 @@ const defaultFeatures: Feature[] = [
   {
     name: "Database",
     description:
-      "Supabase Postgres gives you a reliable data layer from day one, with typed access patterns and secure policies for production use.",
-    bullets: ["Managed Postgres", "RLS-friendly structure", "Type-safe client usage"],
+      "Supabase Postgres gives you a reliable data layer from day one, with typed access patterns and secure policies for production use. Row-level security is structured in from the start, so you never accidentally expose data as your product grows.",
+    bullets: ["Managed Postgres on Supabase", "Row-level security ready", "Full TypeScript support"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -89,8 +89,8 @@ const defaultFeatures: Feature[] = [
   },
   {
     name: "SEO & Blog",
-    description: "An MDX-powered blog, auto-generated sitemap, dynamic OG images and structured data included.",
-    bullets: ["MDX articles", "Auto sitemap", "Dynamic OG"],
+    description: "An MDX-powered blog, auto-generated sitemap, dynamic OG images and structured data included. Write a post in markdown and push — search engines pick it up immediately and every page gets its own social preview image automatically.",
+    bullets: ["MDX-powered blog", "Auto-generated sitemap", "Dynamic OG images"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -105,8 +105,7 @@ const defaultFeatures: Feature[] = [
   },
 ];
 
-// Listicle-style: vertical list of features on the left, detailed
-// content on the right. Click an item to expand.
+// Listicle-style: horizontal pill tabs at top, detailed content panel below.
 const FeaturesListicle = ({
   features = defaultFeatures,
 }: {
@@ -116,67 +115,67 @@ const FeaturesListicle = ({
   const item = features[active];
 
   return (
-    <section id="features" className="mx-auto max-w-7xl px-8 py-24">
-      <div className="text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
-          Launch faster without rebuilding the same SaaS stack
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-base-content/70">
-          Authentication, payments, emails, database, and SEO are already wired together,
-          so you can focus on your product and get to real users sooner.
-        </p>
-      </div>
+    <section id="features" className="bg-base-100 px-8 py-24">
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/40">
+            What&apos;s included
+          </p>
+          <h2 className="text-3xl font-black tracking-tight text-balance text-base-content sm:text-4xl">
+            Everything you need to ship.
+          </h2>
+        </div>
 
-      <div className="mt-12 grid gap-6 lg:grid-cols-[0.85fr_2.15fr]">
-        <ul className="flex flex-col gap-1">
+        {/* Floating tab strip */}
+        <div className="mt-10 grid grid-cols-3 sm:grid-cols-6">
           {features.map((f, i) => (
-            <li key={f.name}>
-              <button
-                onClick={() => setActive(i)}
-                className={`w-full cursor-pointer border-l-2 px-4 py-3 text-left transition ${
-                  i === active
-                    ? "border-base-content/80 bg-base-200/70"
-                    : "border-base-content/20 text-base-content/80 hover:border-base-content/45"
-                }`}
+            <button
+              key={f.name}
+              onClick={() => setActive(i)}
+              className={`flex flex-col items-center gap-2 rounded-xl px-2 py-4 text-sm font-semibold transition-all duration-200 ${
+                i === active
+                  ? "bg-base-content/[0.07] text-base-content"
+                  : "text-base-content/55 hover:bg-base-content/[0.04] hover:text-base-content/75 dark:text-base-content/35 dark:hover:text-base-content/60"
+              }`}
+            >
+              <span
+                className={`[&>svg]:h-6 [&>svg]:w-6 [&>span]:text-2xl ${i === active ? "text-blue-400" : "text-base-content/50 dark:text-base-content/30"}`}
+                aria-hidden="true"
               >
-                <span
-                  className={`flex items-center gap-2.5 text-sm font-semibold ${
-                    i === active ? "text-base-content" : "text-base-content/60"
-                  }`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={i === active ? "text-base-content" : "text-base-content/45"}
-                  >
-                    {f.icon}
-                  </span>
-                  <span>{f.name}</span>
-                </span>
-              </button>
-            </li>
+                {f.icon}
+              </span>
+              {f.name}
+            </button>
           ))}
-        </ul>
+        </div>
 
-        <div className="rounded-2xl border border-base-300/70 bg-gradient-to-b from-base-100 to-base-200/35 p-8 shadow-xl shadow-black/5 ring-1 ring-base-300/60">
-          <div>
-            <h3 className="text-2xl font-bold text-base-content">{item.name}</h3>
-            <p className="mt-2 text-base-content/70">{item.description}</p>
+        {/* Content panel */}
+        <div className="mt-3 rounded-2xl border border-base-content/10 bg-base-content/[0.03] p-8 lg:p-10">
+            <div className="flex items-start gap-5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400">
+                {item.icon}
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-base-content">{item.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-base-content/50">{item.description}</p>
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-2">
+              {item.bullets.map((b) => (
+                <span
+                  key={b}
+                  className="flex items-center gap-2 text-sm font-medium text-base-content/60"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden="true">
+                    <path d="M2.5 8l4 4 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {b}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <ul className="mt-6 space-y-3">
-            {item.bullets.map((b) => (
-              <li
-                key={b}
-                className="flex items-center gap-3 text-sm text-base-content"
-              >
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-neutral text-xs text-white">
-                  ✓
-                </span>
-                {b}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   );

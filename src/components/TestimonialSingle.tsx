@@ -12,8 +12,8 @@ const TestimonialSingle = ({
 }) => {
   return (
     <section className="mx-auto max-w-5xl px-8 py-16">
-      <figure className="grid gap-8 overflow-hidden rounded-[2rem] border border-base-300 bg-base-100 shadow-sm lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="flex flex-col justify-center border-b border-base-300 bg-gradient-to-br from-base-100 to-base-200/60 p-8 lg:border-b-0 lg:border-r lg:p-10">
+      <figure className="grid gap-8 overflow-hidden rounded-[2rem] border border-base-content/10 bg-base-content/[0.03] lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="flex flex-col justify-center border-b border-base-content/10 bg-gradient-to-br from-base-100 to-base-200/60 p-8 lg:border-b-0 lg:border-r lg:p-10">
           <div className="mb-4 inline-flex w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             Founder note
           </div>
@@ -36,7 +36,7 @@ const TestimonialSingle = ({
           </div>
           <figcaption className="flex items-center gap-4 rounded-2xl bg-base-200/60 p-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={avatar} alt={name} className="h-14 w-14 rounded-2xl object-cover ring-1 ring-base-300" />
+            <img src={avatar} alt={name} className="h-14 w-14 rounded-2xl object-cover ring-1 ring-base-content/10" />
             <div>
               <div className="font-semibold text-base-content">{name}</div>
               <div className="text-sm text-base-content/60">{role}</div>

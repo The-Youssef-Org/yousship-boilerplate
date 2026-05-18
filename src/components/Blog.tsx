@@ -6,7 +6,8 @@ export type { BlogPost };
 
 const Blog = ({ posts = allPosts.slice(0, 3) }: { posts?: BlogPost[] }) => {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-24">
+    <section className="bg-base-100 px-8 py-24">
+      <div className="mx-auto max-w-7xl">
       <div className="flex items-end justify-between">
         <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
           From the blog
@@ -23,6 +24,7 @@ const Blog = ({ posts = allPosts.slice(0, 3) }: { posts?: BlogPost[] }) => {
         {posts.map((p) => (
           <CardArticle key={p.slug} post={p} />
         ))}
+      </div>
       </div>
     </section>
   );

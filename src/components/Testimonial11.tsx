@@ -60,7 +60,7 @@ const items: T[] = Array.from({ length: 11 }).map((_, i) => ({
 
 const Testimonial11 = () => {
   return (
-    <section className="bg-base-200/40">
+    <section className="bg-base-200">
       <div className="mx-auto max-w-7xl px-8 py-24">
         <div className="mb-10 max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
@@ -72,7 +72,7 @@ const Testimonial11 = () => {
           {items.map((t) => (
             <figure
               key={t.name}
-              className={`break-inside-avoid rounded-[1.75rem] border border-base-300 bg-gradient-to-b ${t.tone} p-5 shadow-sm ${t.span ?? ""}`}
+              className={`break-inside-avoid rounded-[1.75rem] border border-base-content/10 bg-gradient-to-b ${t.tone} p-5 ${t.span ?? ""}`}
             >
               <div className="mb-4 flex gap-0.5 text-amber-400" aria-hidden="true">
                 {[...Array(5)].map((_, i) => (
@@ -82,7 +82,7 @@ const Testimonial11 = () => {
                 ))}
               </div>
               <blockquote className="text-sm leading-relaxed text-base-content">“{t.quote}”</blockquote>
-              <figcaption className="mt-4 flex items-center gap-3 border-t border-base-300/60 pt-4">
+              <figcaption className="mt-4 flex items-center gap-3 border-t border-base-content/10 pt-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t.avatar} alt={t.name} className="h-10 w-10 rounded-2xl object-cover" />
                 <div>

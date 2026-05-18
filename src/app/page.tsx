@@ -6,7 +6,6 @@ import Problem from "@/components/Problem";
 import WithWithout from "@/components/WithWithout";
 import FeaturesListicle from "@/components/FeaturesListicle";
 import FeaturesAccordion from "@/components/FeaturesAccordion";
-import FeaturesGrid from "@/components/FeaturesGrid";
 import Pricing from "@/components/Pricing";
 import TestimonialRollercoaster from "@/components/TestimonialRollercoaster";
 import Testimonial1 from "@/components/Testimonial1";
@@ -36,7 +35,6 @@ export default function Home() {
         <WithWithout />
         <FeaturesListicle />
         <FeaturesAccordion />
-        <FeaturesGrid />
         <CTA />
         <Pricing />
         <Blog />

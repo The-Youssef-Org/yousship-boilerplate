@@ -34,10 +34,10 @@ const Item = ({
 }) => (
   <li>
     <article
-      className={`rounded-xl border p-4 shadow-xl shadow-black/5 transition-all duration-300 ${
+      className={`rounded-xl border p-4 transition-all duration-300 ${
         open
-          ? "border-base-content/20 bg-base-100"
-          : "border-base-300 bg-base-100/70 hover:border-base-content/20"
+          ? "border-base-content/20 bg-base-content/[0.05]"
+          : "border-base-content/10 bg-base-content/[0.03] hover:border-base-content/20"
       }`}
     >
       <button
@@ -81,10 +81,13 @@ const FAQ = ({ items = defaults }: { items?: QA[] }) => {
     <section id="faq" className="bg-base-100">
       <div className="mx-auto grid max-w-6xl gap-8 px-8 py-14 md:grid-cols-[0.95fr_1.25fr]">
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-base-content sm:text-3xl">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/40">
+            Common questions
+          </p>
+          <h2 className="text-2xl font-black tracking-tight text-balance text-base-content sm:text-3xl">
             Frequently asked questions
           </h2>
-          <p className="mt-3 max-w-sm text-sm text-base-content/70">
+          <p className="mt-3 max-w-sm text-sm text-base-content/50">
             Clear answers to the practical questions most founders ask before getting started.
           </p>
         </div>

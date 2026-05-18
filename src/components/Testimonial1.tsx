@@ -1,7 +1,7 @@
 const Testimonial1 = () => {
   return (
     <section className="mx-auto max-w-4xl px-8 py-16">
-      <figure className="rounded-[2rem] border border-base-300 bg-base-100 p-8 shadow-sm sm:p-10">
+      <figure className="rounded-[2rem] border border-base-content/10 bg-base-content/[0.03] p-8 sm:p-10">
         <div className="flex items-center gap-0.5 text-amber-400" aria-hidden="true">
           {[...Array(5)].map((_, i) => (
             <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
@@ -14,7 +14,7 @@ const Testimonial1 = () => {
         </blockquote>
         <figcaption className="mt-8 flex items-center gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://i.pravatar.cc/120?img=12" alt="Alex Martin" className="h-12 w-12 rounded-full object-cover ring-1 ring-base-300" />
+          <img src="https://i.pravatar.cc/120?img=12" alt="Alex Martin" className="h-12 w-12 rounded-full object-cover ring-1 ring-base-content/10" />
           <div>
             <div className="font-semibold text-base-content">Alex Martin</div>
             <div className="text-sm text-base-content/60">Built 3 profitable SaaS products</div>

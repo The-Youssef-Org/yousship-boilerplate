@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/libs/supabase";
+import ButtonPrimary from "@/components/ButtonPrimary";
 
 const SigninForm = () => {
   const [email, setEmail] = useState("");
@@ -48,11 +49,11 @@ const SigninForm = () => {
 
   return (
     <div className="w-full max-w-md">
-      <button
+      <ButtonPrimary
         type="button"
         onClick={handleGoogle}
         disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-xl border border-base-300 bg-base-100 px-4 py-3 text-sm font-medium text-base-content transition hover:bg-base-200 disabled:opacity-60"
+        className="w-full gap-3 px-4 py-3"
       >
         <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
           <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" />
@@ -61,16 +62,16 @@ const SigninForm = () => {
           <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C40.9 36.6 44 31 44 24c0-1.2-.1-2.4-.4-3.5z" />
         </svg>
         Continue with Google
-      </button>
+      </ButtonPrimary>
 
       <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wider text-base-content/50">
-        <span className="h-px flex-1 bg-base-300" />
+        <span className="h-px flex-1 bg-base-content/10" />
         or
-        <span className="h-px flex-1 bg-base-300" />
+        <span className="h-px flex-1 bg-base-content/10" />
       </div>
 
       {sent ? (
-        <div className="rounded-xl border border-base-300 bg-base-200/60 px-6 py-5 text-center">
+        <div className="rounded-xl border border-base-content/10 bg-base-content/[0.03] px-6 py-5 text-center">
           <p className="text-sm font-semibold text-base-content">Check your inbox</p>
           <p className="mt-1 text-sm text-base-content/60">
             We sent a sign-in link to{" "}
@@ -101,20 +102,20 @@ const SigninForm = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-base-300 bg-base-100 px-4 py-3 text-sm text-base-content placeholder-base-content/40 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="mt-1 w-full rounded-xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3 text-sm text-base-content placeholder-base-content/40 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               placeholder="you@example.com"
             />
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          <button
+          <ButtonPrimary
             type="submit"
             disabled={loading || !email}
-            className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+            className="w-full px-4 py-3"
           >
             {loading ? "Sending..." : "Send magic link"}
-          </button>
+          </ButtonPrimary>
         </form>
       )}
     </div>

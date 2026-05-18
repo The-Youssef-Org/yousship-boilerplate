@@ -5,7 +5,7 @@ import PostMeta from "./PostMeta";
 
 const CardArticle = ({ post }: { post: BlogPost }) => {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl bg-base-100 shadow-xl shadow-black/5 ring-1 ring-base-300 transition hover:-translate-y-0.5">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-content/[0.03] transition hover:-translate-y-0.5">
       {post.cover ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

@@ -25,7 +25,7 @@ const ButtonSignin = ({
 
   if (asLink) {
     return (
-      <ButtonPrimary href={config.auth.loginUrl} className={`px-4 py-2 ${className}`}>
+      <ButtonPrimary href={config.auth.loginUrl} prefetch={false} className={`px-4 py-2 ${className}`}>
         {text}
       </ButtonPrimary>
     );

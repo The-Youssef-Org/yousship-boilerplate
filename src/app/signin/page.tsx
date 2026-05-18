@@ -22,7 +22,7 @@ const SigninPage = () => {
         {config.appName}
       </Link>
 
-      <div className="w-full max-w-md rounded-3xl bg-base-100 p-8 shadow-sm ring-1 ring-base-300">
+      <div className="w-full max-w-md rounded-3xl border border-base-content/10 bg-base-100 p-8">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-base-content">Welcome</h1>
           <p className="mt-1 text-sm text-base-content/70">

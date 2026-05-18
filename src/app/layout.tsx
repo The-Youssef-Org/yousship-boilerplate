@@ -1,4 +1,6 @@
 import { JetBrains_Mono, Nunito_Sans, Plus_Jakarta_Sans } from "next/font/google";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { Toaster } from "react-hot-toast";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
@@ -19,8 +21,21 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const hasSvgFavicon = existsSync(join(process.cwd(), "public", "favicon.svg"));
+
+const selectedIcon = hasSvgFavicon
+  ? { url: "/favicon.svg", type: "image/svg+xml" }
+  : { url: "/favicon.ico", type: "image/x-icon" };
+
 export const metadata = getSEOTags({
   openGraphImageRelativePath: "/og.png",
+  extraTags: {
+    icons: {
+      icon: [selectedIcon],
+      shortcut: selectedIcon.url,
+      apple: selectedIcon.url,
+    },
+  },
 });
 
 export default function RootLayout({

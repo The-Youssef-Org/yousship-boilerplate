@@ -25,7 +25,8 @@ const items = [
 
 const Testimonial3 = () => {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-24">
+    <section className="bg-base-100 px-8 py-24">
+      <div className="mx-auto max-w-7xl">
       <div className="mb-10 max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
           Different founders, same result: they shipped sooner.
@@ -35,7 +36,7 @@ const Testimonial3 = () => {
         {items.map((t) => (
           <figure
             key={t.name}
-            className={`rounded-[1.75rem] border border-base-300 bg-gradient-to-b ${t.tone} p-6 shadow-sm`}
+            className={`rounded-[1.75rem] border border-base-content/10 bg-gradient-to-b ${t.tone} p-6`}
           >
             <div className="mb-5 flex gap-0.5 text-amber-400" aria-hidden="true">
               {[...Array(5)].map((_, i) => (
@@ -45,7 +46,7 @@ const Testimonial3 = () => {
               ))}
             </div>
             <blockquote className="text-base leading-relaxed text-base-content">“{t.quote}”</blockquote>
-            <figcaption className="mt-6 flex items-center gap-3 border-t border-base-300/60 pt-5">
+            <figcaption className="mt-6 flex items-center gap-3 border-t border-base-content/10 pt-5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={t.avatar} alt={t.name} className="h-11 w-11 rounded-2xl object-cover" />
               <div>
@@ -57,6 +58,7 @@ const Testimonial3 = () => {
             </figcaption>
           </figure>
         ))}
+      </div>
       </div>
     </section>
   );

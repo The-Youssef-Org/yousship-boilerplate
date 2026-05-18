@@ -16,10 +16,12 @@ export const LogoMark = ({
     aria-hidden="true"
     {...props}
   >
-    {/* Shadow face — bottom-left of the hexagonal prism */}
-    <path d="M3 11 L16 19 L16 27 L3 19 Z" fill="currentColor" fillOpacity="0.38" />
-    {/* Lit face — top + right of the hexagonal prism */}
-    <path d="M16 3 L29 11 L29 19 L16 27 L16 19 L3 11 Z" fill="currentColor" />
+    {/* New direction: route/compass monomark for guidance + shipping. */}
+    <circle cx="16" cy="16" r="11.5" fill="#2A558F" />
+    <path d="M 10.2 20.8 C 12.8 17.9 15.6 15.7 20.8 11.6" stroke="#9FC0EA" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+    <path d="M 18.6 10.9 L 23.6 9.6 L 22.3 14.6 Z" fill="#EAF2FF" />
+    <circle cx="10.2" cy="20.8" r="1.8" fill="#4A7FCC" />
+    <circle cx="20.8" cy="11.6" r="1.4" fill="#7FA2D9" />
   </svg>
 );
 

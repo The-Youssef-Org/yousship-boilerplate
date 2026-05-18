@@ -5,28 +5,27 @@ const entries = [
     name: "Sara Chen",
     role: "Founder, LaunchKit",
     avatar: "https://i.pravatar.cc/100?img=32",
-    tone: "from-base-200 to-base-100",
+    tone: "from-base-300/20 to-base-200",
   },
   {
     quote: "The product felt lighter immediately. Less setup, more momentum.",
     name: "Tom Wilson",
     role: "Solo founder",
     avatar: "https://i.pravatar.cc/100?img=22",
-    tone: "from-primary/15 to-base-100",
+    tone: "from-primary/25 to-base-200",
   },
   {
     quote: "Our first paid users came faster because the launch page was already there.",
     name: "Priya Shah",
     role: "Indie hacker",
     avatar: "https://i.pravatar.cc/100?img=47",
-    tone: "from-secondary/15 to-base-100",
+    tone: "from-emerald-500/20 to-base-200",
   },
 ];
 
 const TestimonialRollercoaster = () => {
   return (
     <section className="relative overflow-hidden bg-base-100">
-      <div className="absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-base-content/10 to-transparent" />
       <div className="mx-auto max-w-7xl px-8 py-24">
         <div className="mb-10 max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
@@ -60,7 +59,7 @@ const TestimonialRollercoaster = () => {
             {entries.map((entry, index) => (
               <figure
                 key={entry.name}
-                className={`relative overflow-hidden rounded-[2rem] border border-base-300 bg-base-100 p-6 shadow-sm ${
+                className={`relative overflow-hidden rounded-[2rem] border border-base-content/10 bg-base-200/85 p-6 ${
                   index === 1 ? "lg:mt-16" : index === 2 ? "lg:mt-6" : "lg:mt-0"
                 }`}
               >
