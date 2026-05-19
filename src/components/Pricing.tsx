@@ -4,21 +4,50 @@ import { useState } from "react";
 import config from "@/config";
 import ButtonPrimary from "./ButtonPrimary";
 
+type BillingMode = "payment" | "subscription";
+
 const Pricing = () => {
   const starterPlan = config.stripe.plans[0];
   const advancedPlan = config.stripe.plans[1];
   const proPlan = config.stripe.plans[2];
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
-  const handleCheckout = async (priceId: string) => {
+  const getMode = (mode?: BillingMode): BillingMode => mode ?? "payment";
+  const hasSubscriptionPlan = config.stripe.plans.some((plan) => getMode(plan.mode) === "subscription");
+  const heading = hasSubscriptionPlan ? "Flexible pricing for every stage." : "One payment. Full ownership.";
+  const subheading = hasSubscriptionPlan
+    ? "Mix monthly subscriptions and one-time plans based on what your product needs."
+    : "Choose the plan that matches your stage, then ship without rebuilding the same stack over and over.";
+
+  const getPriceSuffix = (mode?: BillingMode) =>
+    getMode(mode) === "subscription" ? "USD / month" : "USD";
+
+  const getBillingFootnote = (mode?: BillingMode) =>
+    getMode(mode) === "subscription" ? "Billed monthly. Cancel anytime." : "Pay once. Lifetime access.";
+
+  const handleCheckout = async (priceId: string, mode?: BillingMode) => {
     setLoadingPriceId(priceId);
     try {
       const res = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, mode: "payment" }),
+        body: JSON.stringify({ priceId, mode: getMode(mode) }),
       });
-      const { url } = (await res.json()) as { url?: string };
+      const bodyText = await res.text();
+      let data: { url?: string; error?: string } = {};
+      if (bodyText) {
+        try {
+          data = JSON.parse(bodyText) as { url?: string; error?: string };
+        } catch {
+          data = { error: "Unexpected response from checkout API." };
+        }
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "Failed to start checkout.");
+      }
+
+      const { url } = data;
       if (url) window.location.href = url;
     } catch (e) {
       console.error(e);
@@ -35,11 +64,10 @@ const Pricing = () => {
             Pricing
           </p>
           <h2 className="text-3xl font-black tracking-tight text-balance text-base-content sm:text-4xl">
-            One payment. Full ownership.
+            {heading}
           </h2>
           <p className="mt-3 text-base-content/50">
-            Choose the plan that matches your stage, then ship without rebuilding
-            the same stack over and over.
+            {subheading}
           </p>
         </div>
 
@@ -64,7 +92,7 @@ const Pricing = () => {
 
               <div className="mt-6 flex items-end gap-2">
                 <span className="text-5xl font-extrabold text-base-content">$99</span>
-                <span className="pb-2 text-sm text-base-content/60">USD</span>
+                <span className="pb-2 text-sm text-base-content/60">{getPriceSuffix(starterPlan?.mode)}</span>
               </div>
 
               <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
@@ -76,13 +104,13 @@ const Pricing = () => {
               </ul>
 
               <ButtonPrimary
-                onClick={() => starterPlan?.priceId && handleCheckout(starterPlan.priceId)}
+                onClick={() => starterPlan?.priceId && handleCheckout(starterPlan.priceId, starterPlan.mode)}
                 disabled={!starterPlan?.priceId || loadingPriceId === starterPlan.priceId}
                 className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === starterPlan?.priceId ? "Redirecting to Stripe..." : "Get Starter"}
               </ButtonPrimary>
-              <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
+              <p className="mt-3 text-center text-xs text-base-content/60">{getBillingFootnote(starterPlan?.mode)}</p>
             </article>
             {/* ========== END PLAN 1 — STARTER ========== */}
 
@@ -110,7 +138,7 @@ const Pricing = () => {
 
               <div className="mt-6 flex items-end gap-2">
                 <span className="text-5xl font-extrabold text-base-content">$149</span>
-                <span className="pb-2 text-sm text-base-content/60">USD</span>
+                <span className="pb-2 text-sm text-base-content/60">{getPriceSuffix(advancedPlan?.mode)}</span>
               </div>
 
               <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
@@ -122,13 +150,13 @@ const Pricing = () => {
               </ul>
 
               <ButtonPrimary
-                onClick={() => advancedPlan?.priceId && handleCheckout(advancedPlan.priceId)}
+                onClick={() => advancedPlan?.priceId && handleCheckout(advancedPlan.priceId, advancedPlan.mode)}
                 disabled={!advancedPlan?.priceId || loadingPriceId === advancedPlan.priceId}
                 className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === advancedPlan?.priceId ? "Redirecting to Stripe..." : "Get Advanced"}
               </ButtonPrimary>
-              <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
+              <p className="mt-3 text-center text-xs text-base-content/60">{getBillingFootnote(advancedPlan?.mode)}</p>
             </article>
             {/* ========== END PLAN 2 — ADVANCED ========== */}
 
@@ -150,7 +178,7 @@ const Pricing = () => {
 
               <div className="mt-6 flex items-end gap-2">
                 <span className="text-5xl font-extrabold text-base-content">$299</span>
-                <span className="pb-2 text-sm text-base-content/60">USD</span>
+                <span className="pb-2 text-sm text-base-content/60">{getPriceSuffix(proPlan?.mode)}</span>
               </div>
 
               <ul className="mt-7 space-y-3 border-t border-base-content/10 pt-6 text-sm text-base-content/80">
@@ -162,13 +190,13 @@ const Pricing = () => {
               </ul>
 
               <ButtonPrimary
-                onClick={() => proPlan?.priceId && handleCheckout(proPlan.priceId)}
+                onClick={() => proPlan?.priceId && handleCheckout(proPlan.priceId, proPlan.mode)}
                 disabled={!proPlan?.priceId || loadingPriceId === proPlan.priceId}
                 className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
               >
                 {loadingPriceId === proPlan?.priceId ? "Redirecting to Stripe..." : "Get Pro"}
               </ButtonPrimary>
-              <p className="mt-3 text-center text-xs text-base-content/60">Pay once. Lifetime access.</p>
+              <p className="mt-3 text-center text-xs text-base-content/60">{getBillingFootnote(proPlan?.mode)}</p>
             </article>
             {/* ========== END PLAN 3 — PRO ========== */}
 

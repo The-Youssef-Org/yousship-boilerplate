@@ -17,8 +17,10 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const DATE_LOCALE = "en-US";
+
 const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, {
+  new Date(iso).toLocaleDateString(DATE_LOCALE, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -61,6 +63,49 @@ const getMembershipLabel = async (priceId: string | null) => {
     return `${planName} (Lifetime)`;
   } catch {
     return `${planName} (Paid)`;
+  }
+};
+
+type SubscriptionStatus = {
+  cancelAtPeriodEnd: boolean;
+  endsAt: number | null;
+};
+
+const getSubscriptionStatus = async (
+  customerId: string | null,
+  priceId: string | null,
+): Promise<SubscriptionStatus | null> => {
+  if (!customerId) return null;
+
+  try {
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "all",
+      limit: 10,
+    });
+
+    // Prefer the profile-linked price when available; otherwise fall back to the
+    // most relevant non-canceled subscription for this customer.
+    const matchingByPrice = priceId
+      ? subscriptions.data.find((sub) =>
+          sub.items.data.some((item) => item.price.id === priceId),
+        )
+      : null;
+
+    const matchingActive = subscriptions.data.find(
+      (sub) => sub.status === "active" || sub.status === "trialing" || sub.cancel_at_period_end,
+    );
+
+    const matching = matchingByPrice ?? matchingActive ?? subscriptions.data[0] ?? null;
+
+    if (!matching) return null;
+
+    return {
+      cancelAtPeriodEnd: matching.cancel_at_period_end,
+      endsAt: matching.cancel_at ?? matching.current_period_end ?? null,
+    };
+  } catch {
+    return null;
   }
 };
 
@@ -113,6 +158,18 @@ export default async function ProfilePage() {
     displayEmail?.[0]?.toUpperCase() ??
     "U";
   const membershipLabel = await getMembershipLabel(safeProfile.price_id);
+  const subscriptionStatus = await getSubscriptionStatus(
+    safeProfile.customer_id,
+    safeProfile.price_id,
+  );
+  const membershipEndingDate =
+    subscriptionStatus?.cancelAtPeriodEnd && subscriptionStatus.endsAt
+      ? new Date(subscriptionStatus.endsAt * 1000).toLocaleDateString(DATE_LOCALE, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : null;
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -133,9 +190,9 @@ export default async function ProfilePage() {
         {/* Page heading */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-base-content">Your profile</h1>
+            <h1 className="text-3xl font-bold text-base-content">Dashboard</h1>
             <p className="mt-1 text-base-content/70">
-              Manage your name, avatar, and plan settings.
+              Manage your membership, billing, and account settings.
             </p>
           </div>
           <Link
@@ -175,10 +232,17 @@ export default async function ProfilePage() {
 
             <div className="ml-auto">
               {safeProfile.has_access ? (
+                subscriptionStatus?.cancelAtPeriodEnd ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    Active until {membershipEndingDate ?? "period end"}
+                  </span>
+                ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Active membership
                 </span>
+                )
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-base-200 px-3 py-1 text-xs font-semibold text-base-content/70">
                   <span className="h-1.5 w-1.5 rounded-full bg-base-content/40" />
@@ -187,6 +251,13 @@ export default async function ProfilePage() {
               )}
             </div>
           </div>
+
+          {safeProfile.has_access && subscriptionStatus?.cancelAtPeriodEnd && (
+            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              Your subscription is canceled and will remain active until
+              {membershipEndingDate ? ` ${membershipEndingDate}` : " the end of the current billing period"}.
+            </div>
+          )}
         </section>
 
         {/* Edit form */}

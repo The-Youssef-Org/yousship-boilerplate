@@ -15,6 +15,7 @@ const ButtonAccount = ({ user }: { user?: AccountUser }) => {
   const [open, setOpen] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,8 +26,18 @@ const ButtonAccount = ({ user }: { user?: AccountUser }) => {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  useEffect(() => {
+    setAvatarLoadFailed(false);
+  }, [user?.avatarUrl]);
+
   const initial =
     user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? "U";
+  const normalizedAvatarUrl = user?.avatarUrl?.trim() ?? "";
+  const hasAvatarUrl =
+    normalizedAvatarUrl.length > 0 &&
+    /^https?:\/\//i.test(normalizedAvatarUrl) &&
+    normalizedAvatarUrl.toLowerCase() !== "null";
+  const showAvatar = hasAvatarUrl && !avatarLoadFailed;
 
   const handleSignOut = async () => {
     if (signingOut) return;
@@ -59,12 +70,13 @@ const ButtonAccount = ({ user }: { user?: AccountUser }) => {
         onClick={() => setOpen((v) => !v)}
         className="flex cursor-pointer items-center gap-2 rounded-xl border border-base-300 bg-base-100 px-2 py-1 pr-3 text-sm font-medium text-base-content hover:bg-base-200"
       >
-        {user?.avatarUrl ? (
+        {showAvatar ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={user.avatarUrl}
+            src={normalizedAvatarUrl}
             alt={user?.name ?? "Avatar"}
             className="h-7 w-7 rounded-full object-cover"
+            onError={() => setAvatarLoadFailed(true)}
           />
         ) : (
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-white">

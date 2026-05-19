@@ -14,8 +14,13 @@ const ButtonBillingPortal = ({ className = "" }: Props) => {
     setLoading(true);
 
     try {
+      const returnPath = `${window.location.pathname}${window.location.search}`;
       const response = await fetch("/api/stripe/create-portal", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ returnPath }),
       });
 
       const payload = (await response.json().catch(() => ({}))) as {

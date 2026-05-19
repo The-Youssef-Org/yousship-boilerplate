@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/libs/supabase";
 import ButtonPrimary from "@/components/ButtonPrimary";
+import config from "@/config";
 
 const SigninForm = () => {
   const [email, setEmail] = useState("");
@@ -11,9 +12,9 @@ const SigninForm = () => {
   const [sent, setSent] = useState(false);
 
   const supabase = createClient();
-  const callbackUrl =
+  const callbackBaseUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/api/auth/callback`
+      ? `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(config.auth.callbackUrl)}`
       : "";
 
   const handleGoogle = async () => {
@@ -21,7 +22,7 @@ const SigninForm = () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: callbackUrl },
+      options: { redirectTo: callbackBaseUrl },
     });
     if (error) {
       setError(error.message);
@@ -36,12 +37,16 @@ const SigninForm = () => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: callbackUrl },
+        options: {
+          emailRedirectTo: callbackBaseUrl,
+          shouldCreateUser: true,
+        },
       });
       if (error) throw error;
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      const message = err instanceof Error ? err.message : "Something went wrong.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -74,7 +79,7 @@ const SigninForm = () => {
         <div className="rounded-xl border border-base-content/10 bg-base-content/[0.03] px-6 py-5 text-center">
           <p className="text-sm font-semibold text-base-content">Check your inbox</p>
           <p className="mt-1 text-sm text-base-content/60">
-            We sent a sign-in link to{" "}
+            We sent a magic sign-in link to{" "}
             <span className="font-medium text-base-content">{email}</span>.
           </p>
           <button

@@ -4,6 +4,7 @@
 export type PricingPlan = {
   name: string;
   priceId: string;
+  mode?: "payment" | "subscription";
 };
 
 const config = {
@@ -28,6 +29,24 @@ const config = {
   theme: "dark",
 
   // ---------------------------------------------------------------------------
+  // HERO
+  // ---------------------------------------------------------------------------
+  hero: {
+    // Set false if you want to remove the "Everything pre-wired" stack cards.
+    showBottomStack: false,
+    // Main showcase panel below CTA: image is optional and can be your SaaS screenshot.
+    showcase: {
+      kicker: "Product Preview",
+      title: "",
+      description: "",
+      // Example: "/features/your-product-shot.png". Leave empty string to show built-in placeholder mockup.
+      imageSrc: "",
+      imageAlt: "Product screenshot preview",
+      badges: ["Stripe", "Next.js", "Supabase", "Resend", "Tailwind"],
+    },
+  },
+
+  // ---------------------------------------------------------------------------
   // STRIPE
   // ---------------------------------------------------------------------------
   stripe: {
@@ -37,14 +56,17 @@ const config = {
       {
         name: "Starter",
         priceId: "price_1TX39Y0fD9L39mCqR6S3ELWH",
+        mode: "payment", // "payment" or "subscription"
       },
       {
         name: "Advanced",
         priceId: "price_1TXkPR0fD9L39mCqTM1Yttit",
+        mode: "subscription", // "payment" or "subscription"
       },
       {
         name: "Pro",
         priceId: "price_1TXkQC0fD9L39mCqRty3eEMI",
+        mode: "payment", // "payment" or "subscription"
       },
     ] as PricingPlan[],
   },
@@ -53,12 +75,16 @@ const config = {
   // AUTH
   // ---------------------------------------------------------------------------
   auth: {
+    // Set false for pure storefront deployments that should hide auth UI in header.
+    showInHeader: true,
     // Where unauthenticated users get sent.
     loginUrl: "/signin",
     // Where authenticated users land after login / from "Get Started" buttons.
-    callbackUrl: "/",
+    callbackUrl: "/dashboard",
     // The main private area. Used in emails and Stripe success URLs.
     dashboardUrl: "/dashboard",
+    // Where guest checkout returns after a successful payment.
+    purchaseSuccessUrl: "/purchase-successful",
   },
 
   // ---------------------------------------------------------------------------

@@ -66,6 +66,7 @@ const HeaderClient = ({
         avatarUrl:
           profile?.image ??
           (user.user_metadata?.avatar_url as string | undefined) ??
+          (user.user_metadata?.picture as string | undefined) ??
           null,
       }
     : undefined;
@@ -108,7 +109,7 @@ const HeaderClient = ({
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
+          {config.auth.showInHeader && (user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />)}
         </div>
       </nav>
 
@@ -125,9 +126,9 @@ const HeaderClient = ({
                 {l.label}
               </Link>
             ))}
-            <div className="pt-2">
+            {config.auth.showInHeader && <div className="pt-2">
               {user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
-            </div>
+            </div>}
           </div>
         </div>
       )}

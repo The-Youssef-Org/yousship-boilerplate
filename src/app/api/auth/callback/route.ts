@@ -60,7 +60,9 @@ const syncProfileFromAuthMetadata = async (
       .join(" ") || undefined);
 
   const candidateImage =
-    (user.user_metadata?.avatar_url as string | undefined) ?? undefined;
+    (user.user_metadata?.avatar_url as string | undefined) ??
+    (user.user_metadata?.picture as string | undefined) ??
+    undefined;
 
   const updates: Partial<Pick<Profile, "name" | "image" | "email">> = {};
   if (!profile?.name && candidateName) updates.name = candidateName;

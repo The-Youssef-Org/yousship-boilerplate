@@ -16,12 +16,15 @@ export const LogoMark = ({
     aria-hidden="true"
     {...props}
   >
-    {/* New direction: route/compass monomark for guidance + shipping. */}
-    <circle cx="16" cy="16" r="11.5" fill="#2A558F" />
-    <path d="M 10.2 20.8 C 12.8 17.9 15.6 15.7 20.8 11.6" stroke="#9FC0EA" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-    <path d="M 18.6 10.9 L 23.6 9.6 L 22.3 14.6 Z" fill="#EAF2FF" />
-    <circle cx="10.2" cy="20.8" r="1.8" fill="#4A7FCC" />
-    <circle cx="20.8" cy="11.6" r="1.4" fill="#7FA2D9" />
+    {/* Regular tech stack icon: three separate non-overlapping isometric layers. */}
+    <path d="M 16 20 L 26 24 L 16 28 L 6 24 Z" fill="#4A93C8" />
+    <path d="M 26 24 L 26 25.6 L 16 29.6 L 16 28 Z" fill="#2F73A8" />
+
+    <path d="M 16 12.5 L 26 16.5 L 16 20.5 L 6 16.5 Z" fill="#9ED1F5" />
+    <path d="M 26 16.5 L 26 18.1 L 16 22.1 L 16 20.5 Z" fill="#6FAFDF" />
+
+    <path d="M 16 5 L 26 9 L 16 13 L 6 9 Z" fill="#DDF2FF" />
+    <path d="M 26 9 L 26 10.6 L 16 14.6 L 16 13 Z" fill="#B9DEF8" />
   </svg>
 );
 

@@ -26,6 +26,10 @@ export const sendEmail = async ({
   const fallbackText = text ?? html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   if (!apiKey) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("RESEND_API_KEY is missing in production");
+    }
+
     console.warn("[email] RESEND_API_KEY is missing. Email not sent.", {
       to,
       subject,
@@ -35,6 +39,12 @@ export const sendEmail = async ({
       text: fallbackText,
     });
     return { id: "dev-noop" };
+  }
+
+  if (process.env.NODE_ENV === "production" && sender.includes("onboarding@resend.dev")) {
+    throw new Error(
+      "config.mail.fromAdmin uses onboarding@resend.dev in production. Use a verified sender domain.",
+    );
   }
 
   const response = await fetch(RESEND_API_URL, {

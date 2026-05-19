@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 
 type QA = { q: string; a: ReactNode };
 
+// Add or edit FAQ entries here. Each item needs a `q` (question) and `a` (answer).
 const defaults: QA[] = [
   {
     q: "What is included when I buy this?",

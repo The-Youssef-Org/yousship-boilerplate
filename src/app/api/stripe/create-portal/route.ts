@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import stripe from "@/libs/stripe";
 import { createClient } from "@/libs/supabase/server";
+import config from "@/config";
 import type { Profile } from "@/libs/types";
 
 export async function POST(req: NextRequest) {
   const origin = new URL(req.url).origin;
+  const body = (await req.json().catch(() => ({}))) as { returnPath?: string };
+  const requestedReturnPath = typeof body.returnPath === "string" ? body.returnPath : "";
+  const isSafeReturnPath =
+    requestedReturnPath.startsWith("/") && !requestedReturnPath.startsWith("//");
+  const returnPath = isSafeReturnPath ? requestedReturnPath : config.auth.dashboardUrl;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -48,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
-    return_url: `${origin}/dashboard`,
+    return_url: `${origin}${returnPath}`,
   });
 
   return NextResponse.json({ url: session.url });

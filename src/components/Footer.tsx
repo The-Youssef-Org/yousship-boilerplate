@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl px-8 py-16">
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <Logo size={28} className="text-lg font-semibold" />
+            <Logo size={32} className="-m-1.5 p-1.5 text-lg font-semibold" />
             <p className="mt-3 max-w-sm text-sm text-base-content/70">
               {config.appDescription}
             </p>

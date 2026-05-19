@@ -24,9 +24,14 @@ const SigninPage = () => {
 
       <div className="w-full max-w-md rounded-3xl border border-base-content/10 bg-base-100 p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-base-content">Welcome</h1>
+          <h1 className="text-2xl font-bold text-base-content">Sign in</h1>
           <p className="mt-1 text-sm text-base-content/70">
-            Sign in with Google or a magic link.</p>
+            Continue with Google OAuth or a secure magic link.
+          </p>
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-base-content/10 bg-base-content/[0.03] px-3 py-1.5 text-xs font-medium text-base-content/60">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
+            No account yet? We&apos;ll create one automatically.
+          </p>
         </div>
 
         <Suspense fallback={<div className="h-72 animate-pulse rounded-xl bg-base-200" />}>
