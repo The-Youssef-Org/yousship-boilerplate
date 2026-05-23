@@ -12,7 +12,8 @@ const SigninForm = () => {
   const [sent, setSent] = useState(false);
 
   const supabase = createClient();
-  const callbackBaseUrl =
+  // Google OAuth uses the server-side PKCE callback (code exchange).
+  const oauthCallbackUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(config.auth.callbackUrl)}`
       : "";
@@ -22,7 +23,7 @@ const SigninForm = () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: callbackBaseUrl },
+      options: { redirectTo: oauthCallbackUrl },
     });
     if (error) {
       setError(error.message);
@@ -35,14 +36,12 @@ const SigninForm = () => {
     setError(null);
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: callbackBaseUrl,
-          shouldCreateUser: true,
-        },
+      const res = await fetch("/api/auth/magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, next: config.auth.callbackUrl }),
       });
-      if (error) throw error;
+      if (!res.ok) throw new Error("Something went wrong.");
       setSent(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong.";

@@ -38,9 +38,29 @@ const ButtonLead = ({
 
   if (done) {
     return (
-      <p className="rounded-full bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200">
-        Thanks! We&apos;ll be in touch.
-      </p>
+      <div className="flex items-start gap-3">
+        <svg
+          className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <circle cx="10" cy="10" r="9" strokeOpacity={0.2} />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6.5 10.5l2.5 2.5 4.5-5"
+          />
+        </svg>
+        <div>
+          <p className="text-sm font-semibold text-base-content">You&apos;re in!</p>
+          <p className="mt-0.5 text-sm text-base-content/60">
+            Check your inbox — we&apos;ll be in touch shortly.
+          </p>
+        </div>
+      </div>
     );
   }
 

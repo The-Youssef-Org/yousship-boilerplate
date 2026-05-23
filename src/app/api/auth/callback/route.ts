@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/libs/supabase/server";
 import config from "@/config";
 import { sendEmail } from "@/libs/resend";
-import { welcomeEmail } from "@/libs/emailTemplates";
+import { welcomeEmail } from "@/emails/WelcomeEmail";
 import type { Profile } from "@/libs/types";
 
 const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
@@ -30,7 +30,7 @@ const sendWelcomeIfFirstOAuthSignIn = async (supabase: Awaited<ReturnType<typeof
   await sendEmail({
     to: user.email,
     subject: `Welcome to ${config.appName}!`,
-    html: welcomeEmail({ name: firstName }),
+    html: await welcomeEmail({ name: firstName }),
   });
 };
 
@@ -69,9 +69,11 @@ const syncProfileFromAuthMetadata = async (
   if (!profile?.image && candidateImage) updates.image = candidateImage;
   if (!profile?.email && user.email) updates.email = user.email;
 
-  if (Object.keys(updates).length > 0) {
-    await supabase.from("profiles").update(updates).eq("id", user.id);
-  }
+  // Upsert so new users get a profile row even without a database trigger.
+  await supabase.from("profiles").upsert(
+    { id: user.id, ...updates },
+    { onConflict: "id", ignoreDuplicates: Object.keys(updates).length === 0 },
+  );
 };
 
 // OAuth / magic-link callback. Supabase redirects here with `?code=...`.

@@ -3,6 +3,10 @@ import config from "@/config";
 import Logo from "./Logo";
 
 const Footer = () => {
+  const socialLinks = (config.social?.links ?? []).filter(
+    (item) => item.url && item.url.trim().length > 0,
+  );
+
   return (
     <footer className="border-t border-base-300 bg-base-100">
       <div className="mx-auto max-w-7xl px-8 py-16">
@@ -57,34 +61,18 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold text-base-content">Connect</h4>
             <ul className="mt-3 space-y-2 text-sm text-base-content/70">
-              <li>
-                <a
-                  href={config.social.twitter}
-                  className="hover:text-base-content"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a
-                  href={config.social.github}
-                  className="hover:text-base-content"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${config.mail.supportEmail}`}
-                  className="hover:text-base-content"
-                >
-                  Email
-                </a>
-              </li>
+              {socialLinks.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.url}
+                    className="hover:text-base-content"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

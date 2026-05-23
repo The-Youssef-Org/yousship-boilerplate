@@ -7,8 +7,10 @@ import Logo from "@/components/Logo";
 import stripe from "@/libs/stripe";
 import ButtonAccount from "@/components/ButtonAccount";
 import ButtonBillingPortal from "@/components/ButtonBillingPortal";
+import ThemeToggle from "@/components/ThemeToggle";
 import ProfileForm from "./ProfileForm";
 import DeleteAccount from "./DeleteAccount";
+import Breadcrumb from "@/components/Breadcrumb";
 import type { Profile } from "@/libs/types";
 
 export const metadata: Metadata = {
@@ -69,6 +71,10 @@ const getMembershipLabel = async (priceId: string | null) => {
 type SubscriptionStatus = {
   cancelAtPeriodEnd: boolean;
   endsAt: number | null;
+  // True when Stripe confirms the subscription is currently active or trialing.
+  // Derived from live Stripe data so it reflects manual cancellations immediately,
+  // without waiting for a webhook to update the database.
+  liveHasAccess: boolean;
 };
 
 const getSubscriptionStatus = async (
@@ -102,7 +108,8 @@ const getSubscriptionStatus = async (
 
     return {
       cancelAtPeriodEnd: matching.cancel_at_period_end,
-      endsAt: matching.cancel_at ?? matching.current_period_end ?? null,
+      endsAt: matching.cancel_at ?? matching.items.data[0]?.current_period_end ?? null,
+      liveHasAccess: matching.status === "active" || matching.status === "trialing",
     };
   } catch {
     return null;
@@ -171,22 +178,38 @@ export default async function ProfilePage() {
         })
       : null;
 
+  // For subscriptions: use live Stripe status (catches manual cancellations immediately).
+  // For one-time payments: no subscription exists, so fall back to the database flag.
+  const effectiveHasAccess =
+    subscriptionStatus !== null
+      ? subscriptionStatus.liveHasAccess
+      : safeProfile.has_access;
+
   return (
     <div className="min-h-screen bg-base-200">
       <header className="border-b border-base-300 bg-base-100">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Logo size={28} />
-          <ButtonAccount
-            user={{
-              email: displayEmail,
-              name: displayName,
-              avatarUrl: displayImage,
-            }}
-          />
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+          <Logo size={32} className="-m-1.5 p-1.5 text-lg font-semibold" />
+          <div className="flex items-center gap-5">
+            {config.enableThemeToggle && <ThemeToggle />}
+            <ButtonAccount
+              user={{
+                email: displayEmail,
+                name: displayName,
+                avatarUrl: displayImage,
+              }}
+            />
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-12">
+        <div className="mb-6">
+          {config.breadcrumbs.enabled && <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Dashboard" },
+          ]} />}
+        </div>
         {/* Page heading */}
         <div className="flex items-center justify-between">
           <div>
@@ -231,7 +254,7 @@ export default async function ProfilePage() {
             </div>
 
             <div className="ml-auto">
-              {safeProfile.has_access ? (
+              {effectiveHasAccess ? (
                 subscriptionStatus?.cancelAtPeriodEnd ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-700">
                     <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
@@ -252,7 +275,7 @@ export default async function ProfilePage() {
             </div>
           </div>
 
-          {safeProfile.has_access && subscriptionStatus?.cancelAtPeriodEnd && (
+          {effectiveHasAccess && subscriptionStatus?.cancelAtPeriodEnd && (
             <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               Your subscription is canceled and will remain active until
               {membershipEndingDate ? ` ${membershipEndingDate}` : " the end of the current billing period"}.

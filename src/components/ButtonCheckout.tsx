@@ -9,11 +9,13 @@ const ButtonCheckout = ({
   priceId,
   mode = "payment",
   label = "Buy now",
+  fullWidth = true,
   className = "",
 }: {
   priceId: string;
   mode?: "payment" | "subscription";
   label?: string;
+  fullWidth?: boolean;
   className?: string;
 }) => {
   const [loading, setLoading] = useState(false);
@@ -31,10 +33,16 @@ const ButtonCheckout = ({
           cancelUrl: window.location.href,
         }),
       });
-      const { url } = (await res.json()) as { url?: string };
-      if (url) window.location.href = url;
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("[checkout] No URL returned:", data.error);
+        alert(data.error ?? "Something went wrong. Please try again.");
+      }
     } catch (e) {
       console.error(e);
+      alert("Could not reach the server. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -44,7 +52,7 @@ const ButtonCheckout = ({
     <ButtonPrimary
       onClick={handleClick}
       disabled={loading}
-      className={`group relative w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed ${className}`}
+      className={`group relative ${fullWidth ? "w-full" : "w-auto"} cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed ${className}`}
     >
       {loading ? "Redirecting to Stripe…" : label}
     </ButtonPrimary>

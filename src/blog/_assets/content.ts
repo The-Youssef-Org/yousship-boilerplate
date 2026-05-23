@@ -28,94 +28,96 @@ export type BlogArticle = {
 export const articles: BlogArticle[] = [
   {
     slug: "how-to-launch-a-saas-in-a-weekend",
-    title: "How to launch a SaaS in a weekend",
+    title: "SaaS Boilerplate: How to Launch a Product in a Weekend",
     description:
-      "A step-by-step playbook from idea to first paying customer in 48 hours.",
+      "A practical launch playbook using a SaaS boilerplate to go from idea to first payment in 48 hours.",
     date: "2025-12-01",
-    cover: "/blog/launch-weekend.svg",
+    cover: "/blog/launch-weekend.png",
     author: { name: "Youssef Benarab", role: "Founder" },
-    tags: ["launch"],
-    content: `<p>Shipping a SaaS in a weekend sounds insane — until you strip the project down to the three things that actually matter: a sharp problem statement, a single happy path, and a payment link.</p>
+    tags: ["launch", "saas boilerplate", "nextjs boilerplate"],
+    content: `<p>If you want to ship fast, a <strong>SaaS boilerplate</strong> is often the highest-leverage decision you can make. Instead of spending your first week wiring auth, billing, email, and SEO, you can focus on your offer and customer problem.</p>
 
-<p>This post walks through the exact 48-hour schedule we use to go from a Notion doc on Friday night to a real Stripe charge on Sunday evening.</p>
+<p>This guide shows a realistic 48-hour plan to launch with a <strong>Next.js boilerplate</strong> and reach your first payment quickly.</p>
 
-<h2>Friday night: scope ruthlessly</h2>
-<p>Write one sentence that finishes: <em>"A tool that lets [person] do [thing] without [pain]."</em> If you can't write it, you're not ready to build. Sleep on it.</p>
+<h2>Friday evening: define one painful problem</h2>
+<p>Write one sentence that finishes: <em>"This product helps [specific user] do [specific outcome] without [specific pain]."</em> Keep it narrow. Broad ideas kill launch speed.</p>
 
-<h2>Saturday: the single happy path</h2>
-<p>Build only the journey from sign-up → core action → success state. Cut everything else. No settings page, no onboarding flow, no admin panel.</p>
+<h2>Saturday morning: ship one complete flow</h2>
+<p>Build only one path: landing page → sign-in → core action → checkout. Skip dashboards, settings, and edge-case polish until after launch feedback.</p>
 <ul>
-  <li>Pick a stack you already know — this is not the weekend to learn something new</li>
-  <li>Hard-code the first version — real users will tell you what to parameterize</li>
-  <li>Add Stripe Checkout before you go to sleep — <strong>this is the most important step</strong></li>
+  <li>Use your boilerplate's auth exactly as provided</li>
+  <li>Connect one Stripe price and test checkout end-to-end</li>
+  <li>Send one transactional email for confidence and trust</li>
 </ul>
 
-<h2>Sunday: launch and charge</h2>
-<p>Post to the communities where your users already hang out. Frame the launch as a story, not a feature list. People share stories.</p>
+<h2>Saturday afternoon: publish conversion-first copy</h2>
+<p>Your homepage should answer: who this is for, what result they get, and why this is faster than alternatives. Keep design clean, but prioritize clarity over decoration.</p>
 
-<p>By the end of Sunday you should have at least one Stripe payment notification in your inbox. If you don't, you've learned something invaluable about the problem or the audience — and it only cost you a weekend.</p>`,
+<h2>Sunday: launch where your users already are</h2>
+<p>Post your product where your target audience lives. Share a clear before/after outcome, one screenshot, and a direct CTA. You are not trying to go viral; you are trying to get qualified clicks.</p>
+
+<h2>Why this works</h2>
+<p>A good SaaS boilerplate removes implementation drag from non-differentiating work. You still need distribution, positioning, and proof, but your first launch loop gets dramatically shorter.</p>
+
+<p>If your goal is speed-to-revenue, this is usually the fastest path: <strong>validate first, expand second</strong>.</p>`,
   },
   {
     slug: "stripe-checkout-in-nextjs",
-    title: "Stripe Checkout in Next.js, the right way",
+    title: "Next.js Boilerplate + Stripe: Production-Ready Payments Guide",
     description:
-      "Webhooks, idempotency, customer portal — everything you need.",
+      "How to implement Stripe Checkout in a Next.js boilerplate with webhooks, portal access, and secure provisioning.",
     date: "2025-11-12",
-    cover: "/blog/stripe-nextjs.svg",
+    cover: "/blog/stripe-nextjs.png",
     author: { name: "Youssef Benarab", role: "Founder" },
-    tags: ["payments"],
-    content: `<p>Stripe Checkout is the fastest way to start collecting money, but most tutorials stop after showing you how to create a session. Here's everything they skip.</p>
+    tags: ["payments", "nextjs boilerplate", "stripe"],
+    content: `<p>Most teams searching for a <strong>Next.js boilerplate</strong> care about one thing: shipping revenue quickly and safely. Payments are where fast projects often break in production. This guide covers the minimum robust setup.</p>
 
-<h2>1. Create the Checkout Session</h2>
-<p>Call Stripe server-side from a Route Handler. Never expose your secret key to the client.</p>
-<pre><code>const session = await stripe.checkout.sessions.create({
-  mode: "payment",
-  line_items: [{ price: priceId, quantity: 1 }],
-  success_url: \`\${process.env.NEXT_PUBLIC_SITE_URL}/dashboard\`,
-  cancel_url: \`\${process.env.NEXT_PUBLIC_SITE_URL}/#pricing\`,
-  customer_creation: "always",
-  metadata: { userId },
-});</code></pre>
+<h2>1. Keep checkout creation server-side</h2>
+<p>Create Stripe Checkout sessions in your backend route handler only. Never trust a client-defined amount or product payload.</p>
 
-<h2>2. Verify webhooks — always</h2>
-<p>Your webhook endpoint must verify the <code>stripe-signature</code> header. Without this, anyone can fake a successful payment.</p>
-<pre><code>const event = stripe.webhooks.constructEvent(
-  body,
-  sig,
-  process.env.STRIPE_WEBHOOK_SECRET
-);</code></pre>
+<h2>2. Map plans to Stripe Price IDs</h2>
+<p>Store display copy in config, but use Stripe Price IDs as billing truth. This gives you flexible pricing pages while keeping charge amounts authoritative.</p>
 
-<h2>3. Handle <code>checkout.session.completed</code></h2>
-<p>When the event fires, grant access in your database. This is the only place you should unlock features — not on redirect from the success URL.</p>
+<h2>3. Verify webhook signatures</h2>
+<p>Always verify the <code>stripe-signature</code> header before processing events. Signature verification is non-negotiable for production security.</p>
 
-<h2>4. Customer portal for self-serve billing</h2>
-<p>Create a Billing Portal session so users can upgrade, downgrade, or cancel without contacting you. One endpoint, zero support tickets.</p>`,
+<h2>4. Provision access on webhook events</h2>
+<p>Grant product access on <code>checkout.session.completed</code> (and subscription lifecycle events), not on the client redirect. Redirects can be interrupted; webhooks are the reliable source.</p>
+
+<h2>5. Reuse customer records</h2>
+<p>Attach checkout to an existing Stripe customer when available. This prevents duplicate customer records and improves billing management.</p>
+
+<h2>6. Offer self-serve billing portal</h2>
+<p>Use Stripe Customer Portal so users can update payment methods, cancel, or switch plans without manual support overhead.</p>
+
+<p>If your goal is a production-ready stack, this is where a strong SaaS boilerplate helps most: fewer billing bugs, faster launch, and cleaner upgrade paths.</p>`,
   },
   {
     slug: "supabase-auth-cheatsheet",
-    title: "The Supabase auth cheatsheet",
+    title: "Best Next.js Boilerplate Stack: Supabase Auth Implementation Guide",
     description:
-      "Magic links, OAuth, server sessions and protected routes in one page.",
+      "A practical Supabase auth guide for modern SaaS apps: OAuth, magic links, server sessions, and route protection.",
     date: "2025-10-20",
-    cover: "/blog/supabase-auth.svg",
+    cover: "/blog/supabase-auth.png",
     author: { name: "Youssef Benarab", role: "Founder" },
-    tags: ["auth", "supabase"],
-    content: `<p>Supabase auth gives you magic links, OAuth, and password flows out of the box. Here's the implementation detail that trips people up every time.</p>
+    tags: ["auth", "supabase", "saas boilerplate", "nextjs boilerplate"],
+    content: `<p>When people evaluate the <strong>best Next.js boilerplate</strong>, auth quality is usually the deciding factor. A polished sign-in flow improves trust, conversion, and retention from day one.</p>
 
-<h2>Browser vs server clients</h2>
-<p>Use <code>createBrowserClient</code> in Client Components and <code>createServerClient</code> in Server Components, Route Handlers, and Server Actions. Never use the browser client on the server — it won't have the user's session.</p>
+<h2>Use the right client in the right place</h2>
+<p>Use the browser client in client components and the server client in route handlers, server actions, and server components. Mixing these causes subtle session bugs.</p>
 
-<h2>Cookie/session refresh</h2>
-<p>Supabase uses short-lived JWTs. The middleware must refresh them on every request, otherwise server components will see a stale (or missing) session even though the user is logged in.</p>
+<h2>Refresh sessions consistently</h2>
+<p>Supabase tokens rotate. Middleware should keep sessions fresh so protected pages stay reliable for authenticated users.</p>
 
-<h2>Route protection</h2>
-<p>Protect entire route groups with a layout — not individual pages. One <code>layout.tsx</code> that calls <code>supabase.auth.getUser()</code> and redirects if there's no session is enough.</p>
+<h2>Protect at the layout level</h2>
+<p>Guard entire private route groups in a layout instead of repeating checks in every page. This improves maintainability and avoids access gaps.</p>
 
-<blockquote>
-  <strong>Always use <code>getUser()</code>, not <code>getSession()</code></strong> — <code>getUser()</code> re-validates the token with Supabase on every call. <code>getSession()</code> reads from the cookie only and can be spoofed.
-</blockquote>
+<h2>Prefer getUser for trusted checks</h2>
+<p><code>getUser()</code> validates token state with Supabase; <code>getSession()</code> is not sufficient for security-sensitive access decisions.</p>
 
-<h2>Redirect URL gotcha</h2>
-<p>Add your <code>callbackUrl</code> (e.g. <code>https://yourapp.com/api/auth/callback</code>) to the <em>Redirect URLs</em> allowlist in the Supabase dashboard. Without this, OAuth and magic link flows will fail in production with a cryptic error.</p>`,
+<h2>Configure redirect URLs early</h2>
+<p>Add every auth callback URL in your Supabase project settings before launch. Most OAuth and magic-link production issues come from missing allowlist entries.</p>
+
+<p>For SaaS teams, auth is not just a technical checkbox. It is part of your conversion funnel. A solid boilerplate implementation helps you ship faster without compromising security.</p>`,
   },
 ];

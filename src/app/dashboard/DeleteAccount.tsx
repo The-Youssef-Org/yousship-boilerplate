@@ -37,7 +37,7 @@ const DeleteAccount = ({ email }: { email: string }) => {
           Delete your account
         </h3>
         <p className="mt-1 text-sm text-base-content/70">
-          This removes your profile and signs you out for good. You can
+          This removes your account and signs you out for good. You can
           always create a new account later.
         </p>
         {!open && (

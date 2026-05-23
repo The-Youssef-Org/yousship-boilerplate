@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import config from "@/config";
 import { createClient } from "@/libs/supabase";
+import AnnouncementBar from "./AnnouncementBar";
 import ButtonSignin from "./ButtonSignin";
 import ButtonAccount from "./ButtonAccount";
+import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
 import type { Profile } from "@/libs/types";
 
@@ -72,7 +74,13 @@ const HeaderClient = ({
     : undefined;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-base-300/70 bg-base-100/80 backdrop-blur">
+    <>
+      <AnnouncementBar />
+      <header
+        className={`sticky z-40 border-b border-base-300/70 bg-base-100/80 backdrop-blur ${
+          config.announcementBar.show ? "top-9" : "top-0"
+        }`}
+      >
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8"
@@ -108,7 +116,8 @@ const HeaderClient = ({
           ))}
         </div>
 
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-5">
+          {config.enableThemeToggle && <ThemeToggle />}
           {config.auth.showInHeader && (user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />)}
         </div>
       </nav>
@@ -126,13 +135,15 @@ const HeaderClient = ({
                 {l.label}
               </Link>
             ))}
+            {config.enableThemeToggle && <div className="pt-2"><ThemeToggle /></div>}
             {config.auth.showInHeader && <div className="pt-2">
               {user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
             </div>}
           </div>
         </div>
       )}
-    </header>
+      </header>
+    </>
   );
 };
 

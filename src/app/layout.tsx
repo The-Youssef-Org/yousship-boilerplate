@@ -47,8 +47,21 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme={config.theme}
+      suppressHydrationWarning
       className={`${plusJakartaSans.variable} ${nunitoSans.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
+      {config.enableThemeToggle && (
+        // This script is in <head> so it is synchronously render-blocking.
+        // The browser will NOT paint any content until this runs, which means
+        // data-theme is always correct on first paint — zero flash, zero animation.
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+            }}
+          />
+        </head>
+      )}
       <body className="min-h-full flex flex-col">
         <Toaster />
         {children}

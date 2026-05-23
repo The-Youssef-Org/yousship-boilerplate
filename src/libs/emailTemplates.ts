@@ -1,8 +1,98 @@
+﻿import { createElement } from "react";
+import { render } from "react-email";
 import config from "@/config";
+import { WelcomeEmail } from "@/emails/WelcomeEmail";
+import { OrderConfirmationEmail } from "@/emails/OrderConfirmationEmail";
+import { SubscriptionCancelledEmail } from "@/emails/SubscriptionCancelledEmail";
+import { SubscriptionCancellationScheduledEmail } from "@/emails/SubscriptionCancellationScheduledEmail";
+import { LeadMagnetEmail } from "@/emails/LeadMagnetEmail";
 
 // ---------------------------------------------------------------------------
-// Shared branded wrapper
-// All emails share the same header/footer. Only the body changes.
+// React Email wrappers
+// Each function renders its React Email component to an HTML string.
+// To preview emails run: npm run email:dev
+// ---------------------------------------------------------------------------
+
+export const welcomeEmail = ({ name }: { name: string }): Promise<string> =>
+  render(createElement(WelcomeEmail, { name }));
+
+export const orderConfirmationEmail = ({
+  customerName,
+  productName,
+  amountTotal,
+  accessUrl,
+}: {
+  customerName: string;
+  productName: string;
+  amountTotal?: string;
+  accessUrl?: string;
+}): Promise<string> =>
+  render(
+    createElement(OrderConfirmationEmail, {
+      customerName,
+      productName,
+      amountTotal,
+      accessUrl,
+    }),
+  );
+
+export const subscriptionCancelledEmail = ({
+  customerName,
+  productName,
+  endDate,
+}: {
+  customerName: string;
+  productName?: string;
+  endDate?: string;
+}): Promise<string> =>
+  render(
+    createElement(SubscriptionCancelledEmail, {
+      customerName,
+      productName,
+      endDate,
+    }),
+  );
+
+export const subscriptionCancellationScheduledEmail = ({
+  customerName,
+  productName,
+  endDate,
+}: {
+  customerName: string;
+  productName?: string;
+  endDate?: string;
+}): Promise<string> =>
+  render(
+    createElement(SubscriptionCancellationScheduledEmail, {
+      customerName,
+      productName,
+      endDate,
+    }),
+  );
+
+export const leadMagnetEmail = ({
+  heading,
+  subheading,
+  bulletPoints,
+}: {
+  heading: string;
+  subheading: string;
+  bulletPoints: string[];
+}): Promise<string> =>
+  render(createElement(LeadMagnetEmail, { heading, subheading, bulletPoints }));
+
+// ---------------------------------------------------------------------------
+// Magic link / OTP email  (plain HTML - kept for Supabase template editor)
+// Paste the OUTPUT of getMagicLinkEmailTemplate() into:
+//   Supabase Dashboard > Authentication > Email Templates > Magic Link
+//
+// Supabase replaces these variables automatically at send time:
+//   {{ .ConfirmationURL }} - the full magic link URL
+//   {{ .Email }}           - the recipient's email address
+//
+// To get the HTML string to paste, temporarily add this to any server route:
+//   import { getMagicLinkEmailTemplate } from "@/libs/emailTemplates";
+//   console.log(getMagicLinkEmailTemplate());
 // ---------------------------------------------------------------------------
 const wrap = (body: string): string => `<!DOCTYPE html>
 <html lang="en">
@@ -52,202 +142,6 @@ const wrap = (body: string): string => `<!DOCTYPE html>
 </body>
 </html>`;
 
-// ---------------------------------------------------------------------------
-// Order confirmation
-// Called from src/app/api/webhook/stripe/route.ts after checkout.session.completed.
-// ---------------------------------------------------------------------------
-export const orderConfirmationEmail = ({
-  customerName,
-  productName,
-}: {
-  customerName: string;
-  productName: string;
-  amountTotal?: string;
-  accessUrl?: string;
-}): string => `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
-<body style="margin:0;padding:40px 24px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0f172a;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-    <tr><td style="max-width:560px;margin:0 auto;display:block;">
-
-      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#0f172a;">Hey ${customerName},</p>
-
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#0f172a;">
-        Thanks for your purchase of the <strong>${productName}</strong> plan. Your payment was successful, and your account access has been updated.
-      </p>
-
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:24px 0 28px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;">
-        <tr>
-          <td style="padding:16px 18px;">
-            <p style="margin:0 0 6px;font-size:13px;color:#64748b;">Purchase confirmation</p>
-            <p style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">${productName}</p>
-          </td>
-        </tr>
-      </table>
-
-      <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#0f172a;">
-        What happens next:
-      </p>
-
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#0f172a;">
-        1. Your purchase is active in our system.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#0f172a;">
-        2. If an account already exists for this email, your purchase has been linked to it.
-      </p>
-      <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#0f172a;">
-        3. You can access your account using Google or a secure magic link with this same email address. If you did not already have an account, one has been created for you automatically.
-      </p>
-
-      <p style="margin:40px 0 8px;font-size:15px;line-height:1.7;color:#0f172a;">
-        We&rsquo;re excited to see you on board.<br /><br />
-        Best,<br />
-        The ${config.appName} Team
-      </p>
-
-      <p style="margin:24px 0 0;font-size:12px;color:#94a3b8;line-height:1.6;">
-        A receipt from Stripe will arrive in a separate email.
-      </p>
-
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
-// ---------------------------------------------------------------------------
-// Welcome email
-// Called from src/app/api/auth/callback/route.ts after a new user signs up.
-// ---------------------------------------------------------------------------
-export const welcomeEmail = ({ name }: { name: string }): string => `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
-<body style="margin:0;padding:40px 24px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0f172a;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-    <tr><td style="max-width:560px;margin:0 auto;display:block;">
-
-      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#0f172a;">Hi ${name},</p>
-
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#0f172a;">
-        Thanks for signing up for <strong>${config.appName}</strong> &mdash; we&rsquo;re glad to have you!
-      </p>
-
-      <p style="margin:0 0 32px;font-size:16px;line-height:1.7;color:#0f172a;">
-        Your account is ready. Head to your dashboard to get started.
-      </p>
-
-      <a href="https://${config.domainName}${config.auth.dashboardUrl}"
-        style="display:inline-block;background:#f97316;color:#ffffff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:8px;text-decoration:none;">
-        Go to Dashboard
-      </a>
-
-      <p style="margin:40px 0 0;font-size:15px;line-height:1.7;color:#0f172a;">
-        Best,<br />
-        The ${config.appName} Team
-      </p>
-
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
-// ---------------------------------------------------------------------------
-// Subscription cancellation
-// Called from src/app/api/webhook/stripe/route.ts after customer.subscription.deleted.
-// ---------------------------------------------------------------------------
-export const subscriptionCancelledEmail = ({
-  customerName,
-  productName,
-}: {
-  customerName: string;
-  productName?: string;
-}): string => `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
-<body style="margin:0;padding:40px 24px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0f172a;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-    <tr><td style="max-width:560px;margin:0 auto;display:block;">
-
-      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#0f172a;">Hi ${customerName},</p>
-
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#0f172a;">
-        We can confirm that your subscription${productName ? ` to <strong>${productName}</strong>` : ""} has been canceled.
-      </p>
-
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#0f172a;">
-        Your access has been updated based on this cancellation.
-      </p>
-
-      <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#0f172a;">
-        If this was unintentional or you need help, reply to this email and our team will assist you.
-      </p>
-
-      <p style="margin:40px 0 0;font-size:15px;line-height:1.7;color:#0f172a;">
-        Best,<br />
-        The ${config.appName} Team
-      </p>
-
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
-// ---------------------------------------------------------------------------
-// Subscription cancellation scheduled (cancel at period end)
-// Called from src/app/api/webhook/stripe/route.ts after customer.subscription.updated.
-// ---------------------------------------------------------------------------
-export const subscriptionCancellationScheduledEmail = ({
-  customerName,
-  productName,
-  endDate,
-}: {
-  customerName: string;
-  productName?: string;
-  endDate?: string;
-}): string => `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
-<body style="margin:0;padding:40px 24px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0f172a;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-    <tr><td style="max-width:560px;margin:0 auto;display:block;">
-
-      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#0f172a;">Hi ${customerName},</p>
-
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#0f172a;">
-        We can confirm your subscription${productName ? ` to <strong>${productName}</strong>` : ""} has been set to cancel at the end of your current billing period.
-      </p>
-
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#0f172a;">
-        Your access stays active until ${endDate ?? "the end of your current billing period"}.
-      </p>
-
-      <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#0f172a;">
-        If you change your mind, you can keep your subscription active from the Stripe billing portal.
-      </p>
-
-      <p style="margin:40px 0 0;font-size:15px;line-height:1.7;color:#0f172a;">
-        Best,<br />
-        The ${config.appName} Team
-      </p>
-
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
-// ---------------------------------------------------------------------------
-// Magic link / OTP email
-// Paste the OUTPUT of getMagicLinkEmailTemplate() into:
-//   Supabase Dashboard → Authentication → Email Templates → Magic Link
-//
-// Supabase replaces these variables automatically at send time:
-//   {{ .ConfirmationURL }} — the full magic link URL
-//   {{ .Email }}           — the recipient's email address
-//
-// To get the HTML string to paste, temporarily add this to any server route:
-//   import { getMagicLinkEmailTemplate } from "@/libs/emailTemplates";
-//   console.log(getMagicLinkEmailTemplate());
-// ---------------------------------------------------------------------------
 export const getMagicLinkEmailTemplate = (): string =>
   wrap(`
     <div style="text-align:center;margin-bottom:20px;font-size:40px;line-height:1;">
@@ -265,7 +159,7 @@ export const getMagicLinkEmailTemplate = (): string =>
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:40px;">
       <a href="{{ .ConfirmationURL }}"
-        style="display:inline-block;background:#f97316;color:#ffffff;font-size:15px;font-weight:600;padding:15px 36px;border-radius:8px;text-decoration:none;letter-spacing:-0.1px;">
+        style="display:inline-block;background:#d97706;color:#ffffff;font-size:15px;font-weight:600;padding:15px 36px;border-radius:8px;text-decoration:none;letter-spacing:-0.1px;">
         Sign in to ${config.appName} &rarr;
       </a>
     </div>

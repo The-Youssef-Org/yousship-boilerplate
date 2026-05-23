@@ -1,5 +1,7 @@
 import config from "@/config";
 import ButtonPrimary from "./ButtonPrimary";
+import ButtonCheckout from "./ButtonCheckout";
+import AvatarGroup from "./AvatarGroup";
 import type { ReactNode } from "react";
 // import ButtonLead from "./ButtonLead"; // Uncomment to use waitlist mode
 
@@ -94,9 +96,13 @@ const STACK: StackItem[] = [
 
 const Hero = () => {
   const showcase = config.hero.showcase;
+  const primaryCtaLabel = `Get ${config.appName}`;
+  const primaryCtaPlan = config.stripe.plans.find(
+    (plan) => plan.name === showcase.primaryCtaPlanName,
+  );
 
   return (
-    <section className="relative isolate overflow-hidden px-8 pb-24 pt-20 lg:pb-32 lg:pt-32">
+    <section className="relative isolate overflow-hidden px-8 pb-24 pt-16 lg:pb-32 lg:pt-24">
       {/* Radial glow */}
       <div
         aria-hidden="true"
@@ -106,30 +112,38 @@ const Hero = () => {
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <p className="mb-8 inline-block rounded-full border border-base-content/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/40">
-            {config.appName} &mdash; Next.js SaaS Boilerplate
+            {showcase.kicker}
           </p>
 
           <h1 className="text-balance text-5xl font-black leading-[1.05] tracking-tight text-base-content sm:text-6xl lg:text-[4.25rem]">
-            Stop building infrastructure.
+            {showcase.title}
             <br />
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Start shipping product.
+              {showcase.titleHighlight}
             </span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-base-content/50 sm:text-lg">
-            Auth, Stripe, email, and a polished landing page — wired together and
-            ready on day one. Every hour you would have spent on setup is now
-            spent on the thing only you can build.
+            {showcase.description}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <ButtonPrimary
-              href="#pricing"
-              className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5"
-            >
-              Get {config.appName}
-            </ButtonPrimary>
+            {primaryCtaPlan ? (
+              <ButtonCheckout
+                priceId={primaryCtaPlan.priceId}
+                mode={primaryCtaPlan.mode}
+                label={primaryCtaLabel}
+                fullWidth={false}
+                className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5 disabled:cursor-not-allowed"
+              />
+            ) : (
+              <ButtonPrimary
+                href="#pricing"
+                className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5"
+              >
+                {primaryCtaLabel}
+              </ButtonPrimary>
+            )}
             {/* <ButtonLead /> */}
             <a
               href="#features"
@@ -138,6 +152,8 @@ const Hero = () => {
               See what&apos;s included
             </a>
           </div>
+
+          <AvatarGroup />
         </div>
 
         <div className="relative">
@@ -154,7 +170,7 @@ const Hero = () => {
             <img
               src={showcase.imageSrc}
               alt={showcase.imageAlt}
-              className="relative z-10 h-full min-h-[24rem] w-full object-contain lg:min-h-[30rem]"
+              className="relative z-10 h-full min-h-[24rem] w-full overflow-hidden rounded-2xl object-contain lg:min-h-[30rem]"
             />
           ) : (
             <div className="relative z-10 flex min-h-[24rem] items-stretch justify-center rounded-2xl bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-transparent p-4 shadow-2xl shadow-black/20 ring-1 ring-base-content/10 lg:min-h-[30rem]">

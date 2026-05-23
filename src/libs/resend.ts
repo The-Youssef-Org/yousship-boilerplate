@@ -26,24 +26,13 @@ export const sendEmail = async ({
   const fallbackText = text ?? html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   if (!apiKey) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("RESEND_API_KEY is missing in production");
-    }
-
-    console.warn("[email] RESEND_API_KEY is missing. Email not sent.", {
-      to,
-      subject,
-      from: sender,
-      replyTo: replyTo ?? config.mail.replyTo,
-      html,
-      text: fallbackText,
-    });
-    return { id: "dev-noop" };
+    console.warn("[email] RESEND_API_KEY not set — email skipped.", { to, subject });
+    return { id: "noop-no-key" };
   }
 
-  if (process.env.NODE_ENV === "production" && sender.includes("onboarding@resend.dev")) {
-    throw new Error(
-      "config.mail.fromAdmin uses onboarding@resend.dev in production. Use a verified sender domain.",
+  if (sender.includes("onboarding@resend.dev")) {
+    console.warn(
+      "[email] config.mail.fromAdmin uses onboarding@resend.dev. Update to a verified sender domain before going live.",
     );
   }
 
@@ -72,4 +61,43 @@ export const sendEmail = async ({
   }
 
   return (await response.json().catch(() => ({}))) as { id?: string };
+};
+
+// ---------------------------------------------------------------------------
+// Resend Audience
+// Adds a contact to a Resend Audience for broadcast emails / sequences.
+// Requires RESEND_API_KEY + RESEND_AUDIENCE_ID env vars.
+// ---------------------------------------------------------------------------
+export const addToResendAudience = async (email: string): Promise<void> => {
+  const apiKey = process.env.RESEND_API_KEY;
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
+
+  if (!apiKey || !audienceId) {
+    console.warn(
+      "[email] addToResendAudience: RESEND_API_KEY or RESEND_AUDIENCE_ID not set — skipping.",
+    );
+    return;
+  }
+
+  const response = await fetch(
+    `https://api.resend.com/audiences/${audienceId}/contacts`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, unsubscribed: false }),
+    },
+  );
+
+  if (!response.ok) {
+    const body = (await response.json().catch(() => ({}))) as {
+      message?: string;
+      error?: string;
+    };
+    throw new Error(
+      body.message ?? body.error ?? "Failed to add contact to Resend audience",
+    );
+  }
 };

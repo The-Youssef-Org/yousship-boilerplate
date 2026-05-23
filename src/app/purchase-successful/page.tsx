@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
 import stripe from "@/libs/stripe";
+import { createClient } from "@/libs/supabase/server";
 
 export const metadata = getSEOTags({
   title: `Purchase complete | ${config.appName}`,
@@ -32,6 +33,10 @@ const PurchaseSuccessfulPage = async ({
     redirect("/");
   }
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-base-200 px-6 py-12">
       <div
@@ -54,7 +59,7 @@ const PurchaseSuccessfulPage = async ({
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-base-content/65 sm:text-lg">
             Thank you for your purchase. Your access is now active and you are ready to get started.
-            We also sent your confirmation and secure access link to your inbox.
+            We also sent your confirmation and a sign-in link to your email.
           </p>
         </div>
 
@@ -63,7 +68,7 @@ const PurchaseSuccessfulPage = async ({
           <ul className="mt-3 space-y-2 text-sm text-base-content/70">
             <li className="flex items-start gap-2">
               <span className="mt-0.5 text-emerald-500">1.</span>
-              Check your inbox for your purchase confirmation and access link.
+              Check your email for your purchase confirmation and sign-in link.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-0.5 text-emerald-500">2.</span>
@@ -78,10 +83,10 @@ const PurchaseSuccessfulPage = async ({
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            href={config.auth.loginUrl}
+            href={isLoggedIn ? config.auth.dashboardUrl : config.auth.loginUrl}
             className="rounded-xl bg-base-content px-6 py-3 text-sm font-semibold text-base-100 transition-opacity hover:opacity-90"
           >
-            Go to sign in
+            {isLoggedIn ? "Go to dashboard" : "Go to sign in"}
           </Link>
           <Link
             href="/"

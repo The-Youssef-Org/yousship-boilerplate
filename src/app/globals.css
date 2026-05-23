@@ -58,6 +58,21 @@ body {
   font-family: var(--font-sans), sans-serif;
 }
 
+/* Theme toggle — position and icons driven by data-theme on <html>.
+   The inline script in layout.tsx sets data-theme before first paint,
+   so there is never a flash or mount animation. */
+.theme-toggle-knob {
+  transition: transform 0.2s;
+}
+html[data-theme="dark"] .theme-toggle-knob {
+  transform: translateX(22px);
+}
+html:not([data-theme="dark"]) .theme-toggle-knob {
+  transform: translateX(2px);
+}
+html[data-theme="dark"] .theme-toggle-sun { display: none; }
+html:not([data-theme="dark"]) .theme-toggle-moon { display: none; }
+
 /* Consistent affordance: all interactive controls show pointer by default. */
 button,
 a[href],
@@ -89,4 +104,28 @@ h6 {
   font-family: var(--font-display), var(--font-sans), sans-serif;
   letter-spacing: -0.005em;
   font-weight: 700 !important;
+}
+
+@keyframes logo-cloud-roll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.logo-cloud-track {
+  animation: logo-cloud-roll 34s linear infinite;
+  will-change: transform;
+}
+
+.logo-cloud-marquee:hover .logo-cloud-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-cloud-track {
+    animation: none;
+  }
 }

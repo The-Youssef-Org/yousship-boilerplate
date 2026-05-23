@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import { renderSchemaTags } from "@/libs/seo";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import StatsCounters from "@/components/StatsCounters";
+import LogoCloud from "../components/LogoCloud";
 import Problem from "@/components/Problem";
 import WithWithout from "@/components/WithWithout";
 import FeaturesListicle from "@/components/FeaturesListicle";
@@ -12,6 +14,7 @@ import Testimonial1 from "@/components/Testimonial1";
 import Testimonial3 from "@/components/Testimonial3";
 import Testimonial11 from "@/components/Testimonial11";
 import FAQ from "@/components/FAQ";
+import LeadMagnet from "@/components/LeadMagnet";
 import Blog from "@/components/Blog";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
@@ -37,12 +40,15 @@ export default function Home() {
         <FeaturesAccordion />
         <CTA />
         <Pricing />
+        <LogoCloud />
+        <StatsCounters />
         <Blog />
         <Testimonial1 />
         <TestimonialRollercoaster />
         <Testimonial3 />
         <Testimonial11 />
         <FAQ />
+        <LeadMagnet />
       </main>
       <Footer />
     </>

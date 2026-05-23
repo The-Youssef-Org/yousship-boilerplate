@@ -42,6 +42,19 @@ export const getSEOTags = ({
   index = true,
   extraTags = {},
 }: SEOTagsOptions = {}): Metadata => {
+  const socialCreator = (() => {
+    const links = config.social?.links ?? [];
+    const xOrTwitter = links.find((item) => /(^|\.)x\.com|(^|\.)twitter\.com/i.test(item.url));
+    if (!xOrTwitter?.url) return undefined;
+    const handle = xOrTwitter.url
+      .replace(/^https?:\/\//i, "")
+      .replace(/^www\./i, "")
+      .replace(/^(x\.com|twitter\.com)\//i, "")
+      .replace(/\/$/, "")
+      .split("/")[0];
+    return handle ? `@${handle}` : undefined;
+  })();
+
   const resolvedTitle = title
     ? `${title} | ${config.appName}`
     : config.appName;
@@ -83,9 +96,7 @@ export const getSEOTags = ({
       title: resolvedTitle,
       description: resolvedDescription,
       images: [ogImageUrl],
-      creator: config.social?.twitter
-        ? `@${config.social.twitter.replace(/.*twitter\.com\//, "").replace(/\/$/, "")}`
-        : undefined,
+      creator: socialCreator,
     },
 
     robots: index

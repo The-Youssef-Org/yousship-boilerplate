@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import stripe from "@/libs/stripe";
 import { sendEmail } from "@/libs/resend";
-import {
-  orderConfirmationEmail,
-  subscriptionCancelledEmail,
-  subscriptionCancellationScheduledEmail,
-} from "@/libs/emailTemplates";
+import { orderConfirmationEmail } from "@/emails/OrderConfirmationEmail";
+import { subscriptionCancelledEmail } from "@/emails/SubscriptionCancelledEmail";
+import { subscriptionCancellationScheduledEmail } from "@/emails/SubscriptionCancellationScheduledEmail";
 import config from "@/config";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
@@ -153,16 +151,19 @@ const generateAccessMagicLink = async (email: string, origin: string) => {
   const { data, error } = await admin.auth.admin.generateLink({
     type: "magiclink",
     email: normalizeEmail(email),
-    options: {
-      redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent(config.auth.dashboardUrl)}`,
-    },
   });
 
   if (error) {
     throw error;
   }
 
-  return data.properties?.action_link ?? null;
+  const hashedToken = data?.properties?.hashed_token;
+  if (!hashedToken) return null;
+
+  // Use /api/auth/verify (same route as sign-in magic links) — it calls
+  // verifyOtp server-side and sets the session cookie, avoiding the implicit
+  // flow where tokens land in the URL hash and the callback never sees a code.
+  return `${origin}/api/auth/verify?token_hash=${encodeURIComponent(hashedToken)}&type=magiclink&next=${encodeURIComponent(config.auth.dashboardUrl)}`;
 };
 
 const setProfileNameIfEmpty = async (userId: string, candidateName: string | null) => {
@@ -233,6 +234,25 @@ export async function POST(req: NextRequest) {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
       const purchasedPriceId = lineItems.data[0]?.price?.id ?? null;
 
+      // Idempotency: check if this customer already has access before sending a
+      // confirmation email. Stripe retries webhooks on transient failures, which
+      // could otherwise send duplicate emails. Profile updates below are always
+      // safe to re-run (they set the same values).
+      let alreadyProvisioned = false;
+      if (customerId) {
+        try {
+          const { data: existingAccess } = await getAdmin()
+            .from("profiles")
+            .select("has_access")
+            .eq("customer_id", customerId)
+            .eq("has_access", true)
+            .maybeSingle<{ has_access: boolean }>();
+          alreadyProvisioned = existingAccess?.has_access === true;
+        } catch {
+          // If the check itself fails, proceed — worst case is one duplicate email.
+        }
+      }
+
       try {
         const admin = getAdmin();
         const stripeCustomerName = session.customer_details?.name ?? null;
@@ -278,9 +298,12 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if (customerEmail) {
+      if (customerEmail && !alreadyProvisioned) {
         let accessUrl: string | null = null;
-        if (autoCreated) {
+        // Send a magic link to any guest buyer (new or existing) so they can
+        // access their dashboard without having to request a separate sign-in link.
+        // Skip for logged-in buyers — they already have an active session.
+        if (!metadataUserId) {
           try {
             accessUrl = await generateAccessMagicLink(customerEmail, origin);
           } catch (err) {
@@ -299,7 +322,7 @@ export async function POST(req: NextRequest) {
           await sendEmail({
             to: customerEmail,
             subject: `Purchase confirmation from ${config.appName}`,
-            html: orderConfirmationEmail({ customerName, productName, amountTotal, accessUrl: accessUrl ?? undefined }),
+            html: await orderConfirmationEmail({ customerName, productName, amountTotal, accessUrl: accessUrl ?? undefined }),
             replyTo: config.mail.replyTo,
           });
         } catch (err) {
@@ -380,12 +403,12 @@ export async function POST(req: NextRequest) {
               const customerName = profile?.name?.trim() || "there";
               const productName =
                 config.stripe.plans.find((plan) => plan.priceId === currentPriceId)?.name;
-              const endDate = formatUnixDate(subscription.cancel_at ?? subscription.ended_at ?? null);
+              const endDate = formatUnixDate(subscription.cancel_at ?? subscription.items.data[0]?.current_period_end ?? subscription.ended_at ?? null);
 
               await sendEmail({
                 to: email,
                 subject: `Subscription update - ${config.appName}`,
-                html: subscriptionCancellationScheduledEmail({
+                html: await subscriptionCancellationScheduledEmail({
                   customerName,
                   productName,
                   endDate,
@@ -433,7 +456,7 @@ export async function POST(req: NextRequest) {
             await sendEmail({
               to: email,
               subject: `Subscription canceled - ${config.appName}`,
-              html: subscriptionCancelledEmail({ customerName, productName }),
+              html: await subscriptionCancelledEmail({ customerName, productName }),
               replyTo: config.mail.replyTo,
             });
           }

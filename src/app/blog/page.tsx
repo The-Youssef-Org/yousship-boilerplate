@@ -7,6 +7,7 @@ import { posts } from "@/libs/blog";
 import CardArticle from "@/components/blog/CardArticle";
 import PostMeta from "@/components/blog/PostMeta";
 import CategoryTag from "@/components/blog/CategoryTag";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata = getSEOTags({
   title: "Blog",
@@ -31,6 +32,12 @@ const BlogIndex = () => {
             className="mx-auto max-w-7xl"
             style={{ paddingLeft: "2rem", paddingRight: "2rem" }}
           >
+            <div className="mb-4">
+              {config.breadcrumbs.enabled && <Breadcrumb items={[
+                { label: "Home", href: "/" },
+                { label: "Blog" },
+              ]} />}
+            </div>
             <p
               className="font-medium uppercase text-primary"
               style={{ fontSize: "0.875rem", letterSpacing: "0.1em" }}
