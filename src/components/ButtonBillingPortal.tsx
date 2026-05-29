@@ -4,10 +4,16 @@ import { useState } from "react";
 
 type Props = {
   className?: string;
+  provider?: "stripe" | "lemonsqueezy";
 };
 
-const ButtonBillingPortal = ({ className = "" }: Props) => {
+const ButtonBillingPortal = ({ className = "", provider = "stripe" }: Props) => {
   const [loading, setLoading] = useState(false);
+
+  const endpoint =
+    provider === "lemonsqueezy"
+      ? "/api/lemonsqueezy/create-portal"
+      : "/api/stripe/create-portal";
 
   const handleClick = async () => {
     if (loading) return;
@@ -15,7 +21,7 @@ const ButtonBillingPortal = ({ className = "" }: Props) => {
 
     try {
       const returnPath = `${window.location.pathname}${window.location.search}`;
-      const response = await fetch("/api/stripe/create-portal", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

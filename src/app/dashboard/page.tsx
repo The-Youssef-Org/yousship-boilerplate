@@ -5,6 +5,7 @@ import { createClient } from "@/libs/supabase/server";
 import config from "@/config";
 import Logo from "@/components/Logo";
 import stripe from "@/libs/stripe";
+import { getLSSubscriptionStatus } from "@/libs/lemonsqueezy";
 import ButtonAccount from "@/components/ButtonAccount";
 import ButtonBillingPortal from "@/components/ButtonBillingPortal";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -45,13 +46,26 @@ const formatAmount = (unitAmount: number, currency: string) => {
   return amount;
 };
 
-const getMembershipLabel = async (priceId: string | null) => {
-  if (!priceId) return "No active plan";
+const getMembershipLabel = async (planId: string | null, paymentProvider: string | null) => {
+  if (!planId) return "No active plan";
 
-  const planName = config.stripe.plans.find((p) => p.priceId === priceId)?.name ?? "Custom";
+  // Lemon Squeezy — look up plan name and display price from config.
+  if (paymentProvider === "lemonsqueezy") {
+    const plan = config.lemonsqueezy.plans.find((p) => p.variantId === planId);
+    if (!plan) return "Active plan";
+    const card = config.pricing.cards.find((c) => c.planName === plan.name);
+    if (card?.displayPrice) {
+      const suffix = plan.mode === "subscription" ? "/mo" : "";
+      return `${plan.name} (${card.displayPrice}${suffix})`;
+    }
+    return `${plan.name} (Paid)`;
+  }
+
+  // Stripe — retrieve live price details.
+  const planName = config.stripe.plans.find((p) => p.priceId === planId)?.name ?? "Custom";
 
   try {
-    const price = await stripe.prices.retrieve(priceId);
+    const price = await stripe.prices.retrieve(planId);
 
     if (price.recurring && price.unit_amount !== null) {
       const amount = formatAmount(price.unit_amount, price.currency);
@@ -79,8 +93,21 @@ type SubscriptionStatus = {
 
 const getSubscriptionStatus = async (
   customerId: string | null,
-  priceId: string | null,
+  planId: string | null,
+  paymentProvider: string | null,
+  email: string | null,
 ): Promise<SubscriptionStatus | null> => {
+  // Lemon Squeezy — fetch live subscription status the same way Stripe does.
+  if (paymentProvider === "lemonsqueezy") {
+    const lsPlan = config.lemonsqueezy.plans.find((p) => p.variantId === planId);
+    if (lsPlan?.mode !== "subscription" || !email) return null;
+    try {
+      return await getLSSubscriptionStatus(email);
+    } catch {
+      return null;
+    }
+  }
+
   if (!customerId) return null;
 
   try {
@@ -92,9 +119,9 @@ const getSubscriptionStatus = async (
 
     // Prefer the profile-linked price when available; otherwise fall back to the
     // most relevant non-canceled subscription for this customer.
-    const matchingByPrice = priceId
+    const matchingByPrice = planId
       ? subscriptions.data.find((sub) =>
-          sub.items.data.some((item) => item.price.id === priceId),
+          sub.items.data.some((item) => item.price.id === planId),
         )
       : null;
 
@@ -138,7 +165,8 @@ export default async function ProfilePage() {
       email: user.email ?? null,
       image: null,
       customer_id: null,
-      price_id: null,
+      plan_id: null,
+      payment_provider: null,
       has_access: false,
       updated_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
@@ -164,11 +192,28 @@ export default async function ProfilePage() {
     displayName?.[0]?.toUpperCase() ??
     displayEmail?.[0]?.toUpperCase() ??
     "U";
-  const membershipLabel = await getMembershipLabel(safeProfile.price_id);
+  const membershipLabel = await getMembershipLabel(safeProfile.plan_id, safeProfile.payment_provider);
   const subscriptionStatus = await getSubscriptionStatus(
     safeProfile.customer_id,
-    safeProfile.price_id,
+    safeProfile.plan_id,
+    safeProfile.payment_provider,
+    safeProfile.email,
   );
+
+  // Only subscription plans have a manageable billing portal.
+  // One-time purchases have no recurring billing to cancel or update.
+  const showBillingPortal = (() => {
+    if (safeProfile.payment_provider === "lemonsqueezy") {
+      const lsPlan = config.lemonsqueezy.plans.find(
+        (p) => p.variantId === safeProfile.plan_id,
+      );
+      return lsPlan?.mode === "subscription";
+    }
+    const stripePlan = config.stripe.plans.find(
+      (p) => p.priceId === safeProfile.plan_id,
+    );
+    return stripePlan?.mode === "subscription";
+  })();
   const membershipEndingDate =
     subscriptionStatus?.cancelAtPeriodEnd && subscriptionStatus.endsAt
       ? new Date(subscriptionStatus.endsAt * 1000).toLocaleDateString(DATE_LOCALE, {
@@ -198,6 +243,9 @@ export default async function ProfilePage() {
                 name: displayName,
                 avatarUrl: displayImage,
               }}
+              billingProvider={
+                safeProfile.payment_provider === "lemonsqueezy" ? "lemonsqueezy" : "stripe"
+              }
             />
           </div>
         </div>
@@ -292,7 +340,11 @@ export default async function ProfilePage() {
             <p className="text-sm text-base-content">
               <span className="font-semibold">Plan:</span> {membershipLabel}
             </p>
-            {(safeProfile.customer_id || safeProfile.has_access) && <ButtonBillingPortal />}
+            {showBillingPortal && (
+              <ButtonBillingPortal
+                provider={safeProfile.payment_provider === "lemonsqueezy" ? "lemonsqueezy" : "stripe"}
+              />
+            )}
           </div>
           <div className="mt-6">
             <ProfileForm

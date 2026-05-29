@@ -7,16 +7,21 @@ import ButtonPrimary from "./ButtonPrimary";
 type BillingMode = "payment" | "subscription";
 
 const Pricing = () => {
-  const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
+  const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
   const pricingCtaLabel = `Get ${config.appName}`;
+  const provider = config.paymentProvider;
+  const providerLabel = provider === "lemonsqueezy" ? "Lemon Squeezy" : "Stripe";
 
   const getMode = (mode?: BillingMode): BillingMode => mode ?? "payment";
+
+  // Match each pricing card to the active provider's plan by name.
   const cards = config.pricing.cards.map((card) => {
-    const stripePlan = config.stripe.plans.find((plan) => plan.name === card.planName);
-    return {
-      card,
-      stripePlan,
-    };
+    if (provider === "lemonsqueezy") {
+      const plan = config.lemonsqueezy.plans.find((p) => p.name === card.planName);
+      return { card, planId: plan?.variantId ?? null, mode: getMode(plan?.mode), isConfigured: !!plan?.variantId };
+    }
+    const plan = config.stripe.plans.find((p) => p.name === card.planName);
+    return { card, planId: plan?.priceId ?? null, mode: getMode(plan?.mode), isConfigured: !!plan };
   });
 
   const getPriceSuffix = (mode?: BillingMode) =>
@@ -25,14 +30,28 @@ const Pricing = () => {
   const getBillingFootnote = (mode?: BillingMode) =>
     getMode(mode) === "subscription" ? "Billed monthly. Cancel anytime." : "Pay once. Lifetime access.";
 
-  const handleCheckout = async (priceId: string, mode?: BillingMode) => {
-    setLoadingPriceId(priceId);
+  const handleCheckout = async (planId: string, mode?: BillingMode) => {
+    setLoadingPlanId(planId);
     try {
-      const res = await fetch("/api/stripe/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, mode: getMode(mode) }),
-      });
+      let res: Response;
+
+      if (provider === "lemonsqueezy") {
+        res = await fetch("/api/lemonsqueezy/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            variantId: planId,
+            redirectUrl: `${window.location.origin}/purchase-successful`,
+          }),
+        });
+      } else {
+        res = await fetch("/api/stripe/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priceId: planId, mode: getMode(mode) }),
+        });
+      }
+
       const bodyText = await res.text();
       let data: { url?: string; error?: string } = {};
       if (bodyText) {
@@ -43,16 +62,12 @@ const Pricing = () => {
         }
       }
 
-      if (!res.ok) {
-        throw new Error(data.error ?? "Failed to start checkout.");
-      }
-
-      const { url } = data;
-      if (url) window.location.href = url;
+      if (!res.ok) throw new Error(data.error ?? "Failed to start checkout.");
+      if (data.url) window.location.href = data.url;
     } catch (e) {
       console.error(e);
     } finally {
-      setLoadingPriceId(null);
+      setLoadingPlanId(null);
     }
   };
 
@@ -73,11 +88,8 @@ const Pricing = () => {
 
         <div className="mt-12">
           <div className="grid justify-center gap-5 md:items-stretch [grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),360px))]">
-            {cards.map(({ card, stripePlan }) => {
-              const mode = getMode(stripePlan?.mode);
-              const priceId = stripePlan?.priceId;
-              const isConfigured = !!stripePlan;
-              const isLoading = !!priceId && loadingPriceId === priceId;
+            {cards.map(({ card, planId, mode, isConfigured }) => {
+              const isLoading = !!planId && loadingPlanId === planId;
 
               return (
                 <article
@@ -130,22 +142,22 @@ const Pricing = () => {
                   {isConfigured ? (
                     <>
                       <ButtonPrimary
-                        onClick={() => priceId && handleCheckout(priceId, mode)}
-                        disabled={!priceId || isLoading}
+                        onClick={() => planId && handleCheckout(planId, mode)}
+                        disabled={!planId || isLoading}
                         className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
                       >
-                        {isLoading ? "Redirecting to Stripe..." : pricingCtaLabel}
+                        {isLoading ? `Redirecting to ${providerLabel}...` : pricingCtaLabel}
                       </ButtonPrimary>
                       <p className="mt-3 text-center text-xs text-base-content/60">{getBillingFootnote(mode)}</p>
                     </>
                   ) : (
                     <div className="mt-8 rounded-xl border border-amber-500/25 bg-amber-500/[0.08] px-4 py-3">
                       <p className="text-xs font-semibold uppercase tracking-[0.08em] text-amber-300/90">
-                        Stripe setup required
+                        {providerLabel} setup required
                       </p>
                       <p className="mt-1 text-sm leading-relaxed text-base-content/75">
-                        No Stripe product is connected to this card yet. Add a matching plan in
-                        <span className="font-medium"> config.stripe.plans</span> to enable checkout.
+                        No {providerLabel} plan is connected to this card yet. Add a matching plan in
+                        <span className="font-medium"> config.{provider}.plans</span> to enable checkout.
                       </p>
                     </div>
                   )}

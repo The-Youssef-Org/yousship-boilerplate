@@ -97,9 +97,18 @@ const STACK: StackItem[] = [
 const Hero = () => {
   const showcase = config.hero.showcase;
   const primaryCtaLabel = `Get ${config.appName}`;
-  const primaryCtaPlan = config.stripe.plans.find(
-    (plan) => plan.name === showcase.primaryCtaPlanName,
-  );
+  const primaryCtaPlan =
+    config.paymentProvider === "lemonsqueezy"
+      ? config.lemonsqueezy.plans.find((plan) => plan.name === showcase.primaryCtaPlanName)
+      : config.stripe.plans.find((plan) => plan.name === showcase.primaryCtaPlanName);
+  const primaryCtaPlanId =
+    primaryCtaPlan && "variantId" in primaryCtaPlan
+      ? primaryCtaPlan.variantId
+      : primaryCtaPlan && "priceId" in primaryCtaPlan
+        ? primaryCtaPlan.priceId
+        : null;
+  const primaryCtaMode =
+    primaryCtaPlan && "mode" in primaryCtaPlan ? primaryCtaPlan.mode : undefined;
 
   return (
     <section className="relative isolate overflow-hidden px-8 pb-24 pt-16 lg:pb-32 lg:pt-24">
@@ -128,10 +137,10 @@ const Hero = () => {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            {primaryCtaPlan ? (
+            {primaryCtaPlanId ? (
               <ButtonCheckout
-                priceId={primaryCtaPlan.priceId}
-                mode={primaryCtaPlan.mode}
+                planId={primaryCtaPlanId}
+                mode={primaryCtaMode}
                 label={primaryCtaLabel}
                 fullWidth={false}
                 className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5 disabled:cursor-not-allowed"

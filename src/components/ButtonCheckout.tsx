@@ -2,37 +2,50 @@
 
 import { useState } from "react";
 import ButtonPrimary from "./ButtonPrimary";
+import config from "@/config";
 
-// Stripe checkout trigger.
-// Expects a server route at /api/stripe/create-checkout that returns { url }.
+// Payment checkout trigger — works with both Stripe and Lemon Squeezy.
+// Pass the priceId (Stripe) or variantId (LS) as `planId`.
+// The active provider is determined by config.paymentProvider.
 const ButtonCheckout = ({
-  priceId,
+  planId,
   mode = "payment",
   label = "Buy now",
   fullWidth = true,
   className = "",
 }: {
-  priceId: string;
+  planId: string;
   mode?: "payment" | "subscription";
   label?: string;
   fullWidth?: boolean;
   className?: string;
 }) => {
   const [loading, setLoading] = useState(false);
+  const provider = config.paymentProvider;
+  const providerLabel = provider === "lemonsqueezy" ? "Lemon Squeezy" : "Stripe";
 
   const handleClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId,
-          mode,
-          successUrl: `${window.location.origin}/dashboard`,
-          cancelUrl: window.location.href,
-        }),
-      });
+      let res: Response;
+
+      if (provider === "lemonsqueezy") {
+        res = await fetch("/api/lemonsqueezy/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            variantId: planId,
+            redirectUrl: `${window.location.origin}/purchase-successful`,
+          }),
+        });
+      } else {
+        res = await fetch("/api/stripe/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priceId: planId, mode }),
+        });
+      }
+
       const data = (await res.json()) as { url?: string; error?: string };
       if (data.url) {
         window.location.href = data.url;
@@ -54,7 +67,7 @@ const ButtonCheckout = ({
       disabled={loading}
       className={`group relative ${fullWidth ? "w-full" : "w-auto"} cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed ${className}`}
     >
-      {loading ? "Redirecting to Stripe…" : label}
+      {loading ? `Redirecting to ${providerLabel}…` : label}
     </ButtonPrimary>
   );
 };

@@ -11,7 +11,13 @@ type AccountUser = {
 
 // Authenticated user dropdown.
 // Keep this component backend-agnostic by delegating side-effects to server routes.
-const ButtonAccount = ({ user }: { user?: AccountUser }) => {
+const ButtonAccount = ({
+  user,
+  billingProvider = "stripe",
+}: {
+  user?: AccountUser;
+  billingProvider?: "stripe" | "lemonsqueezy";
+}) => {
   const [open, setOpen] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -56,7 +62,11 @@ const ButtonAccount = ({ user }: { user?: AccountUser }) => {
     if (billingLoading) return;
     setBillingLoading(true);
     try {
-      const res = await fetch("/api/stripe/create-portal", { method: "POST" });
+      const endpoint =
+        billingProvider === "lemonsqueezy"
+          ? "/api/lemonsqueezy/create-portal"
+          : "/api/stripe/create-portal";
+      const res = await fetch(endpoint, { method: "POST" });
       const { url } = (await res.json().catch(() => ({}))) as { url?: string };
       if (url) window.location.href = url;
     } finally {

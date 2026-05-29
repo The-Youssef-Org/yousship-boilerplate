@@ -29,7 +29,7 @@ const grantAccess = async (
   priceId: string | null,
 ) => {
   const admin = getAdmin();
-  const updates = { has_access: true, price_id: priceId, customer_id: customerId };
+  const updates = { has_access: true, plan_id: priceId, payment_provider: "stripe", customer_id: customerId };
   if (customerId) {
     const { error } = await admin.from("profiles").update(updates).eq("customer_id", customerId);
     if (!error) return;
@@ -48,9 +48,9 @@ const getProfileByCustomerId = async (customerId: string) => {
   const admin = getAdmin();
   const { data, error } = await admin
     .from("profiles")
-    .select("email, name, price_id")
+    .select("email, name, plan_id")
     .eq("customer_id", customerId)
-    .maybeSingle<{ email: string | null; name: string | null; price_id: string | null }>();
+    .maybeSingle<{ email: string | null; name: string | null; plan_id: string | null }>();
   if (error) throw error;
   return data;
 };
@@ -282,7 +282,7 @@ export async function POST(req: NextRequest) {
           throw new Error("Could not resolve user id for successful checkout");
         }
 
-        const updates = { customer_id: customerId, price_id: purchasedPriceId, has_access: true };
+        const updates = { customer_id: customerId, plan_id: purchasedPriceId, payment_provider: "stripe", has_access: true };
         const { error: updateError } = await admin
           .from("profiles")
           .update(updates)
@@ -320,17 +320,16 @@ export async function POST(req: NextRequest) {
 
         try {
           await sendEmail({
-            to: customerEmail,
+            to: normalizeEmail(customerEmail),
             subject: `Purchase confirmation from ${config.appName}`,
             html: await orderConfirmationEmail({ customerName, productName, amountTotal, accessUrl: accessUrl ?? undefined }),
             replyTo: config.mail.replyTo,
           });
         } catch (err) {
-          console.error("checkout.session.completed: failed to send email", err);
-          return NextResponse.json(
-            { error: "Failed to send purchase confirmation email" },
-            { status: 500 },
-          );
+          // Non-fatal: profile is already provisioned. Log and continue — returning
+          // 500 here would cause Stripe to retry, but alreadyProvisioned=true on
+          // the retry means the email would be skipped anyway.
+          console.error("checkout.session.completed: failed to send confirmation email (non-fatal):", err);
         }
       }
 

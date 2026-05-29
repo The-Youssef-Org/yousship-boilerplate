@@ -1,14 +1,22 @@
 // Central configuration for the SaaS. Tweak this file to rebrand & resell.
 // Keep it serializable so it can be imported from both server and client components.
 
+export type PaymentProvider = "stripe" | "lemonsqueezy";
+
 export type PricingPlan = {
   name: string;
   priceId: string;
   mode?: "payment" | "subscription";
 };
 
+export type LemonSqueezyPlan = {
+  name: string;
+  variantId: string;
+  mode?: "payment" | "subscription";
+};
+
 export type PricingCard = {
-  // Must match one of stripe.plans[].name to connect card -> checkout priceId.
+  // Must match a plan name in stripe.plans or lemonsqueezy.plans depending on paymentProvider.
   planName: string;
   eyebrow: string;
   description: string;
@@ -183,6 +191,13 @@ const config = {
   },
 
   // ---------------------------------------------------------------------------
+  // PAYMENT PROVIDER
+  // ---------------------------------------------------------------------------
+  // Switch between "stripe" and "lemonsqueezy". Only one provider is active at a time.
+  // Make sure the matching env vars and plan IDs are configured below before switching.
+  paymentProvider: "lemonsqueezy" as PaymentProvider,
+
+  // ---------------------------------------------------------------------------
   // STRIPE
   // ---------------------------------------------------------------------------
   stripe: {
@@ -190,21 +205,47 @@ const config = {
     // Use Test Mode price IDs locally, Live Mode IDs in production.
     plans: [
       {
-        name: "Starter",
+        name: "Starter", // Must match a pricing card in config.pricing.cards.
         priceId: "price_1TX39Y0fD9L39mCqR6S3ELWH",
         mode: "payment", // "payment" or "subscription"
       },
       {
-        name: "Advanced",
+        name: "Advanced", // Must match a pricing card in config.pricing.cards.
         priceId: "price_1TXkPR0fD9L39mCqTM1Yttit",
         mode: "subscription", // "payment" or "subscription"
       },
       {
-        name: "Pro",
+        name: "Pro", // Must match a pricing card in config.pricing.cards.
         priceId: "price_1TXkQC0fD9L39mCqRty3eEMI",
         mode: "payment", // "payment" or "subscription"
       },
     ] as PricingPlan[],
+  },
+
+  // ---------------------------------------------------------------------------
+  // LEMON SQUEEZY
+  // ---------------------------------------------------------------------------
+  lemonsqueezy: {
+    // Get your variantId from your Lemon Squeezy dashboard:
+    // Store > Products > select product > select variant > copy the ID from the URL.
+    // Use the same name as the matching pricing card in config.pricing.cards.
+    plans: [
+      {
+        name: "Starter", // Must match a pricing card in config.pricing.cards.
+        variantId: "1711280", // e.g. "1234567"
+        mode: "subscription" as const, // "payment" or "subscription"
+      },
+      {
+        name: "Advanced", // Must match a pricing card in config.pricing.cards.
+        variantId: "1711293", // e.g. "1234567"
+        mode: "payment" as const, // "payment" or "subscription"
+      },
+      {
+        name: "Pro", // Must match a pricing card in config.pricing.cards.
+        variantId: "1711305", // e.g. "1234567"
+        mode: "payment" as const, // "payment" or "subscription"
+      },
+    ] as LemonSqueezyPlan[],
   },
 
   // ---------------------------------------------------------------------------

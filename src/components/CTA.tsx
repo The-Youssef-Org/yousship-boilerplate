@@ -5,9 +5,17 @@ import Link from "next/link";
 
 const CTA = () => {
   const primaryCtaLabel = `Get ${config.appName}`;
-  const ctaPlan = config.stripe.plans.find(
-    (plan) => plan.name === config.hero.showcase.primaryCtaPlanName,
-  );
+  const ctaPlan =
+    config.paymentProvider === "lemonsqueezy"
+      ? config.lemonsqueezy.plans.find((plan) => plan.name === config.hero.showcase.primaryCtaPlanName)
+      : config.stripe.plans.find((plan) => plan.name === config.hero.showcase.primaryCtaPlanName);
+  const ctaPlanId =
+    ctaPlan && "variantId" in ctaPlan
+      ? ctaPlan.variantId
+      : ctaPlan && "priceId" in ctaPlan
+        ? ctaPlan.priceId
+        : null;
+  const ctaMode = ctaPlan && "mode" in ctaPlan ? ctaPlan.mode : undefined;
 
   return (
     <section className="relative isolate flex min-h-[75vh] items-center overflow-hidden">
@@ -39,10 +47,10 @@ const CTA = () => {
         </p>
 
         <div className="mt-10 flex justify-center">
-          {ctaPlan ? (
+          {ctaPlanId ? (
             <ButtonCheckout
-              priceId={ctaPlan.priceId}
-              mode={ctaPlan.mode}
+              planId={ctaPlanId}
+              mode={ctaMode}
               label={primaryCtaLabel}
               fullWidth={false}
               className="!bg-white px-8 py-3.5 text-sm font-semibold !text-neutral shadow-xl transition hover:-translate-y-0.5 hover:!bg-base-200"
