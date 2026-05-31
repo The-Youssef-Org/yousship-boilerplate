@@ -189,17 +189,17 @@ const config = {
     plans: [
       {
         name: "Starter", // Must match a pricing card in config.pricing.cards.
-        priceId: "price_1TdFml1Cz9QfLQqq31W0p3Yr",
+        priceId: "price_1TdG661Cz9QfLQqqvLVG6jDI",
         mode: "payment", // "payment" or "subscription"
       },
       {
         name: "Advanced", // Must match a pricing card in config.pricing.cards.
-        priceId: "price_1TdFnJ1Cz9QfLQqqQ9jOT9TC",
+        priceId: "price_1TdG6g1Cz9QfLQqqyp88UCEV",
         mode: "subscription", // "payment" or "subscription"
       },
       {
         name: "Pro", // Must match a pricing card in config.pricing.cards.
-        priceId: "price_1TdFnv1Cz9QfLQqq96huILtV",
+        priceId: "price_1TdG761Cz9QfLQqqBS4wu7Rc",
         mode: "payment", // "payment" or "subscription"
       },
     ] as PricingPlan[],
