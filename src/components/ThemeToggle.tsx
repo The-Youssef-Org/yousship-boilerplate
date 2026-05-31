@@ -6,7 +6,7 @@ import config from "@/config";
 const ThemeToggle = () => {
   // Initialize from config so server and client render identically (no hydration mismatch).
   // useEffect corrects it to the actual data-theme before the user can interact.
-  const [isDark, setIsDark] = useState(
+  const [isDark, setIsDark] = useState<boolean>(
     config.enableThemeToggle || (config.theme as string) === config.darkTheme,
   );
 
