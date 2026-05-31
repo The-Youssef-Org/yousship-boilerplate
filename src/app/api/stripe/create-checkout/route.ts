@@ -30,7 +30,11 @@ export async function POST(req: NextRequest) {
       .select("customer_id")
       .eq("id", user.id)
       .maybeSingle<Pick<Profile, "customer_id">>();
-    existingCustomerId = profile?.customer_id ?? null;
+    // Only reuse the stored ID if it's actually a Stripe customer ID.
+    // Guards against stale IDs from a previous payment provider (e.g. Lemon Squeezy).
+    existingCustomerId = profile?.customer_id?.startsWith("cus_")
+      ? profile.customer_id
+      : null;
   }
 
   const origin = new URL(req.url).origin;

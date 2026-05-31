@@ -25,6 +25,14 @@ const Footer = () => {
             <h4 className="text-sm font-semibold text-base-content">Links</h4>
             <ul className="mt-3 space-y-2 text-sm text-base-content/70">
               <li>
+                <a
+                  href={`mailto:${config.mail.supportEmail}`}
+                  className="hover:text-base-content"
+                >
+                  Support
+                </a>
+              </li>
+              <li>
                 <Link href="/#pricing" className="hover:text-base-content">
                   Pricing
                 </Link>

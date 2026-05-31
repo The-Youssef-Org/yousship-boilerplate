@@ -218,7 +218,7 @@ const provisionPurchase = async ({
 
   await setProfileNameIfEmpty(resolvedUserId, customerName);
 
-  if (sendConfirmation) {
+  if (sendConfirmation && config.lemonsqueezy.webhookEmails) {
     let accessUrl: string | null = null;
     if (!metadataUserId) {
       try {
@@ -345,6 +345,7 @@ export async function POST(req: NextRequest) {
         const endsAtMs = attrs.ends_at ? new Date(attrs.ends_at).getTime() : null;
         const isSoftCancel = endsAtMs !== null && endsAtMs > Date.now() + 5 * 60 * 1000;
         if (!isSoftCancel) break;
+        if (!config.lemonsqueezy.webhookEmails) break;
 
         const customerEmail = normalizeEmail(attrs.user_email);
         const customerName = attrs.user_name?.trim() || "there";
@@ -388,19 +389,21 @@ export async function POST(req: NextRequest) {
           .update({ has_access: false })
           .eq("customer_id", customerId);
 
-        try {
-          await sendEmail({
-            to: customerEmail,
-            subject: `Subscription canceled - ${config.appName}`,
-            html: await subscriptionCancelledEmail({
-              customerName,
-              productName: plan?.name,
-            }),
-            replyTo: config.mail.replyTo,
-          });
-          console.log(`[ls/webhook] Subscription expired email sent to ${customerEmail}`);
-        } catch (err) {
-          console.error("[ls/webhook] Failed to send subscription expired email (non-fatal):", err);
+        if (config.lemonsqueezy.webhookEmails) {
+          try {
+            await sendEmail({
+              to: customerEmail,
+              subject: `Subscription canceled - ${config.appName}`,
+              html: await subscriptionCancelledEmail({
+                customerName,
+                productName: plan?.name,
+              }),
+              replyTo: config.mail.replyTo,
+            });
+            console.log(`[ls/webhook] Subscription expired email sent to ${customerEmail}`);
+          } catch (err) {
+            console.error("[ls/webhook] Failed to send subscription expired email (non-fatal):", err);
+          }
         }
         break;
       }

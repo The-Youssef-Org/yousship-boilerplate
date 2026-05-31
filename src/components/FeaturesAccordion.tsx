@@ -128,7 +128,7 @@ export default function FeaturesAccordion() {
           </div>
 
           {/* Image panel — priority: visual > img > placeholder */}
-          <div className="relative min-h-[480px] overflow-hidden rounded-2xl border border-base-content/10 bg-base-200/30">
+          <div className="relative aspect-square overflow-hidden rounded-2xl border border-base-content/10 bg-base-200/30">
             {feature.visual ? (
               feature.visual
             ) : feature.img ? (
@@ -141,7 +141,7 @@ export default function FeaturesAccordion() {
                 className="object-cover"
               />
             ) : (
-              <div className="flex h-full min-h-[480px] flex-col items-center justify-center gap-2 p-8 text-center">
+              <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
                 <p className="text-sm font-medium text-base-content/30">No image yet</p>
                 <p className="max-w-[220px] text-xs text-base-content/20">
                   Add a screenshot to <code className="text-base-content/30">/public/features/</code> and set the <code className="text-base-content/30">img</code> path above.

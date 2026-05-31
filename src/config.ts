@@ -159,27 +159,6 @@ const config = {
   },
 
   // ---------------------------------------------------------------------------
-  // LEAD MAGNET
-  // ---------------------------------------------------------------------------
-  // A dedicated section at the bottom of the landing page that captures emails
-  // in exchange for a free resource (guide, checklist, template, etc.).
-  // The form POSTs to /api/lead — see src/app/api/lead/route.ts to activate it.
-  leadMagnet: {
-    show: true,
-    // Short label shown as a pill above the heading.
-    badge: "Stay in the loop",
-    heading: "Get the inside track.",
-    subheading:
-      "Join and be the first to know what we're working on. No spam — just honest updates from the team.",
-    // Bullet points shown next to the form. Keep to 3–5 for readability.
-    bulletPoints: [],
-    // Label on the submit button.
-    ctaLabel: "Count me in",
-    // Small line shown below the form input.
-    formNote: "No spam. Unsubscribe anytime.",
-  },
-
-  // ---------------------------------------------------------------------------
   // BREADCRUMBS
   // ---------------------------------------------------------------------------
   // Breadcrumbs improve navigation UX and are strongly recommended for SEO.
@@ -195,12 +174,16 @@ const config = {
   // ---------------------------------------------------------------------------
   // Switch between "stripe" and "lemonsqueezy". Only one provider is active at a time.
   // Make sure the matching env vars and plan IDs are configured below before switching.
-  paymentProvider: "lemonsqueezy" as PaymentProvider,
+  paymentProvider: "stripe" as PaymentProvider,
 
   // ---------------------------------------------------------------------------
   // STRIPE
   // ---------------------------------------------------------------------------
   stripe: {
+    // Set to false to skip the three webhook emails (order confirmation,
+    // cancellation scheduled, subscription ended). Useful if you prefer to use
+    // Stripe's own receipt emails instead of the custom branded ones.
+    webhookEmails: true,
     // Replace these priceIds with your own from Stripe Dashboard → Products.
     // Use Test Mode price IDs locally, Live Mode IDs in production.
     plans: [
@@ -226,6 +209,11 @@ const config = {
   // LEMON SQUEEZY
   // ---------------------------------------------------------------------------
   lemonsqueezy: {
+    // Set to false to use LemonSqueezy's built-in emails instead of the custom
+    // branded ones sent by the webhook. You must then enable the matching emails
+    // in the LemonSqueezy dashboard (Settings → Transactional Emails).
+    // When true (default), disable LS built-in emails to avoid duplicates.
+    webhookEmails: true,
     // Get your variantId from your Lemon Squeezy dashboard:
     // Store > Products > select product > select variant > copy the ID from the URL.
     // Use the same name as the matching pricing card in config.pricing.cards.

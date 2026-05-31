@@ -1,4 +1,3 @@
-import config from "@/config";
 import ButtonLead from "./ButtonLead";
 
 const CheckIcon = () => (
@@ -16,10 +15,23 @@ const CheckIcon = () => (
   </svg>
 );
 
-const LeadMagnet = () => {
-  const lm = config.leadMagnet;
-  if (!lm.show) return null;
+// Email capture section — edit copy and bullet points directly here.
+// To send a lead magnet email, update src/emails/LeadMagnetEmail.tsx.
+// To handle form submission, update src/app/api/lead/route.ts.
+const badge = "Stay in the loop";
+const heading = "Get the inside track.";
+const subheading =
+  "Join and be the first to know what we're working on. No spam — just honest updates from the team.";
+const bulletPoints: string[] = [
+  "The inside track on what we're building and where we're headed",
+  "Practical tips and guides delivered straight to your inbox",
+  "Honest updates from the team — no fluff, no spam",
+  "A direct line to us — we actually read every reply",
+];
+const ctaLabel = "Count me in";
+const formNote = "No spam. Unsubscribe anytime.";
 
+const LeadMagnet = () => {
   return (
     <section className="bg-base-200 py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -27,20 +39,20 @@ const LeadMagnet = () => {
 
           {/* Left: copy */}
           <div>
-            {lm.badge && (
+            {badge && (
               <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary ring-1 ring-inset ring-primary/20">
-                {lm.badge}
+                {badge}
               </span>
             )}
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
-              {lm.heading}
+              {heading}
             </h2>
             <p className="mt-4 text-base leading-7 text-base-content/70">
-              {lm.subheading}
+              {subheading}
             </p>
-            {lm.bulletPoints.length > 0 && (
+            {bulletPoints.length > 0 && (
               <ul className="mt-6 space-y-3">
-                {lm.bulletPoints.map((point) => (
+                {bulletPoints.map((point) => (
                   <li key={point} className="flex items-start gap-3">
                     <CheckIcon />
                     <span className="text-sm text-base-content/80">{point}</span>
@@ -52,10 +64,10 @@ const LeadMagnet = () => {
 
           {/* Right: form */}
           <div className="mt-10 lg:mt-0">
-            <ButtonLead cta={lm.ctaLabel} />
-            {lm.formNote && (
+            <ButtonLead cta={ctaLabel} />
+            {formNote && (
               <p className="mt-3 text-xs text-base-content/40">
-                {lm.formNote}
+                {formNote}
               </p>
             )}
           </div>

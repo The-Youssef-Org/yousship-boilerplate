@@ -31,7 +31,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: profileError.message }, { status: 500 });
   }
 
-  let customerId = profile?.customer_id;
+  // Only use the stored ID if it's actually a Stripe customer ID.
+  // Guards against stale IDs from a previous payment provider (e.g. Lemon Squeezy).
+  let customerId = profile?.customer_id?.startsWith("cus_")
+    ? profile.customer_id
+    : null;
 
   if (!customerId && profile?.email) {
     const customers = await stripe.customers.list({

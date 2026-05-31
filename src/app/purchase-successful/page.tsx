@@ -14,24 +14,28 @@ export const metadata = getSEOTags({
 const PurchaseSuccessfulPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; order_id?: string }>;
 }) => {
-  const { session_id: sessionId } = await searchParams;
+  const { session_id: sessionId, order_id: orderId } = await searchParams;
 
-  if (!sessionId) {
+  // Stripe flow: validate the checkout session server-side.
+  if (sessionId) {
+    let checkoutSession: Awaited<ReturnType<typeof stripe.checkout.sessions.retrieve>> | null = null;
+    try {
+      checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
+    } catch {
+      redirect("/");
+    }
+    if (!checkoutSession || checkoutSession.payment_status !== "paid") {
+      redirect("/");
+    }
+  } else if (!orderId) {
+    // Neither provider supplied a recognisable success param — bail.
     redirect("/");
   }
-
-  let checkoutSession: Awaited<ReturnType<typeof stripe.checkout.sessions.retrieve>> | null = null;
-  try {
-    checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
-  } catch {
-    redirect("/");
-  }
-
-  if (!checkoutSession || checkoutSession.payment_status !== "paid") {
-    redirect("/");
-  }
+  // Lemon Squeezy flow: LS appends ?order_id=... to the redirect URL.
+  // The webhook has already provisioned the user's access server-side,
+  // so no additional validation is needed here.
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

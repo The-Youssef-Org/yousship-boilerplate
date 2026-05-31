@@ -31,13 +31,14 @@ export async function POST(req: Request) {
   }
 
   // 1. Save to Supabase leads table
+  let isNewLead = true;
   try {
     const { createClient } = await import("@/libs/supabase/server");
     const supabase = await createClient();
     const { error } = await supabase.from("leads").insert({ email });
     if (error) {
       if (error.message.includes("duplicate") || error.code === "23505") {
-        // Already captured — not an error worth surfacing
+        isNewLead = false; // Already captured — skip email
       } else {
         console.warn("[lead] Supabase insert failed:", error.message);
       }
@@ -53,20 +54,17 @@ export async function POST(req: Request) {
     console.warn("[lead] Resend audience add failed:", err);
   }
 
-  // 3. Send delivery email
-  try {
-    const lm = config.leadMagnet;
-    await sendEmail({
-      to: email,
-      subject: lm.heading,
-      html: await leadMagnetEmail({
-        heading: lm.heading,
-        subheading: lm.subheading,
-        bulletPoints: [...lm.bulletPoints],
-      }),
-    });
-  } catch (err) {
-    console.warn("[lead] Delivery email failed:", err);
+  // 3. Send delivery email — only for first-time subscribers
+  if (isNewLead) {
+    try {
+      await sendEmail({
+        to: email,
+        subject: `You're in — ${config.appName}`,
+        html: await leadMagnetEmail({}),
+      });
+    } catch (err) {
+      console.warn("[lead] Delivery email failed:", err);
+    }
   }
 
   return NextResponse.json({ success: true });

@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme={config.theme}
+      data-theme={config.enableThemeToggle ? config.darkTheme : config.theme}
       suppressHydrationWarning
       className={`${plusJakartaSans.variable} ${nunitoSans.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >

@@ -319,16 +319,13 @@ export async function POST(req: NextRequest) {
           config.stripe.plans.find((p) => p.priceId === purchasedPriceId)?.name ?? config.appName;
 
         try {
-          await sendEmail({
+          if (config.stripe.webhookEmails) await sendEmail({
             to: normalizeEmail(customerEmail),
             subject: `Purchase confirmation from ${config.appName}`,
             html: await orderConfirmationEmail({ customerName, productName, amountTotal, accessUrl: accessUrl ?? undefined }),
             replyTo: config.mail.replyTo,
           });
         } catch (err) {
-          // Non-fatal: profile is already provisioned. Log and continue — returning
-          // 500 here would cause Stripe to retry, but alreadyProvisioned=true on
-          // the retry means the email would be skipped anyway.
           console.error("checkout.session.completed: failed to send confirmation email (non-fatal):", err);
         }
       }
@@ -395,7 +392,7 @@ export async function POST(req: NextRequest) {
           }
 
           // Send at most once per subscription id when cancellation is first scheduled.
-          if (becameCancellationScheduled && !cancellationEmailAlreadySent) {
+          if (becameCancellationScheduled && !cancellationEmailAlreadySent && config.stripe.webhookEmails) {
             const profile = await getProfileByCustomerId(customerId);
             const email = profile?.email ? normalizeEmail(profile.email) : null;
             if (email) {
@@ -447,7 +444,7 @@ export async function POST(req: NextRequest) {
 
           const profile = await getProfileByCustomerId(customerId);
           const email = profile?.email ? normalizeEmail(profile.email) : null;
-          if (email) {
+          if (email && config.stripe.webhookEmails) {
             const customerName = profile?.name?.trim() || "there";
             const productName =
               config.stripe.plans.find((plan) => plan.priceId === cancelledPriceId)?.name;
