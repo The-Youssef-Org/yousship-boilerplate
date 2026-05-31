@@ -53,25 +53,15 @@ const config = {
   appDescription:
     "The production-ready Next.js foundation for your next SaaS — auth, payments, emails and SEO included.",
   domainName: "yousship.com",
-  // Set to false to show only the icon in the navbar and footer.
-  showWordmark: true,
+  showWordmark: true, // Set false for icon-only navbar/footer.
+  logoUrl: "https://yousship.com/logo.png", // Used in transactional emails. Set "" to omit.
 
   // ---------------------------------------------------------------------------
   // THEME
   // ---------------------------------------------------------------------------
-  // Active DaisyUI theme. Change this string to instantly re-skin the whole
-  // app. Must match a theme enabled in `globals.css` (`@plugin "daisyui"`).
-  // Common picks: "light", "dark", "corporate", "synthwave", "dracula",
-  // "luxury", "night", "nord", "sunset", "emerald", "cyberpunk".
-  // Full list: https://daisyui.com/docs/themes/
+  // DaisyUI theme name. Full list: https://daisyui.com/docs/themes/
   theme: "light",
-
-  // Show a light / dark toggle button in the header.
-  // When false: the site always uses `theme` above — no toggle appears.
-  // When true:  a sun/moon button appears in the header and visitors can
-  //             switch between `lightTheme` and `darkTheme`. Their choice
-  //             is saved in localStorage so it survives page refreshes.
-  enableThemeToggle: true,
+  enableThemeToggle: true, // Show light/dark toggle in header.
   lightTheme: "light",
   darkTheme: "dark",
 
@@ -89,18 +79,14 @@ const config = {
   // HERO
   // ---------------------------------------------------------------------------
   hero: {
-    // Set false if you want to remove the "Everything pre-wired" stack cards.
     showBottomStack: false,
-    // Main showcase panel below CTA: image is optional and can be your SaaS screenshot.
     showcase: {
       kicker: "Yousship — Next.js SaaS Boilerplate",
       title: "Stop building infrastructure.",
       titleHighlight: "Start shipping product.",
       description:
         "Auth, Stripe, email, and a polished landing page — wired together and ready on day one. Every hour you would have spent on setup is now spent on the thing only you can build.",
-      // Primary hero button. `primaryCtaPlanName` must match a plan in `stripe.plans`.
-      primaryCtaPlanName: "Advanced",
-      // Example: "/features/hero.png". Recommended format: PNG.
+      primaryCtaPlanName: "Advanced", // Must match a plan name in stripe.plans.
       imageSrc: "/features/hero.png",
       imageAlt: "Product screenshot preview",
     },
@@ -111,26 +97,16 @@ const config = {
   // ---------------------------------------------------------------------------
   socialProof: {
     showLogoCloud: true,
-    // Set true to force all logos to a professional light-gray style.
-    // Set false to keep original logo colors.
-    logoCloudUseMonochrome: true,
-    // Set true for a continuously rolling logo belt. Set false for static aligned logos.
-    logoCloudShouldRoll: true,
-    // Add your logo files in /public and reference them below.
-    // Best format: SVG. PNG also works.
-    // For static logo cloud, there is a limit of up to 5 logos for optimal spacing.
-    // Each item needs:
-    // - src: path to the logo file in /public (e.g. "/logos/vercel.svg")
-    // - scale (optional): per-logo size multiplier if one mark looks too small
+    logoCloudUseMonochrome: true, // true = grayscale logos, false = original colors.
+    logoCloudShouldRoll: true, // true = rolling belt, false = static row.
+    // Add logo files in /public. scale is an optional per-logo size multiplier.
     logoCloudItems: [
       { src: "/next.svg" },
       { src: "/supabase.png", scale: 1.15 },
       { src: "/resend.svg" },
       { src: "/stripe.svg", scale: 1.25 },
-      { src: "/lemon-squeezy.png", },
+      { src: "/lemon-squeezy.png" },
     ] as SocialProofLogo[],
-
-    // Compact avatar cluster shown under the hero CTA.
     showAvatarGroup: true,
     avatarGroupText: "Joined by 2,000+ developers.",
     avatarGroupMembers: [
@@ -161,10 +137,6 @@ const config = {
   // ---------------------------------------------------------------------------
   // BREADCRUMBS
   // ---------------------------------------------------------------------------
-  // Breadcrumbs improve navigation UX and are strongly recommended for SEO.
-  // Search engines use them to understand site structure and generate rich
-  // results in SERPs (structured BreadcrumbList data is injected automatically).
-  // Only disable if your site is a true single-page experience with no hierarchy.
   breadcrumbs: {
     enabled: true,
   },
@@ -172,35 +144,29 @@ const config = {
   // ---------------------------------------------------------------------------
   // PAYMENT PROVIDER
   // ---------------------------------------------------------------------------
-  // Switch between "stripe" and "lemonsqueezy". Only one provider is active at a time.
-  // Make sure the matching env vars and plan IDs are configured below before switching.
-  paymentProvider: "stripe" as PaymentProvider,
+  paymentProvider: "stripe" as PaymentProvider, // "stripe" or "lemonsqueezy"
 
   // ---------------------------------------------------------------------------
   // STRIPE
   // ---------------------------------------------------------------------------
   stripe: {
-    // Set to false to skip the three webhook emails (order confirmation,
-    // cancellation scheduled, subscription ended). Useful if you prefer to use
-    // Stripe's own receipt emails instead of the custom branded ones.
-    webhookEmails: true,
-    // Replace these priceIds with your own from Stripe Dashboard → Products.
-    // Use Test Mode price IDs locally, Live Mode IDs in production.
+    webhookEmails: true, // Set false to use Stripe's built-in receipt emails instead.
+    // Replace priceIds with your own from Stripe Dashboard → Products.
     plans: [
       {
-        name: "Starter", // Must match a pricing card in config.pricing.cards.
+        name: "Starter", // Must match a card in config.pricing.cards.
         priceId: "price_1TdG661Cz9QfLQqqvLVG6jDI",
-        mode: "payment", // "payment" or "subscription"
+        mode: "payment",
       },
       {
-        name: "Advanced", // Must match a pricing card in config.pricing.cards.
+        name: "Advanced",
         priceId: "price_1TdG6g1Cz9QfLQqqyp88UCEV",
-        mode: "subscription", // "payment" or "subscription"
+        mode: "subscription",
       },
       {
-        name: "Pro", // Must match a pricing card in config.pricing.cards.
+        name: "Pro",
         priceId: "price_1TdG761Cz9QfLQqqBS4wu7Rc",
-        mode: "payment", // "payment" or "subscription"
+        mode: "payment",
       },
     ] as PricingPlan[],
   },
@@ -209,29 +175,22 @@ const config = {
   // LEMON SQUEEZY
   // ---------------------------------------------------------------------------
   lemonsqueezy: {
-    // Set to false to use LemonSqueezy's built-in emails instead of the custom
-    // branded ones sent by the webhook. You must then enable the matching emails
-    // in the LemonSqueezy dashboard (Settings → Transactional Emails).
-    // When true (default), disable LS built-in emails to avoid duplicates.
-    webhookEmails: true,
-    // Get your variantId from your Lemon Squeezy dashboard:
-    // Store > Products > select product > select variant > copy the ID from the URL.
-    // Use the same name as the matching pricing card in config.pricing.cards.
+    webhookEmails: true, // Set false to use LemonSqueezy's built-in emails instead.
     plans: [
       {
-        name: "Starter", // Must match a pricing card in config.pricing.cards.
-        variantId: "1711280", // e.g. "1234567"
-        mode: "subscription" as const, // "payment" or "subscription"
+        name: "Starter",
+        variantId: "1711280",
+        mode: "subscription" as const,
       },
       {
-        name: "Advanced", // Must match a pricing card in config.pricing.cards.
-        variantId: "1711293", // e.g. "1234567"
-        mode: "payment" as const, // "payment" or "subscription"
+        name: "Advanced",
+        variantId: "1711293",
+        mode: "payment" as const,
       },
       {
-        name: "Pro", // Must match a pricing card in config.pricing.cards.
-        variantId: "1711305", // e.g. "1234567"
-        mode: "payment" as const, // "payment" or "subscription"
+        name: "Pro",
+        variantId: "1711305",
+        mode: "payment" as const,
       },
     ] as LemonSqueezyPlan[],
   },
@@ -239,15 +198,8 @@ const config = {
   // ---------------------------------------------------------------------------
   // PRICING (DISPLAY COPY)
   // ---------------------------------------------------------------------------
-  // Pricing card content is configured here for fast setup and simple maintenance.
-  // Stripe remains the billing source of truth through `stripe.plans[].priceId`.
-  //
-  // Setup workflow:
-  // 1) Update plan copy and display values below.
-  // 2) Ensure each `planName` matches a plan in `stripe.plans`.
-  // 3) Replace `stripe.plans[].priceId` with your Stripe Price IDs.
-  //
-  // Optional: remove `oldPrice` to hide the strikethrough price.
+  // planName must match a name in stripe.plans (or lemonsqueezy.plans).
+  // Remove oldPrice to hide the strikethrough price.
   pricing: {
     heading: "Flexible pricing for every stage.",
     subheading:
@@ -307,15 +259,10 @@ const config = {
   // AUTH
   // ---------------------------------------------------------------------------
   auth: {
-    // Set false for pure storefront deployments that should hide auth UI in header.
-    showInHeader: true,
-    // Where unauthenticated users get sent.
+    showInHeader: true, // Set false to hide auth UI in header (storefront-only sites).
     loginUrl: "/signin",
-    // Where authenticated users land after login / from "Get Started" buttons.
-    callbackUrl: "/dashboard",
-    // The main private area. Used in emails and Stripe success URLs.
+    callbackUrl: "/dashboard", // Where users land after login.
     dashboardUrl: "/dashboard",
-    // Where guest checkout returns after a successful payment.
     purchaseSuccessUrl: "/purchase-successful",
   },
 
@@ -323,8 +270,6 @@ const config = {
   // SOCIAL
   // ---------------------------------------------------------------------------
   social: {
-    // Public social links used in the footer.
-    // Add/remove any platform by editing this list.
     links: [
       { label: "X", url: "https://x.com/yousship" },
       { label: "GitHub", url: "https://github.com/yousship" },
@@ -339,10 +284,7 @@ const config = {
   // ---------------------------------------------------------------------------
   mail: {
     supportEmail: "support@yousship.com",
-    // Must match a verified sender domain in Resend (e.g. "Acme <hello@mail.yourdomain.com>").
-    // Do NOT use onboarding@resend.dev in production — emails will be rejected.
-    fromAdmin: "Yousship <onboarding@resend.dev>",
-    // Replies to your emails will go here. Can be the same as supportEmail.
+    fromAdmin: "Yousship <onboarding@resend.dev>", // Must match a verified sender in Resend.
     replyTo: "support@yousship.com",
   },
 } as const;

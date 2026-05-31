@@ -18,16 +18,18 @@ export const EmailLayout = ({
       <Container style={card}>
         <Section style={brandBar}>
           <Row>
-            <Column style={{ width: "32px", verticalAlign: "middle" }}>
-              <Img
-                src={`https://${config.domainName}/yousship.png`}
-                width="28"
-                height="28"
-                alt={config.appName}
-                style={{ display: "block" }}
-              />
-            </Column>
-            <Column style={{ verticalAlign: "middle", paddingLeft: "10px" }}>
+            {(config.logoUrl as string) && (
+              <Column style={{ width: "32px", verticalAlign: "middle" }}>
+                <Img
+                  src={config.logoUrl as string}
+                  width="28"
+                  height="28"
+                  alt={config.appName}
+                  style={{ display: "block" }}
+                />
+              </Column>
+            )}
+            <Column style={{ verticalAlign: "middle", paddingLeft: (config.logoUrl as string) ? "10px" : "0" }}>
               <Text style={brandText}>{config.appName}</Text>
             </Column>
           </Row>

@@ -15,7 +15,6 @@ export const SubscriptionCancellationScheduledEmail = ({
   endDate?: string;
 }) => (
   <EmailLayout preview={`Your ${config.appName} subscription will cancel at period end`}>
-    <Text style={label}>CANCELLATION SCHEDULED</Text>
     <Text style={h1}>We&apos;ve received your cancellation.</Text>
     <Text style={text}>
       Hi {customerName}, your{productName ? ` ${productName} ` : " "}subscription is set to cancel
@@ -35,15 +34,6 @@ export const SubscriptionCancellationScheduledEmail = ({
     <Text style={signature}>— The {config.appName} team</Text>
   </EmailLayout>
 );
-
-const label: React.CSSProperties = {
-  margin: "0 0 10px",
-  fontSize: "11px",
-  fontWeight: "700",
-  color: "#4A93C8",
-  letterSpacing: "0.08em",
-  fontFamily: font,
-};
 
 const h1: React.CSSProperties = {
   margin: "0 0 20px",

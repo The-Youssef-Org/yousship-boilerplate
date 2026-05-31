@@ -17,7 +17,6 @@ export const OrderConfirmationEmail = ({
   accessUrl?: string;
 }) => (
   <EmailLayout preview={`Payment confirmed — ${productName}`}>
-    <Text style={label}>PAYMENT CONFIRMED</Text>
     <Text style={h1}>You&apos;re all set{customerName ? `, ${customerName}` : ""}.</Text>
     <Text style={text}>
       Thank you for choosing {config.appName} — we&apos;re genuinely excited to have you
@@ -50,15 +49,6 @@ export const OrderConfirmationEmail = ({
     <Text style={signature}>— The {config.appName} team</Text>
   </EmailLayout>
 );
-
-const label: React.CSSProperties = {
-  margin: "0 0 10px",
-  fontSize: "11px",
-  fontWeight: "700",
-  color: "#4A93C8",
-  letterSpacing: "0.08em",
-  fontFamily: font,
-};
 
 const h1: React.CSSProperties = {
   margin: "0 0 20px",

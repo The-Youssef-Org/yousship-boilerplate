@@ -22,7 +22,6 @@ export const LeadMagnetEmail = ({
   resourceUrl?: string;
 }) => (
   <EmailLayout preview={`${heading} — ${config.appName}`}>
-    <Text style={label}>YOU&apos;RE IN</Text>
     <Text style={h1}>{heading}</Text>
     <Text style={text}>{subheading}</Text>
 
@@ -57,15 +56,6 @@ export const LeadMagnetEmail = ({
     <Text style={signature}>— The {config.appName} team</Text>
   </EmailLayout>
 );
-
-const label: React.CSSProperties = {
-  margin: "0 0 10px",
-  fontSize: "11px",
-  fontWeight: "700",
-  color: "#4A93C8",
-  letterSpacing: "0.08em",
-  fontFamily: font,
-};
 
 const h1: React.CSSProperties = {
   margin: "0 0 16px",

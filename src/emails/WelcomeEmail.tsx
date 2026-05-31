@@ -10,7 +10,6 @@ export const WelcomeEmail = ({ name }: { name?: string }) => {
 
   return (
     <EmailLayout preview={`Welcome to ${config.appName} — we're glad you're here.`}>
-      <Text style={label}>WELCOME</Text>
       <Text style={h1}>{greeting}</Text>
       <Text style={text}>
         We&apos;re really glad you joined {config.appName}. Your account is ready — go ahead
@@ -22,15 +21,6 @@ export const WelcomeEmail = ({ name }: { name?: string }) => {
       <Text style={signature}>— The {config.appName} team</Text>
     </EmailLayout>
   );
-};
-
-const label: React.CSSProperties = {
-  margin: "0 0 10px",
-  fontSize: "11px",
-  fontWeight: "700",
-  color: "#4A93C8",
-  letterSpacing: "0.08em",
-  fontFamily: font,
 };
 
 const h1: React.CSSProperties = {

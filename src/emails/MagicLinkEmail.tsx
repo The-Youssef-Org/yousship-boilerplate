@@ -7,7 +7,6 @@ const font = '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif';
 
 export const MagicLinkEmail = ({ confirmationUrl }: { confirmationUrl: string }) => (
   <EmailLayout preview={`Sign in to ${config.appName}`}>
-    <Text style={label}>SIGN-IN LINK</Text>
     <Text style={h1}>Here&apos;s your magic link</Text>
     <Text style={text}>
       Click the button below to sign in to {config.appName}. This link expires in{" "}
@@ -24,15 +23,6 @@ export const MagicLinkEmail = ({ confirmationUrl }: { confirmationUrl: string })
     </Section>
   </EmailLayout>
 );
-
-const label: React.CSSProperties = {
-  margin: "0 0 10px",
-  fontSize: "11px",
-  fontWeight: "700",
-  color: "#4A93C8",
-  letterSpacing: "0.08em",
-  fontFamily: font,
-};
 
 const h1: React.CSSProperties = {
   margin: "0 0 20px",
