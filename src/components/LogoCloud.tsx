@@ -49,7 +49,7 @@ const LogoCloud = () => {
 
   // Watch data-theme on <html> so the filter updates when the toggle fires
   const [isLightTheme, setIsLightTheme] = useState(
-    () => config.theme !== config.darkTheme
+    () => (config.theme as string) !== config.darkTheme
   );
 
   useEffect(() => {
