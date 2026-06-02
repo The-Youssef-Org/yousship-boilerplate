@@ -46,7 +46,8 @@ const LogoCloud = () => {
   // Watch data-theme on <html> so the filter updates when the toggle fires.
   const [isLightTheme, setIsLightTheme] = useState(() => {
     if (typeof document === "undefined") {
-      return (config.theme as string) !== config.darkTheme;
+      const initialTheme = config.enableThemeToggle ? config.darkTheme : config.theme;
+      return (initialTheme as string) !== config.darkTheme;
     }
     return document.documentElement.getAttribute("data-theme") !== config.darkTheme;
   });
