@@ -371,9 +371,11 @@ export async function POST(req: NextRequest) {
           : null;
       const cancellationEmailAlreadySent =
         subscription.metadata?.cancellation_scheduled_email_sent === "true";
+      const isCancellationScheduled = subscription.cancel_at_period_end === true;
       const becameCancellationScheduled =
-        subscription.cancel_at_period_end === true &&
-        previousAttributes.cancel_at_period_end === false;
+        isCancellationScheduled &&
+        (previousAttributes.cancel_at_period_end === false ||
+          typeof previousAttributes.cancel_at_period_end === "undefined");
 
       if (customerId) {
         try {
