@@ -101,6 +101,7 @@ const DeleteAccount = ({ email }: { email: string }) => {
                 backgroundColor:
                   loading || confirm !== CONFIRM_PHRASE ? "#fee2e2" : "#dc2626",
                 color: loading || confirm !== CONFIRM_PHRASE ? "#991b1b" : "#ffffff",
+                cursor: loading || confirm !== CONFIRM_PHRASE ? "default" : "pointer",
               }}
             >
               {loading ? "Deleting..." : "Delete account"}

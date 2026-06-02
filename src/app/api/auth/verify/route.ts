@@ -3,7 +3,6 @@ import { createClient } from "@/libs/supabase/server";
 import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import config from "@/config";
-import type { Profile } from "@/libs/types";
 
 const normalizeNextPath = (rawNext: string | null, fallback: string) => {
   if (!rawNext) return fallback;
@@ -13,6 +12,14 @@ const normalizeNextPath = (rawNext: string | null, fallback: string) => {
 };
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
+  if (!createdAt || !lastSignInAt) return false;
+  const createdMs = Date.parse(createdAt);
+  const lastSignInMs = Date.parse(lastSignInAt);
+  if (Number.isNaN(createdMs) || Number.isNaN(lastSignInMs)) return false;
+  return Math.abs(lastSignInMs - createdMs) <= 120000;
+};
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -46,15 +53,16 @@ export async function GET(request: NextRequest) {
 
   const normalizedEmail = user.email ? normalizeEmail(user.email) : null;
 
-  // Welcome email should only fire when this email is first added to profiles.
-  let hadProfileWithEmail = false;
+  // Suppress welcome only if this email already belongs to another profile.
+  let hadOtherProfileWithEmail = false;
   if (normalizedEmail) {
     const { data: existingByEmail } = await supabase
       .from("profiles")
       .select("id")
       .eq("email", normalizedEmail)
-      .maybeSingle<Pick<Profile, "id">>();
-    hadProfileWithEmail = !!existingByEmail?.id;
+      .limit(20);
+    hadOtherProfileWithEmail =
+      (existingByEmail ?? []).some((row) => row.id !== user.id);
   }
 
   // Upsert profile row.
@@ -62,7 +70,11 @@ export async function GET(request: NextRequest) {
     .from("profiles")
     .upsert({ id: user.id, email: normalizedEmail ?? user.email }, { onConflict: "id" });
 
-  if (normalizedEmail && !hadProfileWithEmail) {
+  if (
+    normalizedEmail &&
+    isFirstSignIn(user.created_at, user.last_sign_in_at) &&
+    !hadOtherProfileWithEmail
+  ) {
     const name =
       (user.user_metadata?.given_name as string | undefined) ??
       (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??

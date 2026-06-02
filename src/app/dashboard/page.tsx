@@ -122,12 +122,24 @@ const getSubscriptionStatus = async (
 
   if (!resolvedCustomerId) return null;
 
-  try {
-    const subscriptions = await stripe.subscriptions.list({
-      customer: resolvedCustomerId,
+  const fetchSubscriptions = (customer: string) =>
+    stripe.subscriptions.list({
+      customer,
       status: "all",
       limit: 10,
     });
+
+  try {
+    let subscriptions = await fetchSubscriptions(resolvedCustomerId);
+
+    // Stale customer_id can happen; retry by email and use that customer's subscriptions.
+    if (!subscriptions.data.length && email) {
+      const customers = await stripe.customers.list({ email, limit: 1 });
+      const fallbackCustomerId = customers.data[0]?.id ?? null;
+      if (fallbackCustomerId && fallbackCustomerId !== resolvedCustomerId) {
+        subscriptions = await fetchSubscriptions(fallbackCustomerId);
+      }
+    }
 
     const accessLike = (sub: { status: string; cancel_at_period_end: boolean }) =>
       sub.status === "active" ||

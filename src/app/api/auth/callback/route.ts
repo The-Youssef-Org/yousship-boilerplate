@@ -14,6 +14,14 @@ const normalizeNextPath = (rawNext: string | null, fallback: string) => {
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
+const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
+  if (!createdAt || !lastSignInAt) return false;
+  const createdMs = Date.parse(createdAt);
+  const lastSignInMs = Date.parse(lastSignInAt);
+  if (Number.isNaN(createdMs) || Number.isNaN(lastSignInMs)) return false;
+  return Math.abs(lastSignInMs - createdMs) <= 120000;
+};
+
 const sendWelcome = async (email: string, firstName: string) => {
   await sendEmail({
     to: email,
@@ -35,15 +43,16 @@ const syncProfileFromAuthMetadata = async (
 
   const normalizedEmail = user.email ? normalizeEmail(user.email) : undefined;
 
-  // Welcome emails should only be sent once: when the email first appears in profiles.
-  let hadProfileWithEmail = false;
+  // Suppress welcome only if this email already belongs to another profile.
+  let hadOtherProfileWithEmail = false;
   if (normalizedEmail) {
     const { data: existingByEmail } = await supabase
       .from("profiles")
       .select("id")
       .eq("email", normalizedEmail)
-      .maybeSingle<Pick<Profile, "id">>();
-    hadProfileWithEmail = !!existingByEmail?.id;
+      .limit(20);
+    hadOtherProfileWithEmail =
+      (existingByEmail ?? []).some((row) => row.id !== user.id);
   }
 
   const { data: profile } = await supabase
@@ -85,7 +94,10 @@ const syncProfileFromAuthMetadata = async (
     "there";
 
   return {
-    shouldSendWelcome: !!normalizedEmail && !hadProfileWithEmail,
+    shouldSendWelcome:
+      !!normalizedEmail &&
+      isFirstSignIn(user.created_at, user.last_sign_in_at) &&
+      !hadOtherProfileWithEmail,
     welcomeEmailTo: normalizedEmail,
     welcomeName,
   };

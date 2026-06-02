@@ -55,6 +55,41 @@ const getProfileByCustomerId = async (customerId: string) => {
   return data;
 };
 
+const getProfileByEmail = async (email: string) => {
+  const admin = getAdmin();
+  const normalized = normalizeEmail(email);
+  const { data, error } = await admin
+    .from("profiles")
+    .select("email, name, plan_id")
+    .eq("email", normalized)
+    .maybeSingle<{ email: string | null; name: string | null; plan_id: string | null }>();
+  if (error) throw error;
+  return data;
+};
+
+const backfillCustomerIdByEmail = async (customerId: string, email: string) => {
+  const admin = getAdmin();
+  const normalized = normalizeEmail(email);
+  await admin
+    .from("profiles")
+    .update({ customer_id: customerId, payment_provider: "stripe" })
+    .eq("email", normalized);
+};
+
+const resolveProfileForStripeCustomer = async (customerId: string) => {
+  const byCustomerId = await getProfileByCustomerId(customerId);
+  if (byCustomerId) return byCustomerId;
+
+  const customer = await stripe.customers.retrieve(customerId);
+  if (customer.deleted || !customer.email) return null;
+
+  const byEmail = await getProfileByEmail(customer.email);
+  if (!byEmail) return null;
+
+  await backfillCustomerIdByEmail(customerId, customer.email);
+  return byEmail;
+};
+
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
 const formatUnixDate = (unixSeconds: number | null | undefined) => {
@@ -393,7 +428,7 @@ export async function POST(req: NextRequest) {
 
           // Send at most once per subscription id when cancellation is first scheduled.
           if (becameCancellationScheduled && !cancellationEmailAlreadySent && config.stripe.webhookEmails) {
-            const profile = await getProfileByCustomerId(customerId);
+            const profile = await resolveProfileForStripeCustomer(customerId);
             const email = profile?.email ? normalizeEmail(profile.email) : null;
             if (email) {
               const customerName = profile?.name?.trim() || "there";
@@ -442,7 +477,7 @@ export async function POST(req: NextRequest) {
         try {
           await revokeAccess(customerId);
 
-          const profile = await getProfileByCustomerId(customerId);
+          const profile = await resolveProfileForStripeCustomer(customerId);
           const email = profile?.email ? normalizeEmail(profile.email) : null;
           if (email && config.stripe.webhookEmails) {
             const customerName = profile?.name?.trim() || "there";

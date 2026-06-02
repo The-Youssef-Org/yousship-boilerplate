@@ -40,7 +40,8 @@ const pickBestCustomerId = async (
 
         return {
           id,
-          score: (hasPlanMatch ? 100 : 0) + (hasLiveLike ? 10 : 0),
+          // Prefer customers with live-like subscriptions first, then plan matching.
+          score: (hasLiveLike ? 100 : 0) + (hasPlanMatch ? 10 : 0),
         };
       } catch {
         return { id, score: -1 };
