@@ -1,84 +1,60 @@
-# 🚀 Yousship Boilerplate
+# Next.js SaaS Boilerplate
 
-Welcome to **Yousship**! You now have access to the ultimate foundation for your next SaaS project. This boilerplate is designed to save you weeks of setup time so you can focus on building your features and making sales.
+Production-ready starter for SaaS apps using Next.js (App Router), Supabase, Stripe/Lemon Squeezy, and Resend.
 
----
+## Quick Start
 
-## 🛠️ Step 1: Getting Started
+1. Install dependencies:
 
-Since this is a private repository, **do not fork this repository**. To start your own project, follow these steps to "detach" the code and move it to your own private GitHub account:
-
-1. **Create a NEW private repository** on your personal GitHub account (e.g., `my-new-saas`).
-2. **Clone this boilerplate** to your local machine:
-   ```bash
-   git clone https://github.com/Built-by-Youssef/yousship-boilerplate.git my-app
-   ```
-3. **Enter the folder and remove the link to the original repo**:
-   ```bash
-   cd my-app
-   rm -rf .git
-   ```
-4. **Initialize your own git history**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit from YouSShip"
-   ```
-5. **Add your new repository as the origin and push**:
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_NEW_REPO.git
-   git branch -M main
-   git push -u origin main
-   ```
-
----
-
-## ⚙️ Step 2: Configuration
-
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   # or
-   pnpm install
-   # or
-   yarn install
-   ```
-
-2. **Setup Environment Variables**:
-   - Copy the example file: `cp .env.example .env.local`
-   - Open `.env.local` and fill in your credentials (Supabase, Stripe etc.).
-
-3. **Run the Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to see your app running.
-
----
-
-## 📦 What's Inside?
-
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) + [daisyUI](https://daisyui.com/)
-- **Database & Auth:** [Supabase](https://supabase.com/) (PostgreSQL, Google OAuth, Magic Links)
-- **Payments:** [Stripe](https://stripe.com/) (Checkout + Webhooks)
-- **Emails:** [Resend](https://resend.com/) (Transactional Emails)
-
----
-
-## 📜 License & Usage
-
-- Your purchase grants you a license to use this boilerplate for **unlimited personal and commercial projects**.
-- **Redistribution is strictly prohibited.** You cannot resell this boilerplate or share this private repository with others.
-- You have lifetime access to updates made to this repository.
-
----
-
-## 🆘 Support
-
-If you run into any issues or have questions, feel free to reach out:
-- **Email:** hello@yousship.com
-- **Discord/Twitter:** Yousship
-
-Happy building! 🚀
+```bash
+npm install
 ```
+
+2. Create local environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Fill in required credentials in `.env.local`:
+- Supabase URL and keys
+- Stripe keys and webhook secret (if using Stripe)
+- Resend API key (if sending emails)
+
+4. Run the app:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000.
+
+## Brand Setup Checklist
+
+Update these fields before launch:
+- `src/config.ts`
+  - `appName`
+  - `domainName`
+  - `logoUrl`
+  - `social.links`
+  - `mail.supportEmail`
+  - `mail.fromAdmin`
+  - `mail.replyTo`
+
+Also review:
+- `src/blog/_assets/content.ts` (author names and copy)
+- legal pages in `src/app/privacy-policy/page.tsx` and `src/app/tos/page.tsx`
+
+## Included Stack
+
+- Next.js (App Router)
+- Tailwind CSS + daisyUI
+- Supabase (auth + database)
+- Stripe and Lemon Squeezy integrations
+- Resend email integration
+
+## Notes
+
+- `npm run build` also generates sitemap via `next-sitemap`.
+- `NEXT_PUBLIC_SITE_URL` must be set for sitemap generation.
+- Stripe and Lemon Squeezy plan entries are configured in `src/config.ts`.

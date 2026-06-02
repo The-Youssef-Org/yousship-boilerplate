@@ -229,7 +229,6 @@ export async function POST(req: NextRequest) {
           ? session.metadata.userId
           : null;
       let resolvedUserId = metadataUserId;
-      let autoCreated = false;
 
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
       const purchasedPriceId = lineItems.data[0]?.price?.id ?? null;
@@ -275,7 +274,6 @@ export async function POST(req: NextRequest) {
         if (!resolvedUserId && customerEmail) {
           const created = await ensureUserForPurchasedEmail(customerEmail);
           resolvedUserId = created.userId;
-          autoCreated = created.autoCreated;
         }
 
         if (!resolvedUserId) {

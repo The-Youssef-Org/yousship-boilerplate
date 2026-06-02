@@ -5,6 +5,13 @@ import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import type { Profile } from "@/libs/types";
 
+const normalizeNextPath = (rawNext: string | null, fallback: string) => {
+  if (!rawNext) return fallback;
+  // Allow only same-origin relative paths.
+  if (!rawNext.startsWith("/") || rawNext.startsWith("//")) return fallback;
+  return rawNext;
+};
+
 const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
   if (!createdAt || !lastSignInAt) return false;
   const createdMs = Date.parse(createdAt);
@@ -81,7 +88,7 @@ const syncProfileFromAuthMetadata = async (
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? config.auth.callbackUrl;
+  const next = normalizeNextPath(searchParams.get("next"), config.auth.callbackUrl);
 
   if (code) {
     const supabase = await createClient();

@@ -1,7 +1,14 @@
 /** @type {import('next-sitemap').IConfig} */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+if (!siteUrl) {
+  throw new Error(
+    "NEXT_PUBLIC_SITE_URL is required for sitemap generation. Example: https://yourdomain.com",
+  );
+}
+
 module.exports = {
-  // TODO: Replace with your production domain before launching.
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://yourdomain.com",
+  siteUrl,
   generateRobotsTxt: true,
   // Exclude pages that should not be indexed.
   exclude: ["/dashboard", "/dashboard/*", "/profile", "/api/*"],

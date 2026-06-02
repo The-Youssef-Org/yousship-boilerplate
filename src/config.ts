@@ -45,16 +45,20 @@ export type AvatarGroupMember = {
   alt: string;
 };
 
+const appName = "Your App";
+const domainName = "yourdomain.com";
+const supportEmail = `support@${domainName}`;
+
 const config = {
   // ---------------------------------------------------------------------------
   // BRAND
   // ---------------------------------------------------------------------------
-  appName: "Yousship",
+  appName,
   appDescription:
-    "The production-ready Next.js foundation for your next SaaS — auth, payments, emails and SEO included.",
-  domainName: "yousship.com",
+    "The production-ready Next.js foundation for your next SaaS: auth, payments, emails, and SEO included.",
+  domainName,
   showWordmark: true, // Set false for icon-only navbar/footer.
-  logoUrl: "https://yousship.com/logo.png", // Used in transactional emails. Set "" to omit.
+  logoUrl: "", // Used in transactional emails. Set an absolute URL, or "" to show app name only.
 
   // ---------------------------------------------------------------------------
   // THEME
@@ -70,7 +74,7 @@ const config = {
   // ---------------------------------------------------------------------------
   announcementBar: {
     show: false,
-    text: "Early bird discount is live: save 20% this week.",
+    text: "Launch week offer: save 20% this week.",
     ctaText: "See pricing",
     ctaHref: "/#pricing",
   },
@@ -81,7 +85,7 @@ const config = {
   hero: {
     showBottomStack: false,
     showcase: {
-      kicker: "Yousship — Next.js SaaS Boilerplate",
+      kicker: `${appName} — Next.js SaaS Boilerplate`,
       title: "Stop building infrastructure.",
       titleHighlight: "Start shipping product.",
       description:
@@ -271,11 +275,9 @@ const config = {
   // ---------------------------------------------------------------------------
   social: {
     links: [
-      { label: "X", url: "https://x.com/yousship" },
-      { label: "GitHub", url: "https://github.com/yousship" },
-      { label: "Facebook", url: "https://facebook.com/yousship" },
-      { label: "Instagram", url: "https://instagram.com/yousship" },
-      { label: "TikTok", url: "https://www.tiktok.com/@yousship" },
+      { label: "X", url: "https://x.com/yourhandle" },
+      { label: "GitHub", url: "https://github.com/yourhandle" },
+      { label: "LinkedIn", url: "https://www.linkedin.com/company/yourcompany" },
     ],
   },
 
@@ -283,9 +285,9 @@ const config = {
   // CONTACT
   // ---------------------------------------------------------------------------
   mail: {
-    supportEmail: "support@yousship.com",
-    fromAdmin: "Yousship <onboarding@resend.dev>", // Must match a verified sender in Resend.
-    replyTo: "support@yousship.com",
+    supportEmail,
+    fromAdmin: `${appName} <onboarding@resend.dev>`, // Replace with a verified sender domain before launch.
+    replyTo: supportEmail,
   },
 } as const;
 

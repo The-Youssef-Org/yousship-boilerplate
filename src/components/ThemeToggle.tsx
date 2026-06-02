@@ -1,20 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import config from "@/config";
 
 const ThemeToggle = () => {
-  // Initialize from config so server and client render identically (no hydration mismatch).
-  // useEffect corrects it to the actual data-theme before the user can interact.
-  const [isDark, setIsDark] = useState<boolean>(
-    config.enableThemeToggle || (config.theme as string) === config.darkTheme,
-  );
-
-  useEffect(() => {
-    setIsDark(
-      document.documentElement.getAttribute("data-theme") === config.darkTheme,
-    );
-  }, []);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof document === "undefined") {
+      return (config.theme as string) === config.darkTheme;
+    }
+    return document.documentElement.getAttribute("data-theme") === config.darkTheme;
+  });
 
   const toggle = () => {
     const next = isDark ? config.lightTheme : config.darkTheme;

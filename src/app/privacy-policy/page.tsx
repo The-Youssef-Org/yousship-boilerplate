@@ -13,6 +13,8 @@ export const metadata = getSEOTags({
 const lastUpdated = "May 16, 2026";
 
 export default function PrivacyPage() {
+  const websiteUrl = `https://${config.domainName}`;
+
   return (
     <>
       <Header />
@@ -32,25 +34,82 @@ export default function PrivacyPage() {
         </div>
 
         <div className="prose prose-headings:font-semibold prose-headings:tracking-tight prose-h2:mt-10 prose-h2:text-xl prose-p:text-base-content/75 prose-li:text-base-content/75 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline max-w-none">
-          {/*
-            TODO: Generate your Privacy Policy with ChatGPT using the prompt below,
-            then replace this comment block with the generated content.
+          <p>
+            This Privacy Policy explains how {config.appName} collects, uses, and protects
+            personal information when you use {websiteUrl} and related services.
+          </p>
 
-            PROMPT:
-            Please write a Privacy Policy for my SaaS app with these details:
-            - App name: [Your App Name]
-            - Description: [What your app does]
-            - Website: [Your website URL]
-            - Contact email: [Your support email]
-            - Services used: Supabase (auth & database), Stripe (payments), Resend (email)
-            - Country/Jurisdiction: [Your country]
+          <h2>Information We Collect</h2>
+          <ul>
+            <li>Account information such as name and email address.</li>
+            <li>Billing and transaction records required to process purchases.</li>
+            <li>Technical and usage data such as device, browser, and interaction logs.</li>
+            <li>Support information you provide when contacting us.</li>
+          </ul>
 
-            Include sections for: information we collect, how we use it, sharing
-            with third parties, cookies, data retention, security, user rights
-            (GDPR/CCPA as applicable), children's privacy, policy changes, and contact.
-          */}
-          <p className="text-base-content/50 italic">
-            Privacy Policy coming soon. Replace this placeholder with your generated content.
+          <h2>How We Use Information</h2>
+          <ul>
+            <li>To provide, secure, and improve the service.</li>
+            <li>To authenticate users and manage accounts.</li>
+            <li>To process payments and deliver purchase confirmations.</li>
+            <li>To respond to support requests and service communications.</li>
+            <li>To comply with legal obligations and prevent fraud or abuse.</li>
+          </ul>
+
+          <h2>Third-Party Services</h2>
+          <p>
+            We use trusted vendors to operate core functionality, including Supabase (auth and
+            database), Stripe and Lemon Squeezy (payments), and Resend (transactional email).
+            These providers process data under their own privacy terms.
+          </p>
+
+          <h2>Cookies and Similar Technologies</h2>
+          <p>
+            We may use cookies and similar technologies for authentication, session continuity,
+            security, and analytics. You can control cookies through your browser settings.
+          </p>
+
+          <h2>Data Retention</h2>
+          <p>
+            We retain personal data only as long as necessary to provide services, meet legal
+            obligations, resolve disputes, and enforce agreements.
+          </p>
+
+          <h2>Security</h2>
+          <p>
+            We apply commercially reasonable technical and organizational safeguards designed to
+            protect personal information. No system is fully immune from risk, and we cannot
+            guarantee absolute security.
+          </p>
+
+          <h2>Your Rights</h2>
+          <p>
+            Depending on your location, you may have rights to access, correct, delete, or export
+            your personal data, and to object to certain processing. To make a request, contact us
+            at <a href={`mailto:${config.mail.supportEmail}`}>{config.mail.supportEmail}</a>.
+          </p>
+
+          <h2>Children&apos;s Privacy</h2>
+          <p>
+            The service is not directed to children under 13 (or the minimum age required by local
+            law), and we do not knowingly collect personal information from children.
+          </p>
+
+          <h2>Changes to This Policy</h2>
+          <p>
+            We may update this policy from time to time. Material changes will be posted on this
+            page with a revised &quot;Last updated&quot; date.
+          </p>
+
+          <h2>Contact</h2>
+          <p>
+            If you have privacy questions, contact us at{" "}
+            <a href={`mailto:${config.mail.supportEmail}`}>{config.mail.supportEmail}</a>.
+          </p>
+
+          <p className="text-sm text-base-content/50">
+            This policy is a baseline template and may need legal review for your jurisdiction and
+            business model.
           </p>
         </div>
       </main>

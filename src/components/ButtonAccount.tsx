@@ -21,7 +21,7 @@ const ButtonAccount = ({
   const [open, setOpen] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,10 +32,6 @@ const ButtonAccount = ({
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  useEffect(() => {
-    setAvatarLoadFailed(false);
-  }, [user?.avatarUrl]);
-
   const initial =
     user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? "U";
   const normalizedAvatarUrl = user?.avatarUrl?.trim() ?? "";
@@ -43,7 +39,7 @@ const ButtonAccount = ({
     normalizedAvatarUrl.length > 0 &&
     /^https?:\/\//i.test(normalizedAvatarUrl) &&
     normalizedAvatarUrl.toLowerCase() !== "null";
-  const showAvatar = hasAvatarUrl && !avatarLoadFailed;
+  const showAvatar = hasAvatarUrl && failedAvatarUrl !== normalizedAvatarUrl;
 
   const handleSignOut = async () => {
     if (signingOut) return;
@@ -68,7 +64,7 @@ const ButtonAccount = ({
           : "/api/stripe/create-portal";
       const res = await fetch(endpoint, { method: "POST" });
       const { url } = (await res.json().catch(() => ({}))) as { url?: string };
-      if (url) window.location.href = url;
+      if (url) window.location.assign(url);
     } finally {
       setBillingLoading(false);
     }
@@ -86,7 +82,7 @@ const ButtonAccount = ({
             src={normalizedAvatarUrl}
             alt={user?.name ?? "Avatar"}
             className="h-7 w-7 rounded-full object-cover"
-            onError={() => setAvatarLoadFailed(true)}
+            onError={() => setFailedAvatarUrl(normalizedAvatarUrl)}
           />
         ) : (
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-white">

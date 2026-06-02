@@ -55,6 +55,19 @@ const getAdmin = () => {
 // ---------------------------------------------------------------------------
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
+const maskEmail = (email: string) => {
+  const normalized = normalizeEmail(email);
+  const [local, domain] = normalized.split("@");
+  if (!local || !domain) return "hidden";
+  const visible = local.slice(0, 2);
+  return `${visible}${"*".repeat(Math.max(local.length - 2, 1))}@${domain}`;
+};
+
+const maskId = (id: string | null | undefined) => {
+  if (!id) return "none";
+  return `***${id.slice(-4)}`;
+};
+
 const findAuthUserIdByEmail = async (email: string): Promise<string | null> => {
   const admin = getAdmin();
   const normalizedEmail = normalizeEmail(email);
@@ -172,7 +185,9 @@ const provisionPurchase = async ({
 }) => {
   const admin = getAdmin();
 
-  console.log(`[ls/webhook] provisionPurchase — email=${customerEmail} customerId=${customerId} variantId=${variantId} metadataUserId=${metadataUserId}`);
+  console.log(
+    `[ls/webhook] provisionPurchase start — email=${maskEmail(customerEmail)} customer=${maskId(customerId)} variant=${variantId} metadataUser=${maskId(metadataUserId)}`,
+  );
 
   const plan = config.lemonsqueezy.plans.find((p) => p.variantId === variantId);
   if (!plan) {
@@ -187,16 +202,20 @@ const provisionPurchase = async ({
     console.log(`[ls/webhook] No metadataUserId — looking up user by email`);
     const created = await ensureUserForPurchasedEmail(customerEmail);
     resolvedUserId = created.userId;
-    console.log(`[ls/webhook] Resolved userId=${resolvedUserId} autoCreated=${created.autoCreated}`);
+    console.log(
+      `[ls/webhook] Resolved profile user=${maskId(resolvedUserId)} autoCreated=${created.autoCreated}`,
+    );
   } else {
-    console.log(`[ls/webhook] Using metadataUserId=${resolvedUserId}`);
+    console.log(`[ls/webhook] Using metadata user=${maskId(resolvedUserId)}`);
   }
 
   if (!resolvedUserId) throw new Error("Could not resolve user id");
 
   // Single atomic upsert — sets every plan field in one statement so there is
   // no silent "0 rows updated" failure that would leave the profile unchanged.
-  console.log(`[ls/webhook] Upserting profile id=${resolvedUserId} → customer_id=${customerId} plan_id=${variantId} payment_provider=lemonsqueezy has_access=true`);
+  console.log(
+    `[ls/webhook] Upserting profile user=${maskId(resolvedUserId)} customer=${maskId(customerId)} plan=${variantId}`,
+  );
   const { error: upsertError } = await admin
     .from("profiles")
     .upsert(
@@ -214,7 +233,7 @@ const provisionPurchase = async ({
   if (upsertError) {
     throw new Error(`[ls/webhook] Failed to upsert profile for user ${resolvedUserId}: ${upsertError.message}`);
   }
-  console.log(`[ls/webhook] Profile upsert complete for user ${resolvedUserId}`);
+  console.log(`[ls/webhook] Profile upsert complete for user ${maskId(resolvedUserId)}`);
 
   await setProfileNameIfEmpty(resolvedUserId, customerName);
 
@@ -228,8 +247,7 @@ const provisionPurchase = async ({
       }
     }
 
-    // Normalize email before sending — Resend's test mode does a case-sensitive
-    // match, so "Youssef@..." would be rejected when the account is "youssef@...".
+    // Normalize email before sending — Resend test mode can fail with case mismatches.
     try {
       await sendEmail({
         to: normalizeEmail(customerEmail),
@@ -241,7 +259,7 @@ const provisionPurchase = async ({
         }),
         replyTo: config.mail.replyTo,
       });
-      console.log(`[ls/webhook] Confirmation email sent to ${normalizeEmail(customerEmail)}`);
+      console.log(`[ls/webhook] Confirmation email sent to ${maskEmail(customerEmail)}`);
     } catch (err) {
       // Log but do NOT re-throw. The profile is already provisioned — if this error
       // bubbles up we return 500, LS retries, alreadyProvisioned=true on retry,
@@ -368,7 +386,9 @@ export async function POST(req: NextRequest) {
             }),
             replyTo: config.mail.replyTo,
           });
-          console.log(`[ls/webhook] Cancellation scheduled email sent to ${customerEmail}`);
+          console.log(
+            `[ls/webhook] Cancellation scheduled email sent to ${maskEmail(customerEmail)}`,
+          );
         } catch (err) {
           console.error("[ls/webhook] Failed to send cancellation scheduled email (non-fatal):", err);
         }
@@ -400,7 +420,9 @@ export async function POST(req: NextRequest) {
               }),
               replyTo: config.mail.replyTo,
             });
-            console.log(`[ls/webhook] Subscription expired email sent to ${customerEmail}`);
+            console.log(
+              `[ls/webhook] Subscription expired email sent to ${maskEmail(customerEmail)}`,
+            );
           } catch (err) {
             console.error("[ls/webhook] Failed to send subscription expired email (non-fatal):", err);
           }
@@ -420,7 +442,9 @@ export async function POST(req: NextRequest) {
 
         if (attrs.billing_reason === "renewal") {
           // Renewal — keep has_access alive, no re-provisioning needed.
-          console.log(`[ls/webhook] Renewal payment for customer ${customerId} — refreshing has_access`);
+          console.log(
+            `[ls/webhook] Renewal payment for customer ${maskId(customerId)} — refreshing has_access`,
+          );
           await getAdmin()
             .from("profiles")
             .update({ has_access: true })

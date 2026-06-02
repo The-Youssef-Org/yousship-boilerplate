@@ -75,14 +75,6 @@ const text: React.CSSProperties = {
   fontFamily: font,
 };
 
-const muted: React.CSSProperties = {
-  margin: "24px 0 8px",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  color: "#6b7280",
-  fontFamily: font,
-};
-
 const signature: React.CSSProperties = {
   margin: "0",
   fontSize: "14px",

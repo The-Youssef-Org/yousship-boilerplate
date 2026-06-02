@@ -38,6 +38,16 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local editor settings
+.vscode/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local AI agent instruction files (do not ship in sellable boilerplate)
+AGENTS.md
+CLAUDE.md
+
+# local tooling binaries (do not ship in sellable boilerplate)
+stripe.exe

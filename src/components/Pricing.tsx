@@ -63,7 +63,7 @@ const Pricing = () => {
       }
 
       if (!res.ok) throw new Error(data.error ?? "Failed to start checkout.");
-      if (data.url) window.location.href = data.url;
+      if (data.url) window.location.assign(data.url);
     } catch (e) {
       console.error(e);
     } finally {

@@ -4,10 +4,17 @@ import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import config from "@/config";
 
+const normalizeNextPath = (rawNext: string | null, fallback: string) => {
+  if (!rawNext) return fallback;
+  // Allow only same-origin relative paths.
+  if (!rawNext.startsWith("/") || rawNext.startsWith("//")) return fallback;
+  return rawNext;
+};
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const token_hash = searchParams.get("token_hash");
-  const next = searchParams.get("next") ?? config.auth.callbackUrl;
+  const next = normalizeNextPath(searchParams.get("next"), config.auth.callbackUrl);
 
   if (!token_hash) {
     return NextResponse.redirect(`${origin}/signin?error=auth`);

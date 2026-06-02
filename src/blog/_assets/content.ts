@@ -33,7 +33,7 @@ export const articles: BlogArticle[] = [
       "A practical launch playbook using a SaaS boilerplate to go from idea to first payment in 48 hours.",
     date: "2025-12-01",
     cover: "/blog/launch-weekend.png",
-    author: { name: "Youssef Benarab", role: "Founder" },
+    author: { name: "Your Name", role: "Founder" },
     tags: ["launch", "saas boilerplate", "nextjs boilerplate"],
     content: `<p>If you want to ship fast, a <strong>SaaS boilerplate</strong> is often the highest-leverage decision you can make. Instead of spending your first week wiring auth, billing, email, and SEO, you can focus on your offer and customer problem.</p>
 
@@ -68,7 +68,7 @@ export const articles: BlogArticle[] = [
       "How to implement Stripe Checkout in a Next.js boilerplate with webhooks, portal access, and secure provisioning.",
     date: "2025-11-12",
     cover: "/blog/stripe-nextjs.png",
-    author: { name: "Youssef Benarab", role: "Founder" },
+    author: { name: "Your Name", role: "Founder" },
     tags: ["payments", "nextjs boilerplate", "stripe"],
     content: `<p>Most teams searching for a <strong>Next.js boilerplate</strong> care about one thing: shipping revenue quickly and safely. Payments are where fast projects often break in production. This guide covers the minimum robust setup.</p>
 
@@ -99,7 +99,7 @@ export const articles: BlogArticle[] = [
       "A practical Supabase auth guide for modern SaaS apps: OAuth, magic links, server sessions, and route protection.",
     date: "2025-10-20",
     cover: "/blog/supabase-auth.png",
-    author: { name: "Youssef Benarab", role: "Founder" },
+    author: { name: "Your Name", role: "Founder" },
     tags: ["auth", "supabase", "saas boilerplate", "nextjs boilerplate"],
     content: `<p>When people evaluate the <strong>best Next.js boilerplate</strong>, auth quality is usually the deciding factor. A polished sign-in flow improves trust, conversion, and retention from day one.</p>
 
