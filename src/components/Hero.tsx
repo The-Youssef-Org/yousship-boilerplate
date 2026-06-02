@@ -143,7 +143,7 @@ const Hero = () => {
                 mode={primaryCtaMode}
                 label={primaryCtaLabel}
                 fullWidth={false}
-                className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5 disabled:cursor-not-allowed"
+                className="px-8 py-3 shadow-sm shadow-amber-900/10 hover:-translate-y-0.5 disabled:cursor-default"
               />
             ) : (
               <ButtonPrimary

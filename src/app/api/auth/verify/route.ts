@@ -3,6 +3,7 @@ import { createClient } from "@/libs/supabase/server";
 import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import config from "@/config";
+import type { Profile } from "@/libs/types";
 
 const normalizeNextPath = (rawNext: string | null, fallback: string) => {
   if (!rawNext) return fallback;
@@ -10,6 +11,8 @@ const normalizeNextPath = (rawNext: string | null, fallback: string) => {
   if (!rawNext.startsWith("/") || rawNext.startsWith("//")) return fallback;
   return rawNext;
 };
+
+const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -41,32 +44,40 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/signin?error=auth`);
   }
 
+  const normalizedEmail = user.email ? normalizeEmail(user.email) : null;
+
+  // Welcome email should only fire when this email is first added to profiles.
+  let hadProfileWithEmail = false;
+  if (normalizedEmail) {
+    const { data: existingByEmail } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("email", normalizedEmail)
+      .maybeSingle<Pick<Profile, "id">>();
+    hadProfileWithEmail = !!existingByEmail?.id;
+  }
+
   // Upsert profile row.
   await supabase
     .from("profiles")
-    .upsert({ id: user.id, email: user.email }, { onConflict: "id" });
+    .upsert({ id: user.id, email: normalizedEmail ?? user.email }, { onConflict: "id" });
 
-  // Welcome email for new accounts (created ≤ 2 min ago).
-  if (user.email) {
-    const createdMs = user.created_at ? Date.parse(user.created_at) : 0;
-    const lastMs = user.last_sign_in_at ? Date.parse(user.last_sign_in_at) : 0;
-    if (createdMs > 0 && Math.abs(lastMs - createdMs) <= 120_000) {
-      const name =
-        (user.user_metadata?.given_name as string | undefined) ??
-        (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??
-        "there";
-      (async () => {
-        try {
-          await sendEmail({
-            to: user!.email!,
-            subject: `Welcome to ${config.appName}!`,
-            html: await welcomeEmail({ name }),
-          });
-        } catch (err) {
-          console.warn("[auth/verify] welcome email failed:", err);
-        }
-      })();
-    }
+  if (normalizedEmail && !hadProfileWithEmail) {
+    const name =
+      (user.user_metadata?.given_name as string | undefined) ??
+      (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??
+      "there";
+    (async () => {
+      try {
+        await sendEmail({
+          to: normalizedEmail,
+          subject: `Welcome to ${config.appName}!`,
+          html: await welcomeEmail({ name }),
+        });
+      } catch (err) {
+        console.warn("[auth/verify] welcome email failed:", err);
+      }
+    })();
   }
 
   return NextResponse.redirect(`${origin}${next}`);

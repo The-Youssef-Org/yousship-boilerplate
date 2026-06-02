@@ -53,7 +53,7 @@ const ButtonBillingPortal = ({ className = "", provider = "stripe" }: Props) => 
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`inline-flex items-center justify-center rounded-xl border border-base-300 bg-base-100 px-4 py-2 text-sm font-medium text-base-content hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl border border-base-300 bg-base-100 px-4 py-2 text-sm font-medium text-base-content hover:bg-base-200 disabled:cursor-default disabled:opacity-60 ${className}`}
     >
       {loading ? "Opening..." : "Manage Billing"}
     </button>

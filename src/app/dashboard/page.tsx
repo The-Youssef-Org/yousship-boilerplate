@@ -108,28 +108,69 @@ const getSubscriptionStatus = async (
     }
   }
 
-  if (!customerId) return null;
+  let resolvedCustomerId = customerId;
+
+  // Stripe fallback: resolve customer by email when profile customer_id is missing.
+  if (!resolvedCustomerId && email) {
+    try {
+      const customers = await stripe.customers.list({ email, limit: 1 });
+      resolvedCustomerId = customers.data[0]?.id ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  if (!resolvedCustomerId) return null;
 
   try {
     const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
+      customer: resolvedCustomerId,
       status: "all",
       limit: 10,
     });
 
-    // Prefer the profile-linked price when available; otherwise fall back to the
-    // most relevant non-canceled subscription for this customer.
+    const accessLike = (sub: { status: string; cancel_at_period_end: boolean }) =>
+      sub.status === "active" ||
+      sub.status === "trialing" ||
+      sub.status === "past_due" ||
+      sub.status === "unpaid" ||
+      sub.cancel_at_period_end;
+
+    // Ignore fully ended subscriptions when selecting the dashboard badge source.
+    const relevant = subscriptions.data.filter(accessLike);
+
+    // Prefer plan match, but always prioritize subscriptions that are set to
+    // cancel at period end so dashboard state immediately turns yellow.
     const matchingByPrice = planId
-      ? subscriptions.data.find((sub) =>
+      ? relevant.find((sub) =>
           sub.items.data.some((item) => item.price.id === planId),
         )
       : null;
 
-    const matchingActive = subscriptions.data.find(
+    const matchingCancelAtPeriodEndByPrice = planId
+      ? relevant.find(
+          (sub) =>
+            sub.cancel_at_period_end &&
+            sub.items.data.some((item) => item.price.id === planId),
+        )
+      : null;
+
+    const matchingCancelAtPeriodEndAny = relevant.find(
+      (sub) => sub.cancel_at_period_end,
+    );
+
+    const matchingActive = relevant.find(
       (sub) => sub.status === "active" || sub.status === "trialing" || sub.cancel_at_period_end,
     );
 
-    const matching = matchingByPrice ?? matchingActive ?? subscriptions.data[0] ?? null;
+    const matching =
+      matchingCancelAtPeriodEndByPrice ??
+      matchingCancelAtPeriodEndAny ??
+      matchingByPrice ??
+      matchingActive ??
+      relevant[0] ??
+      subscriptions.data[0] ??
+      null;
 
     if (!matching) return null;
 

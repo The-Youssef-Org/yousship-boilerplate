@@ -76,7 +76,7 @@ const ProfileForm = ({ initialName, initialImage, email }: Props) => {
           type="email"
           value={email}
           disabled
-          className="mt-1 w-full cursor-not-allowed rounded-xl border border-base-300 bg-base-200 px-4 py-3 text-sm text-base-content/70"
+          className="mt-1 w-full cursor-default rounded-xl border border-base-300 bg-base-200 px-4 py-3 text-sm text-base-content/70"
         />
         <p className="mt-1 text-xs text-base-content/60">
           Email is managed by your sign-in provider and cannot be changed here.

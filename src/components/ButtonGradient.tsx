@@ -19,7 +19,7 @@ const ButtonGradient = ({
     <ButtonPrimary
       {...rest}
       variant="gradient"
-      className={`relative px-6 py-3 hover:-translate-y-0.5 disabled:cursor-not-allowed ${className}`}
+      className={`relative px-6 py-3 hover:-translate-y-0.5 disabled:cursor-default ${className}`}
     >
       {children ?? title}
     </ButtonPrimary>

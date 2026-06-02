@@ -65,7 +65,7 @@ const ButtonCheckout = ({
     <ButtonPrimary
       onClick={handleClick}
       disabled={loading}
-      className={`group relative ${fullWidth ? "w-full" : "w-auto"} cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed ${className}`}
+      className={`group relative ${fullWidth ? "w-full" : "w-auto"} cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-default ${className}`}
     >
       {loading ? `Redirecting to ${providerLabel}…` : label}
     </ButtonPrimary>

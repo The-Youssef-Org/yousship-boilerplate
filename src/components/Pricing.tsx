@@ -144,7 +144,7 @@ const Pricing = () => {
                       <ButtonPrimary
                         onClick={() => planId && handleCheckout(planId, mode)}
                         disabled={!planId || isLoading}
-                        className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-not-allowed"
+                        className="mt-8 w-full cursor-pointer px-5 py-3 shadow-sm shadow-amber-900/10 disabled:cursor-default"
                       >
                         {isLoading ? `Redirecting to ${providerLabel}...` : pricingCtaLabel}
                       </ButtonPrimary>

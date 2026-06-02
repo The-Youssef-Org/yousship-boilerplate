@@ -20,10 +20,15 @@ const DeleteAccount = ({ email }: { email: string }) => {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? "Failed to delete account.");
       }
-      // Best-effort local cleanup; do not block redirect if signOut stalls.
+
+      // Clear both browser auth state and server cookie session before redirecting.
       const supabase = createClient();
-      void supabase.auth.signOut().catch(() => {});
-      window.location.href = "/signin?deleted=1";
+      await Promise.allSettled([
+        supabase.auth.signOut(),
+        fetch("/api/auth/signout", { method: "POST" }),
+      ]);
+
+      window.location.assign("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setLoading(false);
@@ -91,7 +96,7 @@ const DeleteAccount = ({ email }: { email: string }) => {
               type="button"
               onClick={handleDelete}
               disabled={loading || confirm !== CONFIRM_PHRASE}
-              className="inline-flex min-w-40 items-center justify-center rounded-xl border border-red-700 px-5 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed"
+              className="inline-flex min-w-40 items-center justify-center rounded-xl border border-red-700 px-5 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-default"
               style={{
                 backgroundColor:
                   loading || confirm !== CONFIRM_PHRASE ? "#fee2e2" : "#dc2626",

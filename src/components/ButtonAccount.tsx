@@ -117,14 +117,14 @@ const ButtonAccount = ({
           <button
             onClick={handleBilling}
             disabled={billingLoading}
-            className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-base-content/80 hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-60"
+            className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-base-content/80 hover:bg-base-200 disabled:cursor-default disabled:opacity-60"
           >
             Billing
           </button>
           <button
             onClick={handleSignOut}
             disabled={signingOut}
-            className="block w-full cursor-pointer border-t border-neutral-100 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:cursor-not-allowed"
+            className="block w-full cursor-pointer border-t border-neutral-100 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:cursor-default"
           >
             {signingOut ? "Logging out..." : "Logout"}
           </button>
