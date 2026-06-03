@@ -14,9 +14,9 @@ export const metadata = getSEOTags({
 const PurchaseSuccessfulPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string; order_id?: string }>;
+  searchParams: Promise<{ session_id?: string; order_id?: string; subscription_id?: string }>;
 }) => {
-  const { session_id: sessionId, order_id: orderId } = await searchParams;
+  const { session_id: sessionId, order_id: orderId, subscription_id: subscriptionId } = await searchParams;
 
   // Stripe flow: validate the checkout session server-side.
   if (sessionId) {
@@ -29,11 +29,12 @@ const PurchaseSuccessfulPage = async ({
     if (!checkoutSession || checkoutSession.payment_status !== "paid") {
       redirect("/");
     }
-  } else if (!orderId) {
+  } else if (!orderId && !subscriptionId) {
     // Neither provider supplied a recognisable success param — bail.
+    // LS appends ?order_id=... for one-time purchases and ?subscription_id=... for subscriptions.
     redirect("/");
   }
-  // Lemon Squeezy flow: LS appends ?order_id=... to the redirect URL.
+  // Lemon Squeezy flow: LS appends the relevant param to the redirect URL.
   // The webhook has already provisioned the user's access server-side,
   // so no additional validation is needed here.
 

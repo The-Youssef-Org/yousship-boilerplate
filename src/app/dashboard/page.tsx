@@ -53,12 +53,12 @@ const getMembershipLabel = async (planId: string | null, paymentProvider: string
   if (paymentProvider === "lemonsqueezy") {
     const plan = config.lemonsqueezy.plans.find((p) => p.variantId === planId);
     if (!plan) return "Active plan";
-    const card = config.pricing.cards.find((c) => c.planName === plan.name);
-    if (card?.displayPrice) {
-      const suffix = plan.mode === "subscription" ? "/mo" : "";
-      return `${plan.name} (${card.displayPrice}${suffix})`;
+    if (plan.mode === "subscription") {
+      const card = config.pricing.cards.find((c) => c.planName === plan.name);
+      const price = card?.displayPrice ? `${card.displayPrice}/mo` : "Monthly";
+      return `${plan.name} (${price})`;
     }
-    return `${plan.name} (Paid)`;
+    return `${plan.name} (Lifetime)`;
   }
 
   // Stripe — retrieve live price details.
