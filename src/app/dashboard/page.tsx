@@ -122,6 +122,26 @@ const getSubscriptionStatus = async (
 
   if (!resolvedCustomerId) return null;
 
+  // For one-time Stripe payment plans there are no subscriptions.
+  // Check for a succeeded charge on this customer instead.
+  const stripePlan = config.stripe.plans.find(
+    (p) => p.priceId === planId && (p.mode === "payment" || !p.mode),
+  );
+  if (stripePlan) {
+    try {
+      const charges = await stripe.charges.list({
+        customer: resolvedCustomerId,
+        limit: 10,
+      });
+      const hasPaid = charges.data.some((c) => c.status === "succeeded");
+      return hasPaid
+        ? { cancelAtPeriodEnd: false, endsAt: null, liveHasAccess: true }
+        : null;
+    } catch {
+      return null;
+    }
+  }
+
   const fetchSubscriptions = (customer: string) =>
     stripe.subscriptions.list({
       customer,
