@@ -148,6 +148,12 @@ const getSubscriptionStatus = async (
       sub.status === "unpaid" ||
       sub.cancel_at_period_end;
 
+    const isCancellationScheduled = (sub: {
+      cancel_at_period_end: boolean;
+      cancel_at: number | null;
+      canceled_at: number | null;
+    }) => sub.cancel_at_period_end || (sub.cancel_at !== null && sub.canceled_at === null);
+
     // Ignore fully ended subscriptions when selecting the dashboard badge source.
     const relevant = subscriptions.data.filter(accessLike);
 
@@ -162,13 +168,13 @@ const getSubscriptionStatus = async (
     const matchingCancelAtPeriodEndByPrice = planId
       ? relevant.find(
           (sub) =>
-            sub.cancel_at_period_end &&
+            isCancellationScheduled(sub) &&
             sub.items.data.some((item) => item.price.id === planId),
         )
       : null;
 
     const matchingCancelAtPeriodEndAny = relevant.find(
-      (sub) => sub.cancel_at_period_end,
+      (sub) => isCancellationScheduled(sub),
     );
 
     const matchingActive = relevant.find(
@@ -187,7 +193,7 @@ const getSubscriptionStatus = async (
     if (!matching) return null;
 
     return {
-      cancelAtPeriodEnd: matching.cancel_at_period_end,
+      cancelAtPeriodEnd: isCancellationScheduled(matching),
       endsAt: matching.cancel_at ?? matching.items.data[0]?.current_period_end ?? null,
       liveHasAccess: matching.status === "active" || matching.status === "trialing",
     };

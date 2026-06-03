@@ -395,9 +395,6 @@ export async function POST(req: NextRequest) {
     // 🔄 Subscription changed (including "Don't cancel" / reactivation)
     case "customer.subscription.updated": {
       const subscription = event.data.object as Stripe.Subscription;
-      const previousAttributes = (event.data.previous_attributes ?? {}) as {
-        cancel_at_period_end?: boolean;
-      };
       const customerId =
         typeof subscription.customer === "string" ? subscription.customer : null;
       const currentPriceId =
@@ -406,11 +403,6 @@ export async function POST(req: NextRequest) {
           : null;
       const cancellationEmailAlreadySent =
         subscription.metadata?.cancellation_scheduled_email_sent === "true";
-      const isCancellationScheduled = subscription.cancel_at_period_end === true;
-      const becameCancellationScheduled =
-        isCancellationScheduled &&
-        (previousAttributes.cancel_at_period_end === false ||
-          typeof previousAttributes.cancel_at_period_end === "undefined");
 
       if (customerId) {
         try {
@@ -422,12 +414,16 @@ export async function POST(req: NextRequest) {
             subscription.status === "past_due" ||
             subscription.status === "unpaid";
 
+          const isCancellationScheduled =
+            subscription.cancel_at_period_end === true ||
+            (subscription.cancel_at !== null && subscription.canceled_at === null);
+
           if (isActiveLike) {
             await grantAccess(customerId, null, currentPriceId);
           }
 
-          // Send at most once per subscription id when cancellation is first scheduled.
-          if (becameCancellationScheduled && !cancellationEmailAlreadySent && config.stripe.webhookEmails) {
+          // Send at most once per subscription id while cancellation is scheduled.
+          if (isCancellationScheduled && !cancellationEmailAlreadySent && config.stripe.webhookEmails) {
             const profile = await resolveProfileForStripeCustomer(customerId);
             const email = profile?.email ? normalizeEmail(profile.email) : null;
             if (email) {
@@ -454,6 +450,16 @@ export async function POST(req: NextRequest) {
                 },
               });
             }
+          }
+
+          // Allow future scheduled-cancel emails after user reactivates.
+          if (!isCancellationScheduled && cancellationEmailAlreadySent) {
+            await stripe.subscriptions.update(subscription.id, {
+              metadata: {
+                ...subscription.metadata,
+                cancellation_scheduled_email_sent: "false",
+              },
+            });
           }
         } catch (err) {
           console.error("customer.subscription.updated: failed to sync access", err);
