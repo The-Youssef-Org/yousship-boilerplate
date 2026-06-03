@@ -31,23 +31,38 @@ const HeaderClient = ({
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(initialUser);
   const [profile, setProfile] = useState<HeaderProfile>(initialProfile);
+  const [isAuthResolved, setIsAuthResolved] = useState(!initialUser);
 
   useEffect(() => {
     const supabase = createClient();
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const nextUser = session?.user ?? null;
-      setUser(nextUser);
-      if (nextUser) {
+
+    const syncAuthState = async () => {
+      const {
+        data: { user: verifiedUser },
+      } = await supabase.auth.getUser();
+
+      setUser(verifiedUser ?? null);
+
+      if (verifiedUser) {
         const { data } = await supabase
           .from("profiles")
           .select("name, image, email")
-          .eq("id", nextUser.id)
+          .eq("id", verifiedUser.id)
           .single<HeaderProfile>();
         setProfile(data ?? null);
       } else {
         setProfile(null);
       }
+
+      setIsAuthResolved(true);
+    };
+
+    void syncAuthState();
+
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      void syncAuthState();
     });
+
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -121,7 +136,12 @@ const HeaderClient = ({
 
         <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-5">
           {config.enableThemeToggle && <ThemeToggle />}
-          {config.auth.showInHeader && (user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />)}
+          {config.auth.showInHeader &&
+            (user && isAuthResolved ? (
+              <ButtonAccount user={accountUser} />
+            ) : (
+              <ButtonSignin asLink />
+            ))}
         </div>
       </nav>
 
@@ -139,7 +159,7 @@ const HeaderClient = ({
               </Link>
             ))}
             {config.auth.showInHeader && <div className="pt-2">
-              {user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
+              {user && isAuthResolved ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
             </div>}
           </div>
         </div>
