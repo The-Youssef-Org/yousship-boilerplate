@@ -148,7 +148,7 @@ const config = {
   // ---------------------------------------------------------------------------
   // PAYMENT PROVIDER
   // ---------------------------------------------------------------------------
-  paymentProvider: "stripe" as PaymentProvider, // "stripe" or "lemonsqueezy"
+  paymentProvider: "lemonsqueezy" as PaymentProvider, // "stripe" or "lemonsqueezy"
 
   // ---------------------------------------------------------------------------
   // STRIPE
