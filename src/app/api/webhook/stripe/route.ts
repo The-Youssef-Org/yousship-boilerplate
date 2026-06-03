@@ -415,8 +415,9 @@ export async function POST(req: NextRequest) {
             subscription.status === "unpaid";
 
           const isCancellationScheduled =
-            subscription.cancel_at_period_end === true ||
-            (subscription.cancel_at !== null && subscription.canceled_at === null);
+            isActiveLike &&
+            (subscription.cancel_at_period_end === true ||
+              subscription.cancel_at !== null);
 
           if (isActiveLike) {
             await grantAccess(customerId, null, currentPriceId);

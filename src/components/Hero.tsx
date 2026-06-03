@@ -3,6 +3,7 @@ import ButtonPrimary from "./ButtonPrimary";
 import ButtonCheckout from "./ButtonCheckout";
 import AvatarGroup from "./AvatarGroup";
 import type { ReactNode } from "react";
+import Image from "next/image";
 // import ButtonLead from "./ButtonLead"; // Uncomment to use waitlist mode
 
 type StackItem = { label: string; detail: string; icon: ReactNode };
@@ -176,9 +177,11 @@ const Hero = () => {
           />
 
           {showcase.imageSrc ? (
-            <img
+            <Image
               src={showcase.imageSrc}
               alt={showcase.imageAlt}
+              width={1600}
+              height={1100}
               className="relative z-10 h-full min-h-[24rem] w-full overflow-hidden rounded-2xl object-contain lg:min-h-[30rem]"
             />
           ) : (

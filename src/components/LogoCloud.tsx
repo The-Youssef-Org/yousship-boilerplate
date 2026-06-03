@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import config from "@/config";
+import Image from "next/image";
 
 type LogoCloudItemProps = {
   src: string;
@@ -19,21 +20,23 @@ const LogoCloudSlot = ({ src, scale, useMonochrome, isLightTheme }: LogoCloudIte
 
   return (
     <div className="flex h-12 w-14 shrink-0 items-center justify-center text-center sm:w-24 md:w-40">
-    <img
-      src={src}
-      alt=""
-      aria-hidden="true"
-      loading="lazy"
-      onError={() => setIsVisible(false)}
-      style={scale ? { transform: `scale(${scale})` } : undefined}
-      className={`max-h-6 max-w-full object-contain transition-opacity duration-300 hover:opacity-100 sm:max-h-7 md:max-h-8 ${
-        useMonochrome
-          ? isLightTheme
-            ? "opacity-65 [filter:grayscale(1)_brightness(0)_invert(0.18)]"
-            : "opacity-60 [filter:grayscale(1)_brightness(0)_invert(1)]"
-          : "opacity-90"
-      }`}
-    />
+      <Image
+        src={src}
+        alt=""
+        aria-hidden="true"
+        width={160}
+        height={48}
+        unoptimized
+        onError={() => setIsVisible(false)}
+        style={scale ? { transform: `scale(${scale})` } : undefined}
+        className={`max-h-6 max-w-full object-contain transition-opacity duration-300 hover:opacity-100 sm:max-h-7 md:max-h-8 ${
+          useMonochrome
+            ? isLightTheme
+              ? "opacity-65 [filter:grayscale(1)_brightness(0)_invert(0.18)]"
+              : "opacity-60 [filter:grayscale(1)_brightness(0)_invert(1)]"
+            : "opacity-90"
+        }`}
+      />
     </div>
   );
 };

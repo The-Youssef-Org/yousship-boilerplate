@@ -89,20 +89,23 @@ const HeaderClient = ({
           <Logo size={32} className="-m-1.5 p-1.5 text-lg font-semibold" />
         </div>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-md p-2 text-base-content/80 lg:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-            {open ? (
-              <path d="M6.225 4.811a1 1 0 011.414 0L12 9.172l4.361-4.36a1 1 0 111.415 1.414L13.414 10.586l4.362 4.361a1 1 0 01-1.415 1.415L12 12l-4.361 4.362A1 1 0 016.225 14.95l4.36-4.36-4.36-4.362a1 1 0 010-1.415z" />
-            ) : (
-              <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
-            )}
-          </svg>
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          {config.enableThemeToggle && <ThemeToggle />}
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-md p-2 text-base-content/80"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+              {open ? (
+                <path d="M6.225 4.811a1 1 0 011.414 0L12 9.172l4.361-4.36a1 1 0 111.415 1.414L13.414 10.586l4.362 4.361a1 1 0 01-1.415 1.415L12 12l-4.361 4.362A1 1 0 016.225 14.95l4.36-4.36-4.36-4.362a1 1 0 010-1.415z" />
+              ) : (
+                <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
+              )}
+            </svg>
+          </button>
+        </div>
 
         <div className="hidden lg:flex lg:gap-10">
           {links.map((l) => (
@@ -135,7 +138,6 @@ const HeaderClient = ({
                 {l.label}
               </Link>
             ))}
-            {config.enableThemeToggle && <div className="pt-2"><ThemeToggle /></div>}
             {config.auth.showInHeader && <div className="pt-2">
               {user ? <ButtonAccount user={accountUser} /> : <ButtonSignin asLink />}
             </div>}

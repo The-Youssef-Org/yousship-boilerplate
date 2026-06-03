@@ -151,8 +151,7 @@ const getSubscriptionStatus = async (
     const isCancellationScheduled = (sub: {
       cancel_at_period_end: boolean;
       cancel_at: number | null;
-      canceled_at: number | null;
-    }) => sub.cancel_at_period_end || (sub.cancel_at !== null && sub.canceled_at === null);
+    }) => sub.cancel_at_period_end || sub.cancel_at !== null;
 
     // Ignore fully ended subscriptions when selecting the dashboard badge source.
     const relevant = subscriptions.data.filter(accessLike);
