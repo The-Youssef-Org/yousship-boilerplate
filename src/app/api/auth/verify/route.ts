@@ -22,12 +22,13 @@ const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
   return Math.abs(lastSignInMs - createdMs) <= 120000;
 };
 
-const profileEmailExists = async (email: string) => {
+const profileEmailExistsForOtherUser = async (email: string, userId: string) => {
   const admin = getAdminClient();
   const { data, error } = await admin
     .from("profiles")
     .select("id")
     .eq("email", email)
+    .neq("id", userId)
     .limit(1)
     .maybeSingle<{ id: string }>();
 
@@ -67,10 +68,13 @@ export async function GET(request: NextRequest) {
 
   const normalizedEmail = user.email ? normalizeEmail(user.email) : null;
 
-  // Send welcome only if this email did not exist before this auth flow.
-  let hadProfileWithEmail = false;
+  // Send welcome only if this email does not already belong to another user.
+  let emailExistsOnAnotherProfile = false;
   if (normalizedEmail) {
-    hadProfileWithEmail = await profileEmailExists(normalizedEmail);
+    emailExistsOnAnotherProfile = await profileEmailExistsForOtherUser(
+      normalizedEmail,
+      user.id,
+    );
   }
 
   // Upsert profile row.
@@ -81,7 +85,7 @@ export async function GET(request: NextRequest) {
   if (
     normalizedEmail &&
     isFirstSignIn(user.created_at, user.last_sign_in_at) &&
-    !hadProfileWithEmail
+    !emailExistsOnAnotherProfile
   ) {
     const name =
       (user.user_metadata?.given_name as string | undefined) ??
