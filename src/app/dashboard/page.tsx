@@ -270,7 +270,6 @@ export default async function ProfilePage() {
     displayName?.[0]?.toUpperCase() ??
     displayEmail?.[0]?.toUpperCase() ??
     "U";
-  const membershipLabel = await getMembershipLabel(safeProfile.plan_id, safeProfile.payment_provider);
   const subscriptionStatus = await getSubscriptionStatus(
     safeProfile.customer_id,
     safeProfile.plan_id,
@@ -307,6 +306,13 @@ export default async function ProfilePage() {
     subscriptionStatus !== null
       ? subscriptionStatus.liveHasAccess
       : safeProfile.has_access;
+
+  // Only show the plan name when the user actually has active access.
+  // A stale plan_id with has_access=false (e.g. after cancellation or a failed
+  // provider switch) should show "No active plan" to match the badge state.
+  const membershipLabel = effectiveHasAccess
+    ? await getMembershipLabel(safeProfile.plan_id, safeProfile.payment_provider)
+    : "No active plan";
 
   return (
     <div className="min-h-screen bg-base-200">
