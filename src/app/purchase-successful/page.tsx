@@ -5,6 +5,8 @@ import { getSEOTags } from "@/libs/seo";
 import stripe from "@/libs/stripe";
 import { createClient } from "@/libs/supabase/server";
 
+const isLemonSqueezy = config.paymentProvider === "lemonsqueezy";
+
 export const metadata = getSEOTags({
   title: `Purchase complete | ${config.appName}`,
   canonicalUrlRelative: "/purchase-successful",
@@ -29,14 +31,15 @@ const PurchaseSuccessfulPage = async ({
     if (!checkoutSession || checkoutSession.payment_status !== "paid") {
       redirect("/");
     }
-  } else if (!orderId && !subscriptionId) {
-    // Neither provider supplied a recognisable success param — bail.
-    // LS appends ?order_id=... for one-time purchases and ?subscription_id=... for subscriptions.
+  } else if (!isLemonSqueezy && !orderId && !subscriptionId) {
+    // No recognisable param and not a LS store — reject direct navigation.
+    // When LS is active we allow the page through even without params because
+    // the LS thank-you modal button link does not append order/subscription IDs.
+    // Access provisioning happens server-side via the webhook regardless.
     redirect("/");
   }
-  // Lemon Squeezy flow: LS appends the relevant param to the redirect URL.
-  // The webhook has already provisioned the user's access server-side,
-  // so no additional validation is needed here.
+  // Lemon Squeezy flow: access is provisioned server-side via webhook.
+  // The success page is purely informational so no param validation is needed.
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
