@@ -4,6 +4,7 @@ import config from "@/config";
 import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import type { Profile } from "@/libs/types";
+import { getAdminClient } from "@/libs/supabase/admin";
 
 const normalizeNextPath = (rawNext: string | null, fallback: string) => {
   if (!rawNext) return fallback;
@@ -30,6 +31,19 @@ const sendWelcome = async (email: string, firstName: string) => {
   });
 };
 
+const profileEmailExists = async (email: string) => {
+  const admin = getAdminClient();
+  const { data, error } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .limit(1)
+    .maybeSingle<{ id: string }>();
+
+  if (error) throw error;
+  return !!data?.id;
+};
+
 const syncProfileFromAuthMetadata = async (
   supabase: Awaited<ReturnType<typeof createClient>>,
 ): Promise<{ shouldSendWelcome: boolean; welcomeEmailTo?: string; welcomeName: string }> => {
@@ -43,16 +57,10 @@ const syncProfileFromAuthMetadata = async (
 
   const normalizedEmail = user.email ? normalizeEmail(user.email) : undefined;
 
-  // Suppress welcome only if this email already belongs to another profile.
-  let hadOtherProfileWithEmail = false;
+  // Send welcome only if this email did not exist before this auth flow.
+  let hadProfileWithEmail = false;
   if (normalizedEmail) {
-    const { data: existingByEmail } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", normalizedEmail)
-      .limit(20);
-    hadOtherProfileWithEmail =
-      (existingByEmail ?? []).some((row) => row.id !== user.id);
+    hadProfileWithEmail = await profileEmailExists(normalizedEmail);
   }
 
   const { data: profile } = await supabase
@@ -97,7 +105,7 @@ const syncProfileFromAuthMetadata = async (
     shouldSendWelcome:
       !!normalizedEmail &&
       isFirstSignIn(user.created_at, user.last_sign_in_at) &&
-      !hadOtherProfileWithEmail,
+      !hadProfileWithEmail,
     welcomeEmailTo: normalizedEmail,
     welcomeName,
   };

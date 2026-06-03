@@ -3,6 +3,7 @@ import { createClient } from "@/libs/supabase/server";
 import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
 import config from "@/config";
+import { getAdminClient } from "@/libs/supabase/admin";
 
 const normalizeNextPath = (rawNext: string | null, fallback: string) => {
   if (!rawNext) return fallback;
@@ -19,6 +20,19 @@ const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
   const lastSignInMs = Date.parse(lastSignInAt);
   if (Number.isNaN(createdMs) || Number.isNaN(lastSignInMs)) return false;
   return Math.abs(lastSignInMs - createdMs) <= 120000;
+};
+
+const profileEmailExists = async (email: string) => {
+  const admin = getAdminClient();
+  const { data, error } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .limit(1)
+    .maybeSingle<{ id: string }>();
+
+  if (error) throw error;
+  return !!data?.id;
 };
 
 export async function GET(request: NextRequest) {
@@ -53,16 +67,10 @@ export async function GET(request: NextRequest) {
 
   const normalizedEmail = user.email ? normalizeEmail(user.email) : null;
 
-  // Suppress welcome only if this email already belongs to another profile.
-  let hadOtherProfileWithEmail = false;
+  // Send welcome only if this email did not exist before this auth flow.
+  let hadProfileWithEmail = false;
   if (normalizedEmail) {
-    const { data: existingByEmail } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", normalizedEmail)
-      .limit(20);
-    hadOtherProfileWithEmail =
-      (existingByEmail ?? []).some((row) => row.id !== user.id);
+    hadProfileWithEmail = await profileEmailExists(normalizedEmail);
   }
 
   // Upsert profile row.
@@ -73,7 +81,7 @@ export async function GET(request: NextRequest) {
   if (
     normalizedEmail &&
     isFirstSignIn(user.created_at, user.last_sign_in_at) &&
-    !hadOtherProfileWithEmail
+    !hadProfileWithEmail
   ) {
     const name =
       (user.user_metadata?.given_name as string | undefined) ??
