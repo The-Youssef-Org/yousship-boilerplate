@@ -127,6 +127,8 @@ const syncProfileFromAuthMetadata = async (
   };
 };
 
+type WelcomeSyncResult = Awaited<ReturnType<typeof syncProfileFromAuthMetadata>>;
+
 // OAuth / magic-link callback. Supabase redirects here with `?code=...`.
 // We exchange the code for a session cookie, then send the user on their way.
 export async function GET(request: Request) {
@@ -138,7 +140,7 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      let welcome: { shouldSendWelcome: boolean; welcomeEmailTo?: string; welcomeName: string } = {
+      let welcome: WelcomeSyncResult = {
         shouldSendWelcome: false,
         welcomeName: "there",
       };
