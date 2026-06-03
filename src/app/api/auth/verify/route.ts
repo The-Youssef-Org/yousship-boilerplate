@@ -14,14 +14,6 @@ const normalizeNextPath = (rawNext: string | null, fallback: string) => {
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
-const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
-  if (!createdAt || !lastSignInAt) return false;
-  const createdMs = Date.parse(createdAt);
-  const lastSignInMs = Date.parse(lastSignInAt);
-  if (Number.isNaN(createdMs) || Number.isNaN(lastSignInMs)) return false;
-  return Math.abs(lastSignInMs - createdMs) <= 120000;
-};
-
 const profileEmailExistsForOtherUser = async (email: string, userId: string) => {
   const admin = getAdminClient();
   const { data, error } = await admin
@@ -34,6 +26,16 @@ const profileEmailExistsForOtherUser = async (email: string, userId: string) => 
 
   if (error) throw error;
   return !!data?.id;
+};
+
+const markWelcomeSent = async (userId: string, appMetadata: Record<string, unknown> | null | undefined) => {
+  const admin = getAdminClient();
+  await admin.auth.admin.updateUserById(userId, {
+    app_metadata: {
+      ...(appMetadata ?? {}),
+      welcome_email_sent: true,
+    },
+  });
 };
 
 export async function GET(request: NextRequest) {
@@ -84,8 +86,8 @@ export async function GET(request: NextRequest) {
 
   if (
     normalizedEmail &&
-    isFirstSignIn(user.created_at, user.last_sign_in_at) &&
-    !emailExistsOnAnotherProfile
+    !emailExistsOnAnotherProfile &&
+    user.app_metadata?.welcome_email_sent !== true
   ) {
     const name =
       (user.user_metadata?.given_name as string | undefined) ??
@@ -98,6 +100,7 @@ export async function GET(request: NextRequest) {
           subject: `Welcome to ${config.appName}!`,
           html: await welcomeEmail({ name }),
         });
+        await markWelcomeSent(user.id, (user.app_metadata ?? {}) as Record<string, unknown>);
       } catch (err) {
         console.warn("[auth/verify] welcome email failed:", err);
       }

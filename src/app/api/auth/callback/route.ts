@@ -15,19 +15,21 @@ const normalizeNextPath = (rawNext: string | null, fallback: string) => {
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
-const isFirstSignIn = (createdAt?: string, lastSignInAt?: string) => {
-  if (!createdAt || !lastSignInAt) return false;
-  const createdMs = Date.parse(createdAt);
-  const lastSignInMs = Date.parse(lastSignInAt);
-  if (Number.isNaN(createdMs) || Number.isNaN(lastSignInMs)) return false;
-  return Math.abs(lastSignInMs - createdMs) <= 120000;
-};
-
 const sendWelcome = async (email: string, firstName: string) => {
   await sendEmail({
     to: email,
     subject: `Welcome to ${config.appName}!`,
     html: await welcomeEmail({ name: firstName }),
+  });
+};
+
+const markWelcomeSent = async (userId: string, appMetadata: Record<string, unknown> | null | undefined) => {
+  const admin = getAdminClient();
+  await admin.auth.admin.updateUserById(userId, {
+    app_metadata: {
+      ...(appMetadata ?? {}),
+      welcome_email_sent: true,
+    },
   });
 };
 
@@ -47,7 +49,13 @@ const profileEmailExistsForOtherUser = async (email: string, userId: string) => 
 
 const syncProfileFromAuthMetadata = async (
   supabase: Awaited<ReturnType<typeof createClient>>,
-): Promise<{ shouldSendWelcome: boolean; welcomeEmailTo?: string; welcomeName: string }> => {
+): Promise<{
+  shouldSendWelcome: boolean;
+  welcomeEmailTo?: string;
+  welcomeName: string;
+  userId?: string;
+  appMetadata?: Record<string, unknown>;
+}> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -105,13 +113,17 @@ const syncProfileFromAuthMetadata = async (
     (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??
     "there";
 
+  const welcomeAlreadySent = user.app_metadata?.welcome_email_sent === true;
+
   return {
     shouldSendWelcome:
       !!normalizedEmail &&
-      isFirstSignIn(user.created_at, user.last_sign_in_at) &&
-      !emailExistsOnAnotherProfile,
+      !emailExistsOnAnotherProfile &&
+      !welcomeAlreadySent,
     welcomeEmailTo: normalizedEmail,
     welcomeName,
+    userId: user.id,
+    appMetadata: (user.app_metadata ?? {}) as Record<string, unknown>,
   };
 };
 
@@ -138,6 +150,9 @@ export async function GET(request: Request) {
       try {
         if (welcome.shouldSendWelcome && welcome.welcomeEmailTo) {
           await sendWelcome(welcome.welcomeEmailTo, welcome.welcomeName);
+          if (welcome.userId) {
+            await markWelcomeSent(welcome.userId, welcome.appMetadata);
+          }
         }
       } catch (emailError) {
         console.warn("[auth/callback] welcome email failed", emailError);
