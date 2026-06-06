@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient as createServerSupabase } from "@/libs/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import stripe from "@/libs/stripe";
+import config from "@/config";
 
 // Deletes the currently signed-in user's profile row and their auth account.
 // Requires SUPABASE_SERVICE_ROLE_KEY to be set (server-only env var).
@@ -32,39 +32,57 @@ export async function POST() {
   });
 
   // Guard: do not allow deleting the account while a live subscription exists.
-  // This avoids orphaned billing relationships.
+  // This avoids orphaned billing relationships (Stripe keeps charging with no user to cancel).
   const { data: profile } = await admin
     .from("profiles")
     .select("customer_id, email")
     .eq("id", user.id)
     .maybeSingle<{ customer_id: string | null; email: string | null }>();
 
-  let customerId = profile?.customer_id ?? null;
+  if (config.paymentProvider === "stripe") {
+    const stripe = (await import("@/libs/stripe")).default;
+    let customerId = profile?.customer_id ?? null;
 
-  if (!customerId && profile?.email) {
-    const customers = await stripe.customers.list({
-      email: profile.email,
-      limit: 1,
-    });
-    customerId = customers.data[0]?.id ?? null;
-  }
+    if (!customerId && profile?.email) {
+      const customers = await stripe.customers.list({
+        email: profile.email,
+        limit: 1,
+      });
+      customerId = customers.data[0]?.id ?? null;
+    }
 
-  if (customerId) {
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "all",
-      limit: 10,
-    });
+    if (customerId) {
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "all",
+        limit: 10,
+      });
 
-    const hasLiveSubscription = subscriptions.data.some(
-      (sub) =>
-        sub.status === "active" ||
-        sub.status === "trialing" ||
-        sub.status === "past_due" ||
-        sub.status === "unpaid",
-    );
+      const hasLiveSubscription = subscriptions.data.some(
+        (sub) =>
+          sub.status === "active" ||
+          sub.status === "trialing" ||
+          sub.status === "past_due" ||
+          sub.status === "unpaid",
+      );
 
-    if (hasLiveSubscription) {
+      if (hasLiveSubscription) {
+        return NextResponse.json(
+          {
+            error:
+              "You still have an active subscription. Please cancel it in Billing and wait until it ends before deleting your account.",
+          },
+          { status: 409 },
+        );
+      }
+    }
+  } else if (config.paymentProvider === "lemonsqueezy" && profile?.email) {
+    const { getLSSubscriptionStatus } = await import("@/libs/lemonsqueezy");
+    const lsStatus = await getLSSubscriptionStatus(profile.email);
+
+    // Block deletion only if the subscription is genuinely active (not just cancelled/in grace period).
+    // A user in a cancellation grace period can still delete — they've already opted out.
+    if (lsStatus && (lsStatus.liveHasAccess && !lsStatus.cancelAtPeriodEnd)) {
       return NextResponse.json(
         {
           error:
