@@ -77,8 +77,9 @@ export async function POST(req: NextRequest) {
     .maybeSingle<Pick<Profile, "customer_id" | "email" | "plan_id">>();
 
   const candidateIds: string[] = [];
-  if (isStripeCustomerId(profile?.customer_id)) {
-    candidateIds.push(profile.customer_id as string);
+  const profileCustomerId = profile?.customer_id ?? null;
+  if (profileCustomerId && isStripeCustomerId(profileCustomerId)) {
+    candidateIds.push(profileCustomerId);
   }
   if (profile?.email) {
     const customers = await stripe.customers.list({ email: profile.email, limit: 20 });
