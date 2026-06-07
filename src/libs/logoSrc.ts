@@ -6,7 +6,7 @@ import config from "@/config";
  * Returns an empty string if no logoUrl is configured.
  */
 export function getAbsoluteLogoSrc(): string {
-  const src = config.logoUrl;
+  const src = config.logoUrl as string;
   if (!src) return "";
   return src.startsWith("http") ? src : `https://${config.domainName}${src}`;
 }
