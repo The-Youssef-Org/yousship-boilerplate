@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Html, Head, Preview, Body, Container, Section, Row, Column, Text, Link, Img } from "react-email";
 import config from "@/config";
+import { getAbsoluteLogoSrc } from "@/libs/logoSrc";
 
 const font = '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif';
 
@@ -18,10 +19,10 @@ export const EmailLayout = ({
       <Container style={card}>
         <Section style={brandBar}>
           <Row>
-            {(config.logoUrl as string) && (
+            {getAbsoluteLogoSrc() && (
               <Column style={{ width: "32px", verticalAlign: "middle" }}>
                 <Img
-                  src={config.logoUrl as string}
+                  src={getAbsoluteLogoSrc()}
                   width="28"
                   height="28"
                   alt={config.appName}
@@ -29,7 +30,7 @@ export const EmailLayout = ({
                 />
               </Column>
             )}
-            <Column style={{ verticalAlign: "middle", paddingLeft: (config.logoUrl as string) ? "10px" : "0" }}>
+            <Column style={{ verticalAlign: "middle", paddingLeft: getAbsoluteLogoSrc() ? "10px" : "0" }}>
               <Text style={brandText}>{config.appName}</Text>
             </Column>
           </Row>

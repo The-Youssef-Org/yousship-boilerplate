@@ -1,15 +1,15 @@
 const painPoints = [
   {
     label: "01",
-    title: "Week one turns into week six",
+    title: "Week one becomes week six",
     description:
-      "You plan to ship features, but your time disappears into setting up email, billing, auth, and infrastructure.",
+      "You plan to build, but your time disappears into details that have nothing to do with your product.",
   },
   {
     label: "02",
-    title: "You start losing motivation",
+    title: "You start losing momentum",
     description:
-      "Delays stack up, progress feels slow, and motivation starts to fade.",
+      "Delays stack up, progress feels invisible, and the gap between where you are and where you wanted to be keeps growing.",
   },
   {
     label: "03",
@@ -25,18 +25,17 @@ const Problem = () => {
       <div className="relative mx-auto max-w-6xl px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-4xl font-black tracking-tight text-balance text-base-content sm:text-5xl">
-            The real risk is months spent wiring basics.
+            The real risk isn&apos;t failure. It&apos;s never shipping.
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-base-content/50">
-            Most SaaS projects fail in setup, not strategy. Scope grows, momentum drops,
-            and eventually the project dies.
+            Most products don&apos;t fail because of bad ideas. They fail because momentum dies before launch.
           </p>
         </div>
 
         <div className="mt-14 flex flex-col items-stretch md:flex-row md:items-center md:justify-center">
           {painPoints.map((point, index) => (
             <div key={point.title} className="flex flex-col items-center md:flex-row md:items-center">
-              <article className="h-[220px] w-full max-w-sm rounded-2xl border border-base-content/10 bg-base-content/[0.03] p-6 backdrop-blur-sm md:w-80">
+              <article className="w-full max-w-sm rounded-2xl border border-base-content/10 bg-base-content/[0.03] p-6 backdrop-blur-sm md:w-80">
                 <p className="text-xs font-semibold tracking-[0.2em] text-base-content/35">
                   {point.label}
                 </p>

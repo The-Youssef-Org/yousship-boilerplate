@@ -159,7 +159,7 @@ export const getMagicLinkEmailTemplate = (): string =>
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:40px;">
       <a href="{{ .ConfirmationURL }}"
-        style="display:inline-block;background:#d97706;color:#ffffff;font-size:15px;font-weight:600;padding:15px 36px;border-radius:8px;text-decoration:none;letter-spacing:-0.1px;">
+        style="display:inline-block;background:#111827;color:#ffffff;font-size:15px;font-weight:600;padding:15px 36px;border-radius:8px;text-decoration:none;letter-spacing:-0.1px;">
         Sign in to ${config.appName} &rarr;
       </a>
     </div>

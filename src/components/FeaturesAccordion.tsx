@@ -29,50 +29,50 @@ type Feature = {
 
 const FEATURES: Feature[] = [
   {
-    id: "auth",
-    title: "Authentication",
+    id: "onboarding",
+    title: "Easy Onboarding",
     description:
-      "Magic links and Google OAuth out of the box, fully connected to Supabase with secure server-side session cookies. Protected routes are pre-built so you can lock pages to authenticated users from day one — no custom middleware to write.",
-    img: "/features/auth.png", // ← replace with "/features/auth.png"
+      "Get your users up and running in minutes. A guided setup flow, sensible defaults, and contextual tips eliminate friction so people see value immediately — before they have a chance to drop off.",
+    img: "/features/onboarding.png",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-        <path d="M8.5 11V8a3.5 3.5 0 1 1 7 0v3m-9 0h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
   {
-    id: "payments",
-    title: "Payments",
+    id: "dashboard",
+    title: "Powerful Dashboard",
     description:
-      "Stripe Checkout and subscription management fully wired — one-time purchases, recurring plans, the customer billing portal and webhook handling are all set up and waiting for your products and prices.",
-    img: "/features/payments.png", // ← replace with "/features/payments.png"
+      "Everything you need at a glance. A clean, customisable dashboard surfaces the metrics that matter most so you can monitor progress, spot trends, and act before small issues become big ones.",
+    img: "/features/dashboard.png",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-        <path d="M3 8.5h18M6 5h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm9 9h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M3 3h7v9H3zm11 0h7v5h-7zm0 9h7v9h-7zM3 16h7v5H3z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
   {
-    id: "email",
-    title: "Email",
+    id: "collaboration",
+    title: "Team Collaboration",
     description:
-      "Transactional email templates wired to Resend. Welcome messages, magic-link delivery and purchase confirmations are all templated — drop in your sender details and they are ready to go.",
-    img: "/features/email.png", // ← swap for "/features/email.png" when you have your own screenshot
+      "Invite teammates, assign roles, and work together without stepping on each other. Real-time updates, shared views, and granular permissions keep every team member aligned and in control.",
+    img: "/features/collaboration.png",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-        <path d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
   {
-    id: "seo",
-    title: "SEO & Blog",
+    id: "automation",
+    title: "Automation",
     description:
-      "An MDX-powered blog, auto-generated sitemap, dynamic OG images and structured data included. Write a post in markdown and push — search engines pick it up immediately and every page gets its own social preview image automatically.",
-    img: "/features/seo.png", // ← swap for "/features/seo.png" when you have your own screenshot
+      "Eliminate repetitive tasks with rule-based workflows. Set triggers, define actions, and let the product handle the busywork — so your team can focus on the work that actually moves the needle.",
+    img: "/features/automation.png",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-        <path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
@@ -91,7 +91,7 @@ export default function FeaturesAccordion() {
           What&apos;s included
         </p>
         <h2 className="mt-3 text-center text-3xl font-black tracking-tight text-balance text-base-content sm:text-4xl">
-          Everything pre-wired.
+          Everything you need.
         </h2>
 
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
@@ -141,12 +141,7 @@ export default function FeaturesAccordion() {
                 className="object-cover"
               />
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
-                <p className="text-sm font-medium text-base-content/30">No image yet</p>
-                <p className="max-w-[220px] text-xs text-base-content/20">
-                  Add a screenshot to <code className="text-base-content/30">/public/features/</code> and set the <code className="text-base-content/30">img</code> path above.
-                </p>
-              </div>
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-base-200 to-base-300/60" />
             )}
           </div>
 

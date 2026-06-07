@@ -1,23 +1,23 @@
 // Three editorial testimonial cards with different emphasis.
 const items = [
   {
-    quote: "The project started feeling real the moment I stopped scaffolding and started shipping.",
-    name: "Tom Wilson",
+    quote: "The product started feeling real the moment we stopped planning and started using it.",
+    name: "James Carter",
     role: "Solo founder",
     avatar: "https://i.pravatar.cc/100?img=11",
     tone: "from-base-200 to-base-100",
   },
   {
-    quote: "Payments, auth, and the blog were already in place. That changed the pace completely.",
-    name: "Priya Shah",
-    role: "Indie hacker",
-    avatar: "https://i.pravatar.cc/100?img=22",
+    quote: "Everything we needed was already there. That changed the pace completely.",
+    name: "Nina Patel",
+    role: "Product manager",
+    avatar: "https://i.pravatar.cc/100?img=48",
     tone: "from-primary/15 to-base-100",
   },
   {
-    quote: "The whole thing reads like a finished product, not a pile of starter files.",
+    quote: "It reads like a finished product. Our team adopted it without any convincing.",
     name: "Marc Johansson",
-    role: "Designer turned dev",
+    role: "Design lead",
     avatar: "https://i.pravatar.cc/100?img=33",
     tone: "from-secondary/15 to-base-100",
   },
@@ -29,7 +29,7 @@ const Testimonial3 = () => {
       <div className="mx-auto max-w-7xl">
       <div className="mb-10 max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
-          Different founders, same result: they shipped sooner.
+          Different teams, same result: they got there faster.
         </h2>
       </div>
       <div className="grid gap-6 md:grid-cols-3">

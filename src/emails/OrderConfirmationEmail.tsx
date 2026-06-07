@@ -44,7 +44,7 @@ export const OrderConfirmationEmail = ({
       Go to your dashboard &rarr;
     </Button>
     <Text style={muted}>
-      A Stripe receipt is on its way to your inbox shortly.
+      A payment receipt will be sent to your email separately.
     </Text>
     <Text style={signature}>— The {config.appName} team</Text>
   </EmailLayout>
@@ -70,7 +70,7 @@ const text: React.CSSProperties = {
 
 const button: React.CSSProperties = {
   display: "inline-block",
-  backgroundColor: "#d97706",
+  backgroundColor: "#111827",
   color: "#ffffff",
   fontSize: "14px",
   fontWeight: "600",

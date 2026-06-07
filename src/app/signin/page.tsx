@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
-import { LogoMark } from "@/components/Logo";
+import Logo from "@/components/Logo";
 import SigninForm from "./SigninForm";
 
 export const metadata = getSEOTags({
@@ -14,13 +14,7 @@ export const metadata = getSEOTags({
 const SigninPage = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-base-200 px-6 py-12">
-      <Link
-        href="/"
-        className="mb-8 inline-flex items-center gap-2 text-lg font-semibold text-base-content"
-      >
-        <LogoMark size={32} />
-        {config.appName}
-      </Link>
+      <Logo className="mb-8" />
 
       <div className="w-full max-w-md rounded-3xl border border-base-content/10 bg-base-100 p-8">
         <div className="mb-6 text-center">

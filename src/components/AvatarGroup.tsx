@@ -1,13 +1,13 @@
 import config from "@/config";
 
 const AvatarGroup = () => {
-  const proof = config.socialProof;
+  const { show, members, text } = config.avatarGroup;
 
-  if (!proof.showAvatarGroup || !proof.avatarGroupMembers.length) {
+  if (!show || !members.length) {
     return null;
   }
 
-  const avatars = proof.avatarGroupMembers.slice(0, 5);
+  const avatars = members.slice(0, 5);
 
   return (
     <div className="mt-6 inline-flex items-center gap-3 rounded-full bg-base-content/[0.03] px-3 py-2">
@@ -25,7 +25,7 @@ const AvatarGroup = () => {
           />
         ))}
       </div>
-      <p className="text-sm font-medium text-base-content/65">{proof.avatarGroupText}</p>
+      <p className="text-sm font-medium text-base-content/65">{text}</p>
     </div>
   );
 };

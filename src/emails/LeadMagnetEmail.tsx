@@ -92,7 +92,7 @@ const listBox: React.CSSProperties = {
 
 const button: React.CSSProperties = {
   display: "inline-block",
-  backgroundColor: "#d97706",
+  backgroundColor: "#111827",
   color: "#ffffff",
   fontSize: "14px",
   fontWeight: "600",

@@ -233,7 +233,7 @@ export default async function ProfilePage() {
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single<Profile>();
+    .maybeSingle<Profile>();
 
   // The trigger should always create a row, but stay defensive.
   const safeProfile: Profile =

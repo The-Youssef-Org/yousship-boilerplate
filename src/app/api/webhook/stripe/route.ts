@@ -291,17 +291,14 @@ export async function POST(req: NextRequest) {
         const admin = getAdmin();
         const stripeCustomerName = session.customer_details?.name ?? null;
 
-        // Logged-in buyer: use metadata user id and ensure profile exists.
+        // Logged-in buyer: ensure profile row exists. Do not overwrite the email
+        // field — the profile already holds the user's auth email, and the Stripe
+        // checkout email may differ (e.g. a billing address), which would cause a
+        // unique-constraint violation if it belongs to another account.
         if (resolvedUserId) {
-          const normalized = customerEmail ? normalizeEmail(customerEmail) : null;
           const { error: upsertError } = await admin
             .from("profiles")
-            .upsert(
-              normalized
-                ? { id: resolvedUserId, email: normalized }
-                : { id: resolvedUserId },
-              { onConflict: "id" },
-            );
+            .upsert({ id: resolvedUserId }, { onConflict: "id" });
           if (upsertError) throw upsertError;
         }
 

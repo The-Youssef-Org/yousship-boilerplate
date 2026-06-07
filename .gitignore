@@ -45,9 +45,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local AI agent instruction files (do not ship in sellable boilerplate)
+# local files
 AGENTS.md
 CLAUDE.md
-
-# local tooling binaries (do not ship in sellable boilerplate)
 stripe.exe

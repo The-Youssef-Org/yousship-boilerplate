@@ -48,14 +48,14 @@ const BlogIndex = () => {
               className="font-extrabold tracking-tight text-base-content"
               style={{ marginTop: "0.75rem", fontSize: "clamp(2.25rem, 4vw, 3rem)" }}
             >
-              Build, ship, and grow your SaaS.
+              Insights, guides, and resources.
             </h1>
             <p
               className="text-base-content/70"
               style={{ marginTop: "1rem", maxWidth: "42rem", fontSize: "1.125rem" }}
             >
-              Tutorials, playbooks, and behind-the-scenes notes from the team
-              shipping {config.appName}.
+              Tutorials, playbooks, and behind-the-scenes notes from the
+              {config.appName} team.
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
             </div>

@@ -2,7 +2,7 @@
 const TestimonialSingle = ({
   quote = "We stopped arguing about setup, shipped the first version, and sold the product before the week was over.",
   name = "Alex Martin",
-  role = "Founder, MotionBoard",
+  role = "Co-founder",
   avatar = "https://i.pravatar.cc/120?img=12",
 }: {
   quote?: string;

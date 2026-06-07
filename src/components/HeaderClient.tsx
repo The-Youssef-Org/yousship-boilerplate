@@ -48,7 +48,7 @@ const HeaderClient = ({
           .from("profiles")
           .select("name, image, email")
           .eq("id", verifiedUser.id)
-          .single<HeaderProfile>();
+          .maybeSingle<HeaderProfile>();
         setProfile(data ?? null);
       } else {
         setProfile(null);

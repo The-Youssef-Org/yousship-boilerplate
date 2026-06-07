@@ -70,15 +70,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
-  const { data: profile, error: profileError } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("customer_id, email, plan_id")
     .eq("id", user.id)
-    .single<Pick<Profile, "customer_id" | "email" | "plan_id">>();
-
-  if (profileError) {
-    return NextResponse.json({ error: profileError.message }, { status: 500 });
-  }
+    .maybeSingle<Pick<Profile, "customer_id" | "email" | "plan_id">>();
 
   const candidateIds: string[] = [];
   if (isStripeCustomerId(profile?.customer_id)) {

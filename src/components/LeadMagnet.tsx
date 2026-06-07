@@ -18,17 +18,17 @@ const CheckIcon = () => (
 // Email capture section — edit copy and bullet points directly here.
 // To send a lead magnet email, update src/emails/LeadMagnetEmail.tsx.
 // To handle form submission, update src/app/api/lead/route.ts.
-const badge = "Stay in the loop";
-const heading = "Get the inside track.";
+const badge = "Stay updated";
+const heading = "Be the first to know.";
 const subheading =
-  "Join and be the first to know what we're working on. No spam — just honest updates from the team.";
+  "Get product updates, tips, and early access to new features — delivered straight to your inbox.";
 const bulletPoints: string[] = [
-  "The inside track on what we're building and where we're headed",
-  "Practical tips and guides delivered straight to your inbox",
-  "Honest updates from the team — no fluff, no spam",
-  "A direct line to us — we actually read every reply",
+  "Early access to new features before anyone else",
+  "Practical tips to get more from your workflow",
+  "Occasional updates from the team — no fluff, no spam",
+  "A direct line to our team — we read every reply",
 ];
-const ctaLabel = "Count me in";
+const ctaLabel = "Subscribe";
 const formNote = "No spam. Unsubscribe anytime.";
 
 const LeadMagnet = () => {

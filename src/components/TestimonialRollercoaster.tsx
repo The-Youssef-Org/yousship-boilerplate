@@ -1,23 +1,23 @@
 // Rollercoaster-style testimonial section with staggered cards.
 const entries = [
   {
-    quote: "I finally stopped patching together starter files and just launched.",
+    quote: "I finally stopped second-guessing the process and started seeing results.",
     name: "Sara Chen",
-    role: "Founder, LaunchKit",
+    role: "Founder",
     avatar: "https://i.pravatar.cc/100?img=32",
     tone: "from-base-300/20 to-base-200",
   },
   {
-    quote: "The product felt lighter immediately. Less setup, more momentum.",
+    quote: "The product felt lighter immediately. Less friction, more momentum.",
     name: "Tom Wilson",
     role: "Solo founder",
     avatar: "https://i.pravatar.cc/100?img=22",
     tone: "from-primary/25 to-base-200",
   },
   {
-    quote: "Our first paid users came faster because the launch page was already there.",
+    quote: "Our first paying customers came faster than we expected.",
     name: "Priya Shah",
-    role: "Indie hacker",
+    role: "Product lead",
     avatar: "https://i.pravatar.cc/100?img=47",
     tone: "from-emerald-500/20 to-base-200",
   },

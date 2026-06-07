@@ -42,9 +42,9 @@ const LogoCloudSlot = ({ src, scale, useMonochrome, isLightTheme }: LogoCloudIte
 };
 
 const LogoCloud = () => {
-  const items = config.socialProof.logoCloudItems;
-  const useMonochrome = config.socialProof.logoCloudUseMonochrome;
-  const shouldRoll = config.socialProof.logoCloudShouldRoll;
+  const items = config.logoCloud.items;
+  const useMonochrome = config.logoCloud.useMonochrome;
+  const shouldRoll = config.logoCloud.shouldRoll;
 
   // Watch data-theme on <html> so the filter updates when the toggle fires.
   const [isLightTheme, setIsLightTheme] = useState(() => {
@@ -69,7 +69,7 @@ const LogoCloud = () => {
     return () => observer.disconnect();
   }, []);
 
-  if (!config.socialProof.showLogoCloud) {
+  if (!config.logoCloud.show) {
     return null;
   }
 

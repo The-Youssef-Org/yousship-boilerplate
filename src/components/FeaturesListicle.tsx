@@ -11,10 +11,42 @@ type Feature = {
 
 const defaultFeatures: Feature[] = [
   {
-    name: "Authentication",
+    name: "Speed",
     description:
-      "Magic links and Google OAuth out of the box, fully connected to Supabase with secure server-side session cookies. Protected routes are pre-built so you can lock pages to authenticated users from day one — no custom middleware to write.",
-    bullets: ["Magic link & Google OAuth", "Secure server-side sessions", "Protected routes ready"],
+      "Deliver results in seconds, not minutes. Optimised from the ground up so your users never wait — every interaction is instant, every load is smooth, no matter the scale.",
+    bullets: ["Sub-second response times", "Optimised for any load", "Edge-ready infrastructure"],
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
+        <path
+          d="M13 2 4.09 12.37a1 1 0 0 0 .83 1.63H11l-1 8 8.91-10.37A1 1 0 0 0 19.08 10H13l1-8Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: "Reliability",
+    description: "Built for production from day one. Redundant by design, monitored continuously, and recovers automatically so your users always get through — even when things go wrong.",
+    bullets: ["99.9% uptime SLA", "Automatic failover", "Continuous monitoring"],
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
+        <path
+          d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: "Security",
+    description: "Your data is encrypted in transit and at rest. Role-based access controls, audit logs, and secure authentication ensure only the right people see the right things — always.",
+    bullets: ["End-to-end encryption", "Role-based access control", "Full audit logs"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
@@ -28,61 +60,31 @@ const defaultFeatures: Feature[] = [
     ),
   },
   {
-    name: "Payments",
-    description: "Stripe Checkout and subscription management fully wired — one-time purchases, recurring plans, the customer billing portal and webhook handling are all set up and waiting for your products and prices.",
-    bullets: ["One-time & subscription plans", "Customer billing portal", "Webhook handler included"],
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
-        <path
-          d="M3 8.5h18M6 5h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm9 9h3"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: "Emails",
-    description: "Transactional email templates built with React Email, wired to Resend or any SMTP provider. Welcome messages, magic-link delivery and receipt emails are all templated — drop in your sender details and they are ready to send.",
-    bullets: ["Welcome email", "Magic link delivery", "Receipt templates"],
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <path d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    name: "Styles with DaisyUI",
+    name: "Insights",
     description:
-      "DaisyUI is pre-wired on Tailwind v4, so you can switch between 20+ themes, tune tokens, and keep UI consistency without rebuilding components. All design tokens are semantic, so a one-line theme change updates every colour across the entire app.",
-    bullets: ["20+ switchable themes", "Customisable color tokens", "Component-first classes"],
+      "Real-time dashboards and detailed reports give you a clear picture of how your product is performing and how your users are engaging — so you can make confident, data-driven decisions.",
+    bullets: ["Real-time dashboards", "Custom reports", "User behaviour tracking"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
-          d="M12 4.5a8.5 8.5 0 1 0 0 17h1.2a1.8 1.8 0 0 0 0-3.6h-.9a2.3 2.3 0 0 1 0-4.6h1.2A5.5 5.5 0 0 0 19 7.8 8.5 8.5 0 0 0 12 4.5Z"
+          d="M3 12h4l3 7 4-14 3 7h4"
           stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <circle cx="8" cy="10" r="1" fill="currentColor" />
-        <circle cx="10.5" cy="7.8" r="1" fill="currentColor" />
-        <circle cx="13.7" cy="8" r="1" fill="currentColor" />
-        <circle cx="16" cy="10.5" r="1" fill="currentColor" />
       </svg>
     ),
   },
   {
-    name: "Database",
+    name: "Integrations",
     description:
-      "Supabase Postgres gives you a reliable data layer from day one, with typed access patterns and secure policies for production use. Row-level security is structured in from the start, so you never accidentally expose data as your product grows.",
-    bullets: ["Managed Postgres on Supabase", "Row-level security ready", "Full TypeScript support"],
+      "Connect the tools you already rely on with a single click. A growing library of native integrations and a clean API mean your workflow stays exactly the way you like it.",
+    bullets: ["Native third-party connectors", "Webhooks & REST API", "No-code integration builder"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
-          d="M12 4c-4.97 0-9 1.79-9 4s4.03 4 9 4 9-1.79 9-4-4.03-4-9-4Zm-9 8v4c0 2.21 4.03 4 9 4s9-1.79 9-4v-4"
+          d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
           stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
@@ -92,13 +94,13 @@ const defaultFeatures: Feature[] = [
     ),
   },
   {
-    name: "SEO & Blog",
-    description: "An MDX-powered blog, auto-generated sitemap, dynamic OG images and structured data included. Write a post in markdown and push — search engines pick it up immediately and every page gets its own social preview image automatically.",
-    bullets: ["MDX-powered blog", "Auto-generated sitemap", "Dynamic OG images"],
+    name: "Support",
+    description: "Detailed documentation, step-by-step guides, and a responsive support team mean you are never stuck. Get answers fast and keep moving — we are with you every step of the way.",
+    bullets: ["Comprehensive docs", "Video walkthroughs", "Priority support channel"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
         <path
-          d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+          d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
           stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"

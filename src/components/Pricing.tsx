@@ -21,7 +21,7 @@ const Pricing = () => {
       return { card, planId: plan?.variantId ?? null, mode: getMode(plan?.mode), isConfigured: !!plan?.variantId };
     }
     const plan = config.stripe.plans.find((p) => p.name === card.planName);
-    return { card, planId: plan?.priceId ?? null, mode: getMode(plan?.mode), isConfigured: !!plan };
+    return { card, planId: plan?.priceId ?? null, mode: getMode(plan?.mode), isConfigured: !!plan?.priceId };
   });
 
   const getPriceSuffix = (mode?: BillingMode) =>
@@ -151,13 +151,12 @@ const Pricing = () => {
                       <p className="mt-3 text-center text-xs text-base-content/60">{getBillingFootnote(mode)}</p>
                     </>
                   ) : (
-                    <div className="mt-8 rounded-xl border border-amber-500/25 bg-amber-500/[0.08] px-4 py-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-amber-300/90">
-                        {providerLabel} setup required
+                    <div className="mt-8 rounded-xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-base-content/40">
+                        Coming soon
                       </p>
-                      <p className="mt-1 text-sm leading-relaxed text-base-content/75">
-                        No {providerLabel} plan is connected to this card yet. Add a matching plan in
-                        <span className="font-medium"> config.{provider}.plans</span> to enable checkout.
+                      <p className="mt-1 text-sm leading-relaxed text-base-content/60">
+                        Checkout for this plan is not yet available. Contact us to get started.
                       </p>
                     </div>
                   )}

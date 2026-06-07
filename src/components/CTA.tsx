@@ -24,8 +24,7 @@ const CTA = () => {
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat brightness-50"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=1920&q=80')",
+          backgroundImage: "url('/cta.jpg')",
         }}
       />
       {/* Dark overlay */}
@@ -36,14 +35,14 @@ const CTA = () => {
 
       <div className="mx-auto w-full max-w-4xl px-8 py-24 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
-          Build faster, launch sooner
+          Join thousands of teams
         </p>
         <h2 className="mt-4 text-4xl font-black tracking-tight text-balance text-white sm:text-6xl">
-          Stop wasting weeks on setup.
+          Start building something great.
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/70">
-          Skip auth, billing, and email wiring. Stay focused on your product and
-          start generating revenue.
+          Get up and running today. No long contracts, no hidden fees — just a
+          product your team will actually love.
         </p>
 
         <div className="mt-10 flex justify-center">

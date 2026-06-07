@@ -6,7 +6,19 @@ import { magicLinkEmail } from "@/emails/MagicLinkEmail";
 import config from "@/config";
 
 export async function POST(req: NextRequest) {
-  const { email, next = config.auth.callbackUrl } = await req.json();
+  let body: { email?: unknown; next?: unknown };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
+  const { email, next: rawNext } = body;
+
+  // Allow only same-origin relative paths — prevents open redirect.
+  const next = (typeof rawNext === "string" && rawNext.startsWith("/") && !rawNext.startsWith("//"))
+    ? rawNext
+    : config.auth.callbackUrl;
 
   if (!email || typeof email !== "string") {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });

@@ -27,97 +27,87 @@ export type BlogArticle = {
 
 export const articles: BlogArticle[] = [
   {
-    slug: "how-to-launch-a-saas-in-a-weekend",
-    title: "SaaS Boilerplate: How to Launch a Product in a Weekend",
+    slug: "how-to-build-workflows-that-actually-stick",
+    title: "How to Build Workflows That Actually Stick",
     description:
-      "A practical launch playbook using a SaaS boilerplate to go from idea to first payment in 48 hours.",
-    date: "2025-12-01",
-    cover: "/blog/launch-weekend.png",
+      "Most processes fall apart within weeks. Here is how to design workflows your team will follow without being reminded.",
+    date: "2026-05-20",
+    cover: "/blog/workflows.png",
     author: { name: "Your Name", role: "Founder" },
-    tags: ["launch", "saas boilerplate", "nextjs boilerplate"],
-    content: `<p>If you want to ship fast, a <strong>SaaS boilerplate</strong> is often the highest-leverage decision you can make. Instead of spending your first week wiring auth, billing, email, and SEO, you can focus on your offer and customer problem.</p>
+    tags: ["productivity", "workflow", "teams"],
+    content: `<p>Most teams do not struggle because they lack processes. They struggle because the processes they have are too complicated, too manual, or too easy to skip. A workflow that sticks is not the most thorough one — it is the one with the least friction.</p>
 
-<p>This guide shows a realistic 48-hour plan to launch with a <strong>Next.js boilerplate</strong> and reach your first payment quickly.</p>
+<h2>Start with what people already do</h2>
+<p>The fastest way to get adoption is to build on existing habits rather than replacing them. Map what your team actually does today — not what the process document says — and look for the natural checkpoints where a new step would fit without disrupting flow.</p>
 
-<h2>Friday evening: define one painful problem</h2>
-<p>Write one sentence that finishes: <em>"This product helps [specific user] do [specific outcome] without [specific pain]."</em> Keep it narrow. Broad ideas kill launch speed.</p>
+<h2>Remove every optional step</h2>
+<p>If a step is optional, it will eventually be skipped. Make your core workflow contain only the steps that are genuinely required. Move everything else out of the critical path and into a separate reference or checklist that people can use when needed.</p>
 
-<h2>Saturday morning: ship one complete flow</h2>
-<p>Build only one path: landing page → sign-in → core action → checkout. Skip dashboards, settings, and edge-case polish until after launch feedback.</p>
-<ul>
-  <li>Use your boilerplate's auth exactly as provided</li>
-  <li>Connect one Stripe price and test checkout end-to-end</li>
-  <li>Send one transactional email for confidence and trust</li>
-</ul>
+<h2>Make the right action the easiest action</h2>
+<p>Workflows break down when the correct path is harder than the shortcut. If logging a decision takes three clicks, people will stop logging decisions. Design your process so the default, no-effort action is also the correct one.</p>
 
-<h2>Saturday afternoon: publish conversion-first copy</h2>
-<p>Your homepage should answer: who this is for, what result they get, and why this is faster than alternatives. Keep design clean, but prioritize clarity over decoration.</p>
+<h2>Review it after 30 days</h2>
+<p>No workflow survives first contact with reality unchanged. Build in a 30-day review from the start. Ask the people doing the work — not just the managers overseeing it — where the friction is. Then remove it.</p>
 
-<h2>Sunday: launch where your users already are</h2>
-<p>Post your product where your target audience lives. Share a clear before/after outcome, one screenshot, and a direct CTA. You are not trying to go viral; you are trying to get qualified clicks.</p>
+<h2>Automate the reminders, not the thinking</h2>
+<p>Automation works best on the mechanical parts: notifications, status updates, handoffs. The judgment calls — prioritisation, communication, escalation — should stay with people. Automating the wrong things creates the illusion of a working process while the real work falls through the cracks.</p>
 
-<h2>Why this works</h2>
-<p>A good SaaS boilerplate removes implementation drag from non-differentiating work. You still need distribution, positioning, and proof, but your first launch loop gets dramatically shorter.</p>
-
-<p>If your goal is speed-to-revenue, this is usually the fastest path: <strong>validate first, expand second</strong>.</p>`,
+<p>The best workflow is one your team runs without being asked. That only happens when it makes their job easier, not harder.</p>`,
   },
   {
-    slug: "stripe-checkout-in-nextjs",
-    title: "Next.js Boilerplate + Stripe: Production-Ready Payments Guide",
+    slug: "making-better-decisions-with-the-data-you-already-have",
+    title: "Making Better Decisions With the Data You Already Have",
     description:
-      "How to implement Stripe Checkout in a Next.js boilerplate with webhooks, portal access, and secure provisioning.",
-    date: "2025-11-12",
-    cover: "/blog/stripe-nextjs.png",
+      "You probably have more useful information than you think. The problem is usually how it is being used.",
+    date: "2026-04-08",
+    cover: "/blog/data-decisions.png",
     author: { name: "Your Name", role: "Founder" },
-    tags: ["payments", "nextjs boilerplate", "stripe"],
-    content: `<p>Most teams searching for a <strong>Next.js boilerplate</strong> care about one thing: shipping revenue quickly and safely. Payments are where fast projects often break in production. This guide covers the minimum robust setup.</p>
+    tags: ["data", "decision-making", "productivity"],
+    content: `<p>Teams rarely fail because they lack data. They fail because the data they have is scattered, inconsistently tracked, or never actually consulted when decisions get made. Before investing in more data collection, it is worth asking: are you using what you already have?</p>
 
-<h2>1. Keep checkout creation server-side</h2>
-<p>Create Stripe Checkout sessions in your backend route handler only. Never trust a client-defined amount or product payload.</p>
+<h2>Identify the three numbers that matter most</h2>
+<p>Every business has dozens of metrics but only a handful that actually predict outcomes. Identify the three numbers that, if they moved in the right direction, would tell you the business is healthy. Make those visible to everyone and review them consistently.</p>
 
-<h2>2. Map plans to Stripe Price IDs</h2>
-<p>Store display copy in config, but use Stripe Price IDs as billing truth. This gives you flexible pricing pages while keeping charge amounts authoritative.</p>
+<h2>Separate lagging from leading indicators</h2>
+<p>Revenue is a lagging indicator — it tells you what already happened. Leading indicators tell you what is about to happen. The goal is to track both, but act on the leading ones early enough to change the outcome.</p>
 
-<h2>3. Verify webhook signatures</h2>
-<p>Always verify the <code>stripe-signature</code> header before processing events. Signature verification is non-negotiable for production security.</p>
+<h2>Make data part of the conversation, not a separate report</h2>
+<p>If the data lives in a report that gets sent on Friday and ignored by Monday, it is not influencing decisions. Bring the relevant numbers into the actual conversations where decisions get made — stand-ups, reviews, planning sessions.</p>
 
-<h2>4. Provision access on webhook events</h2>
-<p>Grant product access on <code>checkout.session.completed</code> (and subscription lifecycle events), not on the client redirect. Redirects can be interrupted; webhooks are the reliable source.</p>
+<h2>Question the trend, not just the number</h2>
+<p>A metric that looks good in isolation can be misleading. Always ask: is this improving, declining, or flat? Over what period? Compared to what? A number without context creates false confidence.</p>
 
-<h2>5. Reuse customer records</h2>
-<p>Attach checkout to an existing Stripe customer when available. This prevents duplicate customer records and improves billing management.</p>
+<h2>Act on what you find</h2>
+<p>The biggest waste of data is collecting it, reviewing it, and then doing nothing. Every insight should lead to a decision or be explicitly deferred. If you are regularly reviewing data without it changing anything, either the data is wrong or the review process is broken.</p>
 
-<h2>6. Offer self-serve billing portal</h2>
-<p>Use Stripe Customer Portal so users can update payment methods, cancel, or switch plans without manual support overhead.</p>
-
-<p>If your goal is a production-ready stack, this is where a strong SaaS boilerplate helps most: fewer billing bugs, faster launch, and cleaner upgrade paths.</p>`,
+<p>Better decisions come from clearer questions, not more dashboards. Start with the question you are trying to answer, then find the data that answers it.</p>`,
   },
   {
-    slug: "supabase-auth-cheatsheet",
-    title: "Best Next.js Boilerplate Stack: Supabase Auth Implementation Guide",
+    slug: "the-real-cost-of-context-switching",
+    title: "The Real Cost of Context Switching",
     description:
-      "A practical Supabase auth guide for modern SaaS apps: OAuth, magic links, server sessions, and route protection.",
-    date: "2025-10-20",
-    cover: "/blog/supabase-auth.png",
+      "Every time your team switches tasks, something gets lost. Here is how to reduce the damage without slowing everything down.",
+    date: "2026-03-15",
+    cover: "/blog/context-switching.png",
     author: { name: "Your Name", role: "Founder" },
-    tags: ["auth", "supabase", "saas boilerplate", "nextjs boilerplate"],
-    content: `<p>When people evaluate the <strong>best Next.js boilerplate</strong>, auth quality is usually the deciding factor. A polished sign-in flow improves trust, conversion, and retention from day one.</p>
+    tags: ["productivity", "focus", "teams"],
+    content: `<p>Context switching does not just feel disruptive — it has a measurable cost. Research consistently shows that switching between tasks takes more cognitive energy than the tasks themselves. For teams doing knowledge work, this adds up fast.</p>
 
-<h2>Use the right client in the right place</h2>
-<p>Use the browser client in client components and the server client in route handlers, server actions, and server components. Mixing these causes subtle session bugs.</p>
+<h2>The hidden cost is in the recovery time</h2>
+<p>It is not the moment of switching that costs you — it is the time it takes to get back into deep focus after the switch. That recovery period averages 15 to 20 minutes. If your team is switching context four times a day, you are losing an hour or more of productive time per person, every day.</p>
 
-<h2>Refresh sessions consistently</h2>
-<p>Supabase tokens rotate. Middleware should keep sessions fresh so protected pages stay reliable for authenticated users.</p>
+<h2>Interruptions are the main driver</h2>
+<p>Most context switching is not planned — it is triggered by a message, a meeting, or a question that could have waited. The fix is not to eliminate communication, but to batch it. Designated response windows, asynchronous-first culture, and clear signals for "I am in focus mode" make a significant difference.</p>
 
-<h2>Protect at the layout level</h2>
-<p>Guard entire private route groups in a layout instead of repeating checks in every page. This improves maintainability and avoids access gaps.</p>
+<h2>Meetings are the highest-cost switch</h2>
+<p>A 30-minute meeting mid-morning does not cost 30 minutes — it costs the focus block before it (people stop going deep knowing the interruption is coming) and the recovery time after it. Cluster meetings at the edges of the day and protect the middle for deep work.</p>
 
-<h2>Prefer getUser for trusted checks</h2>
-<p><code>getUser()</code> validates token state with Supabase; <code>getSession()</code> is not sufficient for security-sensitive access decisions.</p>
+<h2>Reduce the number of active projects per person</h2>
+<p>The more workstreams someone is juggling simultaneously, the more context they are managing in parallel. Reducing work in progress — even by one project — often increases throughput because people can go deeper on fewer things.</p>
 
-<h2>Configure redirect URLs early</h2>
-<p>Add every auth callback URL in your Supabase project settings before launch. Most OAuth and magic-link production issues come from missing allowlist entries.</p>
+<h2>Make the next step obvious</h2>
+<p>A lot of context switching happens because people finish one task and then spend time figuring out what to do next. If the next action is always clear and immediately actionable, the friction between tasks drops and the tendency to drift toward distractions decreases.</p>
 
-<p>For SaaS teams, auth is not just a technical checkbox. It is part of your conversion funnel. A solid boilerplate implementation helps you ship faster without compromising security.</p>`,
+<p>You cannot eliminate context switching entirely, but reducing it by even 20% has a compounding effect on output quality, speed, and team morale.</p>`,
   },
 ];

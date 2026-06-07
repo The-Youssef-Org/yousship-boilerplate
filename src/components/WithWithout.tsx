@@ -1,19 +1,19 @@
 import config from "@/config";
 
 const without = [
-  "Wire up auth, payments and email from scratch — again",
-  "Miss transactional emails until a user complains",
-  "Figure out SEO, sitemaps and OG tags by hand",
-  "Spend weeks choosing tools that don't work together",
-  "Launch late, if the landing page ever gets finished",
+  "Juggling five tools that don't talk to each other",
+  "Losing time to repetitive manual work every week",
+  "Missing context because information lives everywhere",
+  "Onboarding new people with no clear process to follow",
+  "Scaling up and watching everything start to crack",
 ];
 
 const withList = [
-  "Sign-in, magic links and OAuth working out of the box",
-  "Transactional email templates ready to send on day one",
-  "SEO, sitemaps and social cards built in from the start",
-  "A proven stack that scales as your product grows",
-  "A professional landing page before your first product commit",
+  "One place for everything that matters to your business",
+  "Workflows that run automatically so your team stays focused",
+  "Full visibility across your product, team, and customers",
+  "A clear process that new people can follow from day one",
+  "A foundation built to grow with you, not against you",
 ];
 
 const WithWithout = () => {
@@ -22,7 +22,7 @@ const WithWithout = () => {
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <h2 className="text-3xl font-black tracking-tight text-balance text-base-content sm:text-4xl">
-            Two ways to start a SaaS.
+            Two ways to run your business.
           </h2>
         </div>
 

@@ -1,17 +1,12 @@
 import Link from "next/link";
 import config from "@/config";
-import { LogoMark } from "@/components/Logo";
+import Logo from "@/components/Logo";
 
 export default function NotFound() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center">
       {/* Logo */}
-      <Link href="/" className="mb-10 inline-flex items-center gap-2.5">
-        <LogoMark size={36} />
-        <span className="text-xl font-bold tracking-tight text-base-content">
-          {config.appName}
-        </span>
-      </Link>
+      <Logo className="mb-10" />
 
       {/* 404 badge */}
       <span className="mb-6 inline-flex items-center rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold tracking-widest text-primary ring-1 ring-inset ring-primary/20">

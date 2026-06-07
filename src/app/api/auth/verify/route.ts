@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createClient } from "@/libs/supabase/server";
 import { sendEmail } from "@/libs/resend";
 import { welcomeEmail } from "@/emails/WelcomeEmail";
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       (user.user_metadata?.given_name as string | undefined) ??
       (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??
       "there";
-    (async () => {
+    after(async () => {
       try {
         await sendEmail({
           to: normalizedEmail,
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
       } catch (err) {
         console.warn("[auth/verify] welcome email failed:", err);
       }
-    })();
+    });
   }
 
   return NextResponse.redirect(`${origin}${next}`);

@@ -56,5 +56,5 @@ Also review:
 ## Notes
 
 - `npm run build` also generates sitemap via `next-sitemap`.
-- `NEXT_PUBLIC_SITE_URL` must be set for sitemap generation.
+- Sitemap reads the domain from `config.domainName` in `src/config.ts` — no env var needed.
 - Stripe and Lemon Squeezy plan entries are configured in `src/config.ts`.

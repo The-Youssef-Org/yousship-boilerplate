@@ -7,20 +7,20 @@ type QA = { q: string; a: ReactNode };
 // Add or edit FAQ entries here. Each item needs a `q` (question) and `a` (answer).
 const defaults: QA[] = [
   {
-    q: "What is included when I buy this?",
-    a: "You get the full Next.js starter with authentication, Stripe payments, email flows, blog pages, landing components, and setup guidance for launch.",
+    q: "How do I get started?",
+    a: "Sign up, pick a plan, and you are up and running in minutes. No installation or technical setup required — just create an account and go.",
   },
   {
-    q: "What if it does not fit my project?",
-    a: "You are covered by a 7-day refund policy. If it is not the right match, you can request a refund.",
+    q: "Can I cancel anytime?",
+    a: "Yes. You can cancel your subscription at any time from your account settings. You will keep full access until the end of your current billing period.",
   },
   {
-    q: "Is this a subscription or a one-time purchase?",
-    a: "It is a one-time payment. After purchase, you can use it across as many products as you want.",
+    q: "Is there a free trial?",
+    a: "Yes — we offer a 14-day free trial on all plans. No credit card required to get started.",
   },
   {
-    q: "Do I need separate accounts for services like Stripe and Supabase?",
-    a: "Yes. You will connect your own Stripe and Supabase accounts. Both are easy to start with and already wired in the template.",
+    q: "How secure is my data?",
+    a: "Your data is encrypted in transit and at rest. We follow industry best practices for security and take privacy seriously.",
   },
 ];
 

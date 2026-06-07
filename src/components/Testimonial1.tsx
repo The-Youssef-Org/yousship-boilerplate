@@ -10,7 +10,7 @@ const Testimonial1 = () => {
           ))}
         </div>
         <blockquote className="mt-5 text-2xl font-semibold leading-snug text-base-content sm:text-3xl">
-          “The whole thing felt ready the moment we opened it. We could focus on customers, not plumbing.”
+          "The whole thing felt ready the moment we opened it. We could focus on customers straight away."
         </blockquote>
         <figcaption className="mt-8 flex items-center gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}

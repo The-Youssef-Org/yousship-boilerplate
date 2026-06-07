@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/libs/supabase/server";
 import { createLemonSqueezyCustomerPortal } from "@/libs/lemonsqueezy";
-import config from "@/config";
 import type { Profile } from "@/libs/types";
 
 export async function POST() {
@@ -18,7 +17,7 @@ export async function POST() {
     .from("profiles")
     .select("customer_id")
     .eq("id", user.id)
-    .single<Pick<Profile, "customer_id">>();
+    .maybeSingle<Pick<Profile, "customer_id">>();
 
   if (!profile?.customer_id) {
     return NextResponse.json({ url: `/#pricing` });
@@ -41,5 +40,4 @@ export async function POST() {
   }
 }
 
-// Silence the unused import warning — config is used for future extensibility.
-void config;
+

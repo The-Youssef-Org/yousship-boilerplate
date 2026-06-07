@@ -55,10 +55,10 @@ const config = {
   // ---------------------------------------------------------------------------
   appName,
   appDescription:
-    "The production-ready Next.js foundation for your next SaaS: auth, payments, emails, and SEO included.",
+    "Your App gives teams one place to manage everything that matters — without the complexity that slows you down.",
   domainName,
   showWordmark: true, // Set false for icon-only navbar/footer.
-  logoUrl: "", // Used in transactional emails. Set an absolute URL, or "" to show app name only.
+  logoUrl: "", // Path to your logo. Relative ("/logo.png") or absolute ("https://...") — both work for the website and emails.
 
   // ---------------------------------------------------------------------------
   // THEME
@@ -83,13 +83,13 @@ const config = {
   // HERO
   // ---------------------------------------------------------------------------
   hero: {
-    showBottomStack: false,
+
     showcase: {
-      kicker: `${appName} — Next.js SaaS Boilerplate`,
-      title: "Stop building infrastructure.",
-      titleHighlight: "Start shipping product.",
+      kicker: `${appName} — Built for the way you work`,
+      title: "The last tool",
+      titleHighlight: "you'll ever need.",
       description:
-        "Auth, Stripe, email, and a polished landing page — wired together and ready on day one. Every hour you would have spent on setup is now spent on the thing only you can build.",
+        "Stop stitching together workarounds. Your App handles the hard parts so you can focus on what actually moves your business forward.",
       primaryCtaPlanName: "Advanced", // Must match a plan name in stripe.plans.
       imageSrc: "/features/hero.png",
       imageAlt: "Product screenshot preview",
@@ -97,23 +97,30 @@ const config = {
   },
 
   // ---------------------------------------------------------------------------
-  // SOCIAL PROOF
   // ---------------------------------------------------------------------------
-  socialProof: {
-    showLogoCloud: true,
-    logoCloudUseMonochrome: true, // true = grayscale logos, false = original colors.
-    logoCloudShouldRoll: true, // true = rolling belt, false = static row.
-    // Add logo files in /public. scale is an optional per-logo size multiplier.
-    logoCloudItems: [
-      { src: "/next.svg" },
-      { src: "/supabase.png", scale: 1.15 },
-      { src: "/resend.svg" },
-      { src: "/stripe.svg", scale: 1.25 },
-      { src: "/lemon-squeezy.png" },
+  // LOGO CLOUD
+  // ---------------------------------------------------------------------------
+  logoCloud: {
+    show: true,
+    useMonochrome: true, // true = grayscale logos, false = original colors.
+    shouldRoll: true, // true = rolling belt, false = static row.
+    // Add logo files in /public or use external URLs. scale is an optional per-logo size multiplier.
+    items: [
+      { src: "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/spotify.svg", scale: 1.2 },
+      { src: "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/microsoft.svg" },
+      { src: "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/supabase.svg", scale: 1.1 },
+      { src: "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/stripe.svg" },
+      { src: "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/linkedin.svg" },
     ] as SocialProofLogo[],
-    showAvatarGroup: true,
-    avatarGroupText: "Joined by 2,000+ developers.",
-    avatarGroupMembers: [
+  },
+
+  // ---------------------------------------------------------------------------
+  // AVATAR GROUP
+  // ---------------------------------------------------------------------------
+  avatarGroup: {
+    show: true,
+    text: "Loved by 2,000+ teams worldwide.",
+    members: [
       { src: "https://i.pravatar.cc/100?img=11", alt: "Developer avatar 1" },
       { src: "https://i.pravatar.cc/100?img=12", alt: "Developer avatar 2" },
       { src: "https://i.pravatar.cc/100?img=13", alt: "Developer avatar 3" },
@@ -127,14 +134,14 @@ const config = {
   // ---------------------------------------------------------------------------
   stats: {
     showSection: true,
-    heading: "Proof your product can be trusted.",
+    heading: "Numbers that speak for themselves.",
     subheading:
-      "Use real metrics here to reinforce credibility before visitors reach pricing.",
+      "Real results from real customers. Add your own metrics here.",
     items: [
-      { value: "10k+", label: "Downloads" },
+      { value: "10k+", label: "Active users" },
       { value: "99.9%", label: "Uptime" },
-      { value: "24/7", label: "Monitoring" },
-      { value: "<2m", label: "Avg setup time", note: "for first local run" },
+      { value: "4.9★", label: "Avg. rating" },
+      { value: "< 2h", label: "Support response" },
     ] as StatsCounter[],
   },
 
@@ -148,7 +155,7 @@ const config = {
   // ---------------------------------------------------------------------------
   // PAYMENT PROVIDER
   // ---------------------------------------------------------------------------
-  paymentProvider: "lemonsqueezy" as PaymentProvider, // "stripe" or "lemonsqueezy"
+  paymentProvider: "stripe" as PaymentProvider, // "stripe" or "lemonsqueezy"
 
   // ---------------------------------------------------------------------------
   // STRIPE
@@ -159,17 +166,17 @@ const config = {
     plans: [
       {
         name: "Starter", // Must match a card in config.pricing.cards.
-        priceId: "price_1TdG661Cz9QfLQqqvLVG6jDI",
+        priceId: "",
         mode: "payment",
       },
       {
         name: "Advanced",
-        priceId: "price_1TdG6g1Cz9QfLQqqyp88UCEV",
+        priceId: "",
         mode: "subscription",
       },
       {
         name: "Pro",
-        priceId: "price_1TdG761Cz9QfLQqqBS4wu7Rc",
+        priceId: "",
         mode: "payment",
       },
     ] as PricingPlan[],
@@ -183,17 +190,17 @@ const config = {
     plans: [
       {
         name: "Starter",
-        variantId: "1711280",
+        variantId: "",
         mode: "subscription" as const,
       },
       {
         name: "Advanced",
-        variantId: "1711293",
+        variantId: "",
         mode: "payment" as const,
       },
       {
         name: "Pro",
-        variantId: "1711305",
+        variantId: "",
         mode: "payment" as const,
       },
     ] as LemonSqueezyPlan[],
@@ -205,29 +212,29 @@ const config = {
   // planName must match a name in stripe.plans (or lemonsqueezy.plans).
   // Remove oldPrice to hide the strikethrough price.
   pricing: {
-    heading: "Flexible pricing for every stage.",
+    heading: "Simple, honest pricing.",
     subheading:
-      "Mix monthly subscriptions and one-time plans based on what your product needs.",
+      "No surprises. Choose the plan that fits your team today and upgrade as you grow.",
     cards: [
       {
         planName: "Starter",
-        eyebrow: "For your first launch",
-        description: "Perfect for solo founders shipping their first SaaS.",
+        eyebrow: "For individuals",
+        description: "Everything you need to get started and start seeing value fast.",
         displayPrice: "$99",
         oldPrice: "$149",
         ctaLabel: "Get Starter",
         features: [
-          "Next.js boilerplate",
-          "Supabase auth & database",
-          "Stripe payments",
-          "Email integration",
-          "SEO & blog",
+          "Core product features",
+          "Up to 3 projects",
+          "Basic analytics",
+          "Email support",
+          "1 user seat",
         ],
       },
       {
         planName: "Advanced",
-        eyebrow: "For growing products",
-        description: "For teams that want every advantage on day one.",
+        eyebrow: "For growing teams",
+        description: "More power and flexibility as your product and team scale up.",
         displayPrice: "$149",
         oldPrice: "$249",
         ctaLabel: "Get Advanced",
@@ -235,25 +242,25 @@ const config = {
         badge: "POPULAR",
         features: [
           "Everything in Starter",
-          "Discord community access",
-          "Lifetime updates",
-          "Premium support",
-          "Priority feature requests",
+          "Unlimited projects",
+          "Advanced analytics",
+          "Priority support",
+          "5 user seats",
         ],
       },
       {
         planName: "Pro",
-        eyebrow: "For serious scale",
-        description: "For agencies and product studios.",
+        eyebrow: "For organisations",
+        description: "Full control, unlimited scale, and dedicated support for larger operations.",
         displayPrice: "$299",
         oldPrice: "$449",
         ctaLabel: "Get Pro",
         features: [
           "Everything in Advanced",
-          "Unlimited projects & licenses",
-          "White-label rights",
-          "1-on-1 onboarding call",
-          "Dedicated Slack channel",
+          "Unlimited user seats",
+          "Custom integrations",
+          "1-on-1 onboarding",
+          "Dedicated support channel",
         ],
       },
     ] as PricingCard[],
