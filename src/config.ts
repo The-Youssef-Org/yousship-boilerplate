@@ -166,17 +166,17 @@ const config = {
     plans: [
       {
         name: "Starter", // Must match a card in config.pricing.cards.
-        priceId: "",
+        priceId: "price_1TdG661Cz9QfLQqqvLVG6jDI",
         mode: "payment",
       },
       {
         name: "Advanced",
-        priceId: "",
+        priceId: "price_1TdG6g1Cz9QfLQqqyp88UCEV",
         mode: "subscription",
       },
       {
         name: "Pro",
-        priceId: "",
+        priceId: "price_1TdG761Cz9QfLQqqBS4wu7Rc",
         mode: "payment",
       },
     ] as PricingPlan[],
