@@ -32,8 +32,12 @@ const ButtonSignin = ({
   }
 
   const handleSignin = async () => {
-    setLoading(true);
     const supabase = createClient();
+    if (!supabase) {
+      console.warn("Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable authentication.");
+      return;
+    }
+    setLoading(true);
     await supabase.auth.signInWithOAuth({
       provider,
       options: {

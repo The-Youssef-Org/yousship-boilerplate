@@ -36,6 +36,11 @@ const HeaderClient = ({
   useEffect(() => {
     const supabase = createClient();
 
+    if (!supabase) {
+      setIsAuthResolved(true);
+      return;
+    }
+
     const syncAuthState = async () => {
       const {
         data: { user: verifiedUser },

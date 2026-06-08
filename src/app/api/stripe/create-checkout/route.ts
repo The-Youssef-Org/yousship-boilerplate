@@ -6,9 +6,7 @@ import type { Profile } from "@/libs/types";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   const { priceId } = (await req.json()) as { priceId: string };
 
   if (!priceId) {
@@ -24,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   // Reuse the existing Stripe customer for logged-in users to prevent duplicate records.
   let existingCustomerId: string | null = null;
-  if (user) {
+  if (user && supabase) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("customer_id")

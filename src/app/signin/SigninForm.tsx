@@ -12,6 +12,8 @@ const SigninForm = () => {
   const [sent, setSent] = useState(false);
 
   const supabase = createClient();
+  const isConfigured = !!supabase;
+
   // Google OAuth uses the server-side PKCE callback (code exchange).
   const oauthCallbackUrl =
     typeof window !== "undefined"
@@ -21,7 +23,7 @@ const SigninForm = () => {
   const handleGoogle = async () => {
     setError(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase!.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: oauthCallbackUrl },
     });
@@ -53,10 +55,21 @@ const SigninForm = () => {
 
   return (
     <div className="w-full max-w-md">
+      {!isConfigured && (
+        <div className="mb-6 rounded-xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-base-content/40">
+            Coming soon
+          </p>
+          <p className="mt-1 text-sm leading-relaxed text-base-content/60">
+            Sign-in is not available yet. Check back soon or contact us if you need access.
+          </p>
+        </div>
+      )}
+
       <ButtonPrimary
         type="button"
         onClick={handleGoogle}
-        disabled={loading}
+        disabled={loading || !isConfigured}
         className="w-full gap-3 px-4 py-3"
       >
         <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>

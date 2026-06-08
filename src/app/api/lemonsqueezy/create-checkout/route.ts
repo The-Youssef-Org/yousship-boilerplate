@@ -22,14 +22,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = supabase ? (await supabase.auth.getUser()).data.user : null;
 
     let userId: string | undefined;
     let email: string | undefined;
 
-    if (user) {
+    if (user && supabase) {
       userId = user.id;
       const { data: profile } = await supabase
         .from("profiles")
