@@ -64,6 +64,10 @@ const getMembershipLabel = async (planId: string | null, paymentProvider: string
   // Stripe — retrieve live price details.
   const planName = config.stripe.plans.find((p) => p.priceId === planId)?.name ?? "Custom";
 
+  if (!stripe) {
+    return `${planName} (Active)`;
+  }
+
   try {
     const price = await stripe.prices.retrieve(planId);
 
