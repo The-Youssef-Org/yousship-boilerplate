@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
   // Fallback: let Supabase send its own email via the PKCE callback flow.
   const otpFallback = async () => {
     const supabase = await createClient();
+    if (!supabase) {
+      return;
+    }
     const callbackUrl = `${origin}/api/auth/callback?next=${encodeURIComponent(next)}`;
     await supabase.auth.signInWithOtp({
       email,

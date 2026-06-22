@@ -42,7 +42,7 @@ const PurchaseSuccessfulPage = async ({
   // The success page is purely informational so no param validation is needed.
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   const isLoggedIn = !!user;
 
   return (

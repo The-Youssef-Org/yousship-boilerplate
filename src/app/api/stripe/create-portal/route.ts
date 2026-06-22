@@ -54,6 +54,13 @@ const pickBestCustomerId = async (
 };
 
 export async function POST(req: NextRequest) {
+  if (!stripe) {
+    return NextResponse.json(
+      { error: "Stripe is not configured." },
+      { status: 500 },
+    );
+  }
+
   const origin = new URL(req.url).origin;
   const body = (await req.json().catch(() => ({}))) as { returnPath?: string };
   const requestedReturnPath = typeof body.returnPath === "string" ? body.returnPath : "";
@@ -62,6 +69,14 @@ export async function POST(req: NextRequest) {
   const returnPath = isSafeReturnPath ? requestedReturnPath : config.auth.dashboardUrl;
 
   const supabase = await createClient();
+
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase is not configured." },
+      { status: 500 },
+    );
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

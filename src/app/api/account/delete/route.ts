@@ -7,6 +7,14 @@ import config from "@/config";
 // Requires SUPABASE_SERVICE_ROLE_KEY to be set (server-only env var).
 export async function POST() {
   const supabase = await createServerSupabase();
+
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase is not configured." },
+      { status: 500 },
+    );
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -41,6 +49,14 @@ export async function POST() {
 
   if (config.paymentProvider === "stripe") {
     const stripe = (await import("@/libs/stripe")).default;
+
+    if (!stripe) {
+      return NextResponse.json(
+        { error: "Stripe is not configured." },
+        { status: 500 },
+      );
+    }
+
     let customerId = profile?.customer_id ?? null;
 
     if (!customerId && profile?.email) {
@@ -59,7 +75,7 @@ export async function POST() {
       });
 
       const hasLiveSubscription = subscriptions.data.some(
-        (sub) =>
+        (sub: any) =>
           sub.status === "active" ||
           sub.status === "trialing" ||
           sub.status === "past_due" ||

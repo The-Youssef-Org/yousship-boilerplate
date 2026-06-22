@@ -56,6 +56,10 @@ const syncProfileFromAuthMetadata = async (
   userId?: string;
   appMetadata?: Record<string, unknown>;
 }> => {
+  if (!supabase) {
+    return { shouldSendWelcome: false, welcomeName: "there" };
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -138,6 +142,9 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
+    if (!supabase) {
+      return NextResponse.redirect(`${origin}${next}`);
+    }
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       let welcome: WelcomeSyncResult = {

@@ -49,6 +49,10 @@ export async function GET(request: NextRequest) {
 
   const supabase = await createClient();
 
+  if (!supabase) {
+    return NextResponse.redirect(`${origin}/signin?error=auth`);
+  }
+
   // Try 'email' first (GoTrue stores magic-link OTPs as type 'email' internally),
   // then fall back to 'magiclink' for older Supabase project configurations.
   let verifyError = null;

@@ -32,6 +32,11 @@ const ProfileForm = ({ initialName, initialImage, email }: Props) => {
     setError(null);
 
     const supabase = createClient();
+    if (!supabase) {
+      setError("Supabase is not configured.");
+      setLoading(false);
+      return;
+    }
     const {
       data: { user },
     } = await supabase.auth.getUser();

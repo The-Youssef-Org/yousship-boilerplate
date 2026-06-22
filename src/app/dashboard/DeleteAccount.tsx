@@ -23,10 +23,10 @@ const DeleteAccount = ({ email }: { email: string }) => {
 
       // Clear both browser auth state and server cookie session before redirecting.
       const supabase = createClient();
-      await Promise.allSettled([
-        supabase.auth.signOut(),
-        fetch("/api/auth/signout", { method: "POST" }),
-      ]);
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+      await fetch("/api/auth/signout", { method: "POST" });
 
       window.location.assign("/");
     } catch (err) {

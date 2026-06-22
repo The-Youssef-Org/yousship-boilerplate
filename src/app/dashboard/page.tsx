@@ -223,11 +223,12 @@ const getSubscriptionStatus = async (
 
 export default async function ProfilePage() {
   const supabase = await createClient();
+
+  if (!supabase) redirect(config.auth.loginUrl);
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (!user) redirect(config.auth.loginUrl);
 
   const { data: profile } = await supabase
     .from("profiles")

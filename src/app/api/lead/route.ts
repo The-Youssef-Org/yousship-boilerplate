@@ -35,12 +35,14 @@ export async function POST(req: Request) {
   try {
     const { createClient } = await import("@/libs/supabase/server");
     const supabase = await createClient();
-    const { error } = await supabase.from("leads").insert({ email });
-    if (error) {
-      if (error.message.includes("duplicate") || error.code === "23505") {
-        isNewLead = false; // Already captured — skip email
-      } else {
-        console.warn("[lead] Supabase insert failed:", error.message);
+    if (supabase) {
+      const { error } = await supabase.from("leads").insert({ email });
+      if (error) {
+        if (error.message.includes("duplicate") || error.code === "23505") {
+          isNewLead = false; // Already captured — skip email
+        } else {
+          console.warn("[lead] Supabase insert failed:", error.message);
+        }
       }
     }
   } catch (err) {

@@ -5,6 +5,13 @@ import config from "@/config";
 import type { Profile } from "@/libs/types";
 
 export async function POST(req: NextRequest) {
+  if (!stripe) {
+    return NextResponse.json(
+      { error: "Stripe is not configured." },
+      { status: 500 },
+    );
+  }
+
   const supabase = await createClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   const { priceId } = (await req.json()) as { priceId: string };

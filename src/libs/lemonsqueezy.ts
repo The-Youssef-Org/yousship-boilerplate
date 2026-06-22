@@ -9,8 +9,9 @@ import {
 
 const setup = () => {
   const apiKey = process.env.LEMONSQUEEZY_API_KEY;
-  if (!apiKey) throw new Error("LEMONSQUEEZY_API_KEY is not set");
+  if (!apiKey) return false;
   lemonSqueezySetup({ apiKey });
+  return true;
 };
 
 export const createLemonSqueezyCheckout = async ({
@@ -24,7 +25,7 @@ export const createLemonSqueezyCheckout = async ({
   userId?: string;
   email?: string;
 }): Promise<string | null> => {
-  setup();
+  if (!setup()) return null;
 
   const storeId = process.env.LEMONSQUEEZY_STORE_ID;
   if (!storeId) throw new Error("LEMONSQUEEZY_STORE_ID is not set");
@@ -60,7 +61,7 @@ export const getLemonSqueezySubscriptionVariantId = async (
 export const getLSSubscriptionStatus = async (
   email: string,
 ): Promise<{ cancelAtPeriodEnd: boolean; endsAt: number | null; liveHasAccess: boolean } | null> => {
-  setup();
+  if (!setup()) return null;
 
   const storeId = process.env.LEMONSQUEEZY_STORE_ID;
   const { data, error } = await listSubscriptions({
@@ -98,7 +99,7 @@ export const createLemonSqueezyCustomerPortal = async ({
 }: {
   customerId: string;
 }): Promise<string | null> => {
-  setup();
+  if (!setup()) return null;
 
   const { data, error } = await getCustomer(customerId);
   if (error) throw error;

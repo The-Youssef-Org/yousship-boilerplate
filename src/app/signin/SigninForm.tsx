@@ -21,9 +21,10 @@ const SigninForm = () => {
       : "";
 
   const handleGoogle = async () => {
+    if (!supabase) return;
     setError(null);
     setLoading(true);
-    const { error } = await supabase!.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: oauthCallbackUrl },
     });
