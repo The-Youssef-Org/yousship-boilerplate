@@ -282,6 +282,8 @@ const config = {
   // ---------------------------------------------------------------------------
   social: {
     links: [
+      // Add an `icon` field (relative path, e.g. "/icons/x.svg") to show an
+      // icon instead of the text label in the footer Connect section.
       { label: "X", url: "https://x.com/yourhandle" },
       { label: "GitHub", url: "https://github.com/yourhandle" },
       { label: "LinkedIn", url: "https://www.linkedin.com/company/yourcompany" },

@@ -77,7 +77,12 @@ const Footer = () => {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    {item.label}
+                    {"icon" in item && item.icon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.icon as string} alt={item.label} className="h-5 w-5" />
+                    ) : (
+                      item.label
+                    )}
                   </a>
                 </li>
               ))}
