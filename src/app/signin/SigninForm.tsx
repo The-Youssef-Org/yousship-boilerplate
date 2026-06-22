@@ -82,15 +82,13 @@ const SigninForm = () => {
         Continue with Google
       </ButtonPrimary>
 
-      {isConfigured && (
-        <>
-          <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wider text-base-content/50">
-            <span className="h-px flex-1 bg-base-content/10" />
-            or
-            <span className="h-px flex-1 bg-base-content/10" />
-          </div>
+      <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wider text-base-content/50">
+        <span className="h-px flex-1 bg-base-content/10" />
+        or
+        <span className="h-px flex-1 bg-base-content/10" />
+      </div>
 
-          {sent ? (
+      {isConfigured && sent ? (
         <div className="rounded-xl border border-base-content/10 bg-base-content/[0.03] px-6 py-5 text-center">
           <p className="text-sm font-semibold text-base-content">Check your inbox</p>
           <p className="mt-1 text-sm text-base-content/60">
@@ -108,37 +106,36 @@ const SigninForm = () => {
             Use a different email
           </button>
         </div>
-          ) : (
-            <form onSubmit={handleMagicLink} className="space-y-3">
-              <div>
-                <label htmlFor="email" className="text-sm font-medium text-base-content/80">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3 text-sm text-base-content placeholder-base-content/40 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                  placeholder="you@example.com"
-                />
-              </div>
+      ) : (
+        <form onSubmit={handleMagicLink} className="space-y-3">
+          <div>
+            <label htmlFor="email" className="text-sm font-medium text-base-content/80">
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={!isConfigured}
+              className="mt-1 w-full rounded-xl border border-base-content/10 bg-base-content/[0.03] px-4 py-3 text-sm text-base-content placeholder-base-content/40 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-40"
+              placeholder="you@example.com"
+            />
+          </div>
 
-              {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
-              <ButtonPrimary
-                type="submit"
-                disabled={loading || !email}
-                className="w-full px-4 py-3"
-              >
-                {loading ? "Sending..." : "Send magic link"}
-              </ButtonPrimary>
-            </form>
-          )}
-        </>
+          <ButtonPrimary
+            type="submit"
+            disabled={loading || !email || !isConfigured}
+            className="w-full px-4 py-3"
+          >
+            {loading ? "Sending..." : "Send magic link"}
+          </ButtonPrimary>
+        </form>
       )}
     </div>
   );
