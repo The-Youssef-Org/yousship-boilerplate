@@ -79,7 +79,7 @@ export default async function BlogPostPage({
             <img
               src={post.cover}
               alt={post.title}
-              className="mt-10 aspect-[16/9] w-full rounded-2xl object-cover shadow-sm ring-1 ring-base-300"
+              className="mt-10 w-full rounded-2xl object-cover shadow-sm ring-1 ring-base-300 max-h-[480px]"
             />
           )}
 
