@@ -26,25 +26,25 @@ const SuccessPage = async () => {
 
         <div className="rounded-3xl border border-base-content/10 bg-base-100 p-8 sm:p-10">
           <h1 className="text-2xl font-bold text-base-content">
-            You&apos;re in. Welcome aboard.
+            Payment confirmed. Thank you!
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-base-content/65">
-            Check your email — I sent you a sign-in link. Click it and you&apos;ll land straight in your dashboard where you can connect your GitHub account and get the code.
+            Your purchase was successful. Check your inbox for a confirmation email. If you have an account, head to your dashboard to get started.
           </p>
 
           <div className="mt-8 border-t border-base-content/[0.07] pt-8">
             <p className="text-sm font-semibold text-base-content">
-              Didn&apos;t get the email?
+              Need help?
             </p>
             <ol className="mt-3 space-y-2 text-sm text-base-content/60">
-              <li>1. Check your spam folder</li>
+              <li>1. Check your spam folder for the confirmation email</li>
               <li>
                 2.{" "}
                 <Link
                   href={isLoggedIn ? config.auth.dashboardUrl : config.auth.loginUrl}
                   className="underline underline-offset-2 hover:text-base-content"
                 >
-                  Sign in with your purchase email
+                  {isLoggedIn ? "Go to your dashboard" : "Sign in to your account"}
                 </Link>
               </li>
               <li>
@@ -66,10 +66,6 @@ const SuccessPage = async () => {
             {isLoggedIn ? "Go to dashboard" : "Sign in"}
           </Link>
         </div>
-
-        <p className="mt-6 text-center text-xs text-base-content/40">
-          — Youssef
-        </p>
       </div>
     </main>
   );
