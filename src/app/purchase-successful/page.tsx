@@ -22,7 +22,11 @@ const PurchaseSuccessfulPage = async ({
 
   // Stripe flow: validate the checkout session server-side.
   if (sessionId) {
-    let checkoutSession: Awaited<ReturnType<typeof stripe.checkout.sessions.retrieve>> | null = null;
+    if (!stripe) {
+      redirect("/");
+    }
+
+    let checkoutSession: any = null;
     try {
       checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
     } catch {
