@@ -17,12 +17,12 @@ const pickBestCustomerId = async (
   candidateIds: string[],
   planId: string | null,
 ): Promise<string | null> => {
-  if (!candidateIds.length) return null;
+  if (!candidateIds.length || !stripe) return null;
 
   const scored = await Promise.all(
     candidateIds.map(async (id) => {
       try {
-        const subscriptions = await stripe.subscriptions.list({
+        const subscriptions = await stripe!.subscriptions.list({
           customer: id,
           status: "all",
           limit: 20,
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     candidateIds.push(profileCustomerId);
   }
   if (profile?.email) {
-    const customers = await stripe.customers.list({ email: profile.email, limit: 20 });
+    const customers = await stripe!.customers.list({ email: profile.email, limit: 20 });
     for (const customer of customers.data) {
       if (isStripeCustomerId(customer.id) && !candidateIds.includes(customer.id)) {
         candidateIds.push(customer.id);
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: `${origin}/#pricing` });
   }
 
-  const session = await stripe.billingPortal.sessions.create({
+  const session = await stripe!.billingPortal.sessions.create({
     customer: customerId,
     return_url: `${origin}${returnPath}`,
   });
