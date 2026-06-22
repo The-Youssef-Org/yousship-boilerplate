@@ -80,6 +80,8 @@ const resolveProfileForStripeCustomer = async (customerId: string) => {
   const byCustomerId = await getProfileByCustomerId(customerId);
   if (byCustomerId) return byCustomerId;
 
+  if (!stripe) return null;
+
   const customer = await stripe.customers.retrieve(customerId);
   if (customer.deleted || !customer.email) return null;
 
@@ -236,7 +238,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = stripe!.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!,
@@ -269,7 +271,9 @@ export async function POST(req: NextRequest) {
           : null;
       let resolvedUserId = metadataUserId;
 
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+      const lineItems = await stripe!.checkout.sessions.listLineItems(session.id, {
+        limit: 1,
+      });
       const purchasedPriceId = lineItems.data[0]?.price?.id ?? null;
 
       // Idempotency: check if this customer already has access before sending a

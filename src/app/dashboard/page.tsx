@@ -97,6 +97,8 @@ const getSubscriptionStatus = async (
   paymentProvider: string | null,
   email: string | null,
 ): Promise<SubscriptionStatus | null> => {
+  if (!stripe) return null;
+
   // Lemon Squeezy — fetch live subscription status the same way Stripe does.
   if (paymentProvider === "lemonsqueezy") {
     const lsPlan = config.lemonsqueezy.plans.find((p) => p.variantId === planId);
@@ -133,7 +135,7 @@ const getSubscriptionStatus = async (
         customer: resolvedCustomerId,
         limit: 10,
       });
-      const hasPaid = charges.data.some((c) => c.status === "succeeded");
+      const hasPaid = charges.data.some((c: any) => c.status === "succeeded");
       return hasPaid
         ? { cancelAtPeriodEnd: false, endsAt: null, liveHasAccess: true }
         : null;
@@ -143,7 +145,7 @@ const getSubscriptionStatus = async (
   }
 
   const fetchSubscriptions = (customer: string) =>
-    stripe.subscriptions.list({
+    stripe!.subscriptions.list({
       customer,
       status: "all",
       limit: 10,
@@ -154,24 +156,21 @@ const getSubscriptionStatus = async (
 
     // Stale customer_id can happen; retry by email and use that customer's subscriptions.
     if (!subscriptions.data.length && email) {
-      const customers = await stripe.customers.list({ email, limit: 1 });
+      const customers = await stripe!.customers.list({ email, limit: 1 });
       const fallbackCustomerId = customers.data[0]?.id ?? null;
       if (fallbackCustomerId && fallbackCustomerId !== resolvedCustomerId) {
         subscriptions = await fetchSubscriptions(fallbackCustomerId);
       }
     }
 
-    const accessLike = (sub: { status: string; cancel_at_period_end: boolean }) =>
+    const accessLike = (sub: any) =>
       sub.status === "active" ||
       sub.status === "trialing" ||
       sub.status === "past_due" ||
       sub.status === "unpaid" ||
       sub.cancel_at_period_end;
 
-    const isCancellationScheduled = (sub: {
-      cancel_at_period_end: boolean;
-      cancel_at: number | null;
-    }) => sub.cancel_at_period_end || sub.cancel_at !== null;
+    const isCancellationScheduled = (sub: any) => sub.cancel_at_period_end || sub.cancel_at !== null;
 
     // Ignore fully ended subscriptions when selecting the dashboard badge source.
     const relevant = subscriptions.data.filter(accessLike);
@@ -179,25 +178,25 @@ const getSubscriptionStatus = async (
     // Prefer plan match, but always prioritize subscriptions that are set to
     // cancel at period end so dashboard state immediately turns yellow.
     const matchingByPrice = planId
-      ? relevant.find((sub) =>
-          sub.items.data.some((item) => item.price.id === planId),
+      ? relevant.find((sub: any) =>
+          sub.items.data.some((item: any) => item.price.id === planId),
         )
       : null;
 
     const matchingCancelAtPeriodEndByPrice = planId
       ? relevant.find(
-          (sub) =>
+          (sub: any) =>
             isCancellationScheduled(sub) &&
-            sub.items.data.some((item) => item.price.id === planId),
+            sub.items.data.some((item: any) => item.price.id === planId),
         )
       : null;
 
     const matchingCancelAtPeriodEndAny = relevant.find(
-      (sub) => isCancellationScheduled(sub),
+      (sub: any) => isCancellationScheduled(sub),
     );
 
     const matchingActive = relevant.find(
-      (sub) => sub.status === "active" || sub.status === "trialing" || sub.cancel_at_period_end,
+      (sub: any) => sub.status === "active" || sub.status === "trialing" || sub.cancel_at_period_end,
     );
 
     const matching =
