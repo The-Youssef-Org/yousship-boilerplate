@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         userEmail: user?.email ?? "",
       },
       success_url: `${origin}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/purchase-failed?from=checkout`,
+      cancel_url: `${origin}/#pricing`,
     });
 
     return NextResponse.json({ url: session.url });

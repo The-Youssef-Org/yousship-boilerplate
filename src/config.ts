@@ -274,7 +274,7 @@ const config = {
     loginUrl: "/signin",
     callbackUrl: "/dashboard", // Where users land after login.
     dashboardUrl: "/dashboard",
-    purchaseSuccessUrl: "/purchase-successful",
+    purchaseSuccessUrl: "/success",
   },
 
   // ---------------------------------------------------------------------------

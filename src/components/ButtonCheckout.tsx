@@ -35,7 +35,7 @@ const ButtonCheckout = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             variantId: planId,
-            redirectUrl: `${window.location.origin}/purchase-successful`,
+            redirectUrl: `${window.location.origin}/success`,
           }),
         });
       } else {
